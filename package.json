@@ -1,0 +1,52 @@
+{
+    "name": "@arpadroid/list-manager",
+    "version": "0.0.1",
+    "description": "A library of web components for building complex CMS-like list user interfaces, featuring search, pagination, predefined and customized views, filters and many other features.",
+    "exports": {
+        ".": {
+            "types": "./dist/@types/types.compiled.d.ts",
+            "import": "./dist/arpadroid-list-manager.js"
+        }
+    },
+    "types": "./dist/@types/types.compiled.d.ts",
+    "type": "module",
+    "scripts": {
+        "build": "arpadroid-build --minify",
+        "clean": "arpadroid-clean",
+        "dev": "arpadroid-build --watch --storybook",
+        "test": "arpadroid-test --storybook --jest",
+        "t": "npm run test -- --slim",
+        "initialize": "arpadroid-initialize",
+        "check:types": "arpadroid-check-types"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/arpadroid/list-manager.git"
+    },
+    "keywords": [
+        "web-components",
+        "custom-elements",
+        "cms",
+        "lists",
+        "filters",
+        "pagination"
+    ],
+    "author": "Andres Vaquero @arpadroid <web.andresvaquero@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/arpadroid/list-manager/issues"
+    },
+    "homepage": "https://github.com/arpadroid/list-manager#readme",
+    "devDependencies": {
+        "@babel/core": "^7.24",
+        "@babel/preset-env": "^7.23.9"
+    },
+    "peerDependencies": {
+        "@arpadroid/module": "file:../module",
+        "@arpadroid/lists": "file:../lists",
+        "@arpadroid/tools": "file:../tools",
+        "@arpadroid/forms": "file:../forms",
+        "@arpadroid/messages": "file:../messages",
+        "@arpadroid/navigation": "file:../navigation"
+    }
+}
