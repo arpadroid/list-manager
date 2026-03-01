@@ -4,10 +4,10 @@
  * @typedef {import('@arpadroid/resources').ListFilter} ListFilter
  * @typedef {import('@arpadroid/forms').FormComponent} FormComponent
  * @typedef {import('@arpadroid/forms').Field} Field
- * @typedef {import('../list/list.js').default} List
  * @typedef {import('./listInfo.types').ListInfoConfigType} ListInfoConfigType
  */
 import { ArpaElement } from '@arpadroid/ui';
+import ListManager from '../listManager/listManager.js';
 import { mergeObjects, bind, renderNode, defineCustomElement } from '@arpadroid/tools';
 const html = String.raw;
 class ListInfo extends ArpaElement {
@@ -19,7 +19,7 @@ class ListInfo extends ArpaElement {
      * @returns {ListInfoConfigType}
      */
     getDefaultConfig() {
-        this.i18nKey = 'lists.list';
+        this.i18nKey = 'list-manager';
         bind(this, 'reRender', 'updateText');
         /** @type {ListInfoConfigType} */
         const conf = {
@@ -32,8 +32,8 @@ class ListInfo extends ArpaElement {
 
     initializeProperties() {
         super.initializeProperties();
-        /** @type {List | null} */
-        this.list = this.closest('.arpaList');
+        /** @type {ListManager | null} */
+        this.list = ListManager.getList(this);
         /** @type {ListResource} */
         this.listResource = this.list?.listResource;
         this.listResource?.on('items', this.updateText);

@@ -1,7 +1,7 @@
 /**
- * @typedef {import('../listManagerItem/listManagerItem.types.js').ListItemConfigType} ListItemConfigType
- * @typedef {import('../list/list.types').ListConfigType} ListConfigType
- * @typedef {import('../list/list.js').default} List
+ * @typedef {import('../listManagerItem/listManagerItem.types.js').ListManagerItemConfigType} ListManagerItemConfigType
+ * @typedef {import('../listManager/listManager.types').ListManagerConfigType} ListManagerConfigType
+ * @typedef {import('../listManager/listManager.js').default} ListManager
  * @typedef {import('./listSearch.types').ListSearchConfigType} ListSearchConfigType
  * @typedef {import('@arpadroid/resources').ListResource} ListResource
  * @typedef {import('@arpadroid/forms').SearchField} SearchField
@@ -35,7 +35,7 @@ class ListSearch extends ArpaElement {
     }
 
     initializeProperties() {
-        /** @type {List | null} */
+        /** @type {ListManager | null} */
         this.list = this.closest('.arpaList');
         /** @type {Router} */
         this.router = this.list?.getRouter();

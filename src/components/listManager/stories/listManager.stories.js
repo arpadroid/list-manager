@@ -1,5 +1,5 @@
 /**
- * @typedef {import('../list.js').default} List
+ * @typedef {import('../listManager.js').default} ListManager
  * @typedef {import('../../listManagerItem/listManagerItem.js').default} ListManagerItem
  * @typedef {import('@arpadroid/resources').ListResource} ListResource
  * @typedef {import('@storybook/web-components-vite').Args} Args
@@ -9,12 +9,14 @@
  */
 
 import { attrString } from '@arpadroid/tools';
-import { getArgTypes, playSetup, renderItemTemplate } from './listManager.stories.util.js';
+import { getArgTypes, renderItemTemplate } from '@arpadroid/lists/stories/utils';
+import { playSetup } from './listManager.stories.util.js';
+
 
 const html = String.raw;
 /** @type {Meta} */
 const ListManagerStory = {
-    title: 'List Manager/Render',
+    title: 'List Manager/Lists',
     tags: ['docs'],
     parameters: {
         layout: 'padded'
@@ -50,7 +52,7 @@ const ListManagerStory = {
 };
 
 /** @type {StoryObj} */
-export const DataDrivenList = {
+export const ResourceDriven = {
     argTypes: getArgTypes(),
     parameters: {
         layout: 'flexColumn'
@@ -67,7 +69,7 @@ export const DataDrivenList = {
     },
     render: args => {
         return html`
-            <arpa-list ${attrString(args)}>
+            <list-manager ${attrString(args)}>
                 <zone name="messages">
                     <info-message>
                         The list component is an advanced list creation tool, which aims to simplify the process of
@@ -93,7 +95,7 @@ export const DataDrivenList = {
 
                 <zone name="list-filters"> </zone>
                 ${renderItemTemplate()}
-            </arpa-list>
+            </list-manager>
         `;
     }
 };

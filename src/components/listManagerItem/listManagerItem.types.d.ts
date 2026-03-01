@@ -1,9 +1,9 @@
-import { NavLinkConfigType } from '@arpadroid/navigation';
+import { NavListConfigType } from '@arpadroid/navigation';
 import { ListItemConfigType } from '@arpadroid/lists';
 import ListManagerItem from './listManagerItem.js';
 
 export type ListManagerItemConfigType = ListItemConfigType & {
-    nav?: NavLinkConfigType;
+    nav?: NavListConfigType;
 };
 
 export type ListItemViewConfigType = {

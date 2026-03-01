@@ -1,7 +1,16 @@
+import { FieldOptionConfigType } from '@arpadroid/forms';
 import type { ListConfigType } from '@arpadroid/lists';
 import { NavLinkConfigType } from '@arpadroid/navigation';
+import { Router } from '@arpadroid/services';
+import { ListManagerItem } from 'src/exports';
 
 export type ListManagerConfigType = ListConfigType & {
+    actions?: FieldOptionConfigType[];
     viewOptions?: NavLinkConfigType[];
-    views?: string[];
+    router?: Router;
+    sortByParam?: string;
+    itemComponent?: typeof ListManagerItem;
+    sortDefault?: string;
+    sortDirParam?: string;
+    sortOptions?: FieldOptionConfigType[];
 };

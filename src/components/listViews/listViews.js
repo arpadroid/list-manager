@@ -1,6 +1,5 @@
 /**
  * @typedef {import('@arpadroid/resources').ListResource} ListResource
- * @typedef {import('../list/list.js').default} List
  * @typedef {import('@arpadroid/services').Router} Router
  * @typedef {import('@arpadroid/navigation').NavLink} NavLink
  * @typedef {import('./listViews.types').ListViewConfigType} ListViewConfigType
@@ -9,6 +8,7 @@
  */
 import { mergeObjects, attrString, clearLazyQueue, defineCustomElement } from '@arpadroid/tools';
 import { ArpaElement } from '@arpadroid/ui';
+import ListManager from '../listManager/listManager.js';
 
 export const LIST_VIEW_GRID = 'grid';
 export const LIST_VIEW_GRID_COMPACT = 'grid-compact';
@@ -65,8 +65,8 @@ class ListViews extends ArpaElement {
 
     initializeProperties() {
         super.initializeProperties();
-        /** @type {List | null} */
-        this.list = this.closest('arpa-list, arpa-gallery');
+        /** @type {ListManager | null} */
+        this.list = ListManager.getList(this);
         /** @type {Router} */
         this.router = this.list?.getRouter();
         /** @type {ListResource} */
@@ -172,7 +172,8 @@ class ListViews extends ArpaElement {
         this.list?.classList.remove(...(this.viewClasses || []));
         this.list?.classList.add('listView--' + view);
         view === 'grid-compact' && this.list?.classList.add('listView--grid');
-        this.list?.getItemNodes()?.forEach(item => {
+        const itemNodes = this.list?.getItemNodes() || [];
+        itemNodes.forEach(item => {
             item?.classList.remove(...(this.itemViewClasses || []));
             item?.classList.add('listItem--' + view);
         });

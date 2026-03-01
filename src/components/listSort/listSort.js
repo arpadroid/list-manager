@@ -8,16 +8,16 @@
  * @typedef {import('@arpadroid/resources').ListFilter} ListFilter
  * @typedef {import('@arpadroid/services').Router} Router
  * @typedef {import('../listManagerItem/listManagerItem.types.js').ListManagerItemConfigType} ListManagerItemConfigType
- * @typedef {import('../list/list.types').ListConfigType} ListConfigType
- * @typedef {import('../list/list.js').default} List
- * @typedef {import('../multiSelect/multiSelect.js').IconMenu} IconMenu
- * @typedef {import('../listManagerItem/listManagerItem.js').default} ListItem
+ * @typedef {import('../listManager/listManager.types').ListManagerConfigType} ListManagerConfigType
+ * @typedef {import('../listManagerItem/listManagerItem.js').default} ListManagerItem
  * @typedef {import('./listSort.types').ListSortConfigType} ListSortConfigType
+ * @typedef {import('@arpadroid/navigation').IconMenu} IconMenu
  * @typedef {import('@arpadroid/navigation').NavList} NavList
  */
 
 import { mapHTML, attr, defineCustomElement } from '@arpadroid/tools';
 import { ArpaElement } from '@arpadroid/ui';
+import ListManager from '../listManager/listManager.js';
 
 const html = String.raw;
 class ListSort extends ArpaElement {
@@ -33,7 +33,7 @@ class ListSort extends ArpaElement {
      */
     getDefaultConfig() {
         this.bind('update', '_onRouteChange', '_onSortBySelected', '_isItemSelected');
-        this.i18nKey = 'lists.listSort';
+        this.i18nKey = 'list-manager.listSort';
         return {
             iconAsc: 'keyboard_double_arrow_up',
             iconDesc: 'keyboard_double_arrow_down',
@@ -44,8 +44,8 @@ class ListSort extends ArpaElement {
     }
 
     initializeProperties() {
-        /** @type {List | null} */
-        this.list = this.closest('.arpaList');
+        /** @type {ListManager | null} */
+        this.list = ListManager.getList(this);
         /** @type {Router} */
         this.router = this.list?.getRouter();
         /** @type {ListResource} */
@@ -112,8 +112,9 @@ class ListSort extends ArpaElement {
 
     render() {
         const sortDir = this.listResource?.getSortDirection() === 'asc' ? 'desc' : 'asc';
+        const sortOptions = this.list?.getSortOptions() || [];
         // @ts-ignore
-        const links = mapHTML(this.list?.getSortOptions() || [], payload => {
+        const links = mapHTML(sortOptions, payload => {
             const { value = '', icon = '', label = '' } = payload;
             return html`<nav-link link="${value}" icon-left="${icon}" label="${label}"></nav-link>`;
         });
@@ -177,7 +178,7 @@ class ListSort extends ArpaElement {
 
     /**
      * When a sort option is selected.
-     * @param {ListItem} item
+     * @param {ListManagerItem} item
      */
     _onSortBySelected(item) {
         const icon = item.getProperty('icon') || item.getProperty('icon-right');

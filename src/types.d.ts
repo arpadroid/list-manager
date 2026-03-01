@@ -16,8 +16,6 @@ export { BatchOperationConfigType } from './components/batchOperation/batchOpera
 
 export { ListManagerItemConfigType } from './components/listManagerItem/listManagerItem.types';
 
-export { BaseLinkConfigType, BaseNavListConfigType, BaseFieldOptionConfigType } from './@types/base.types';
-
 export { ListInfoConfigType } from './components/listInfo/listInfo.types';
 
 export { ListFiltersConfigType, ListFiltersSubmitPayloadType } from './components/listFilters/listFilters.types';

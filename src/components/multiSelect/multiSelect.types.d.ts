@@ -1,7 +1,7 @@
-import { BaseFieldOptionConfigType } from '../../@types/base.types';
+import { FieldOptionConfigType } from '@arpadroid/forms';
 import { ArpaElementConfigType } from '@arpadroid/ui';
 export type MultiSelectConfigType = ArpaElementConfigType & {
     icon?: string;
     tooltip?: string;
-    actions?: BaseFieldOptionConfigType[];
+    actions?: FieldOptionConfigType[];
 };

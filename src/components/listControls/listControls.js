@@ -1,6 +1,6 @@
 /**
  * @typedef {import('./listControls.types').ListControlsConfigType} ListControlsConfigType
- * @typedef {import('../list/list').default} List
+ * @typedef {import('../listManager/listManager').default} ListManager
  * @typedef {import('../listSearch/listSearch').default} ListSearch
  * @typedef {import('../listViews/listViews').default} ListViews
  */
@@ -14,7 +14,7 @@ class ListControls extends ArpaElement {
 
     /**
      * Returns the list component.
-     * @returns {List | null}
+     * @returns {ListManager | null}
      */
     getList() {
         return this.closest('arpa-list, .arpaList');
@@ -92,7 +92,7 @@ class ListControls extends ArpaElement {
 
     /**
      * Renders the sort component.
-     * @param {List | null} list
+     * @param {ListManager | null} list
      * @returns {string}
      */
     renderSort(list = this.getList()) {

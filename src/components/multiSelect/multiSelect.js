@@ -4,7 +4,7 @@
  * @typedef {import('@arpadroid/forms').Field} Field
  * @typedef {import('@arpadroid/resources').ListResource} ListResource
  * @typedef {import('@arpadroid/navigation').IconMenu} IconMenu
- * @typedef {import('../list/list.js').default} List
+ * @typedef {import('../listManager/listManager.js').default} ListManager
  */
 import { ArpaElement } from '@arpadroid/ui';
 import { attrString, defineCustomElement } from '@arpadroid/tools';
@@ -14,8 +14,8 @@ class MultiSelect extends ArpaElement {
     // #region INITIALIZATION
 
     _preInitialize() {
-        this.i18nKey = 'lists.multiSelect';
-        /** @type {List | null} */
+        this.i18nKey = 'list-manager.multiSelect';
+        /** @type {ListManager | null} */
         this.list = this.closest('.arpaList');
         /** @type {ListResource | undefined} */
         this.resource = this.list?.listResource;

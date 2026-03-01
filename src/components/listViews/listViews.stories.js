@@ -1,17 +1,21 @@
 /**
- * @typedef {import('../list/list.js').default} List
+ * @typedef {import('../listManager/listManager.js').default} ListManager
  * @typedef {import('@arpadroid/navigation').IconMenu} IconMenu
- * @typedef {import('@arpadroid/module').StepFunction} StepFunction
+ * @typedef {import('@storybook/web-components-vite').Meta} Meta
+ * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
  */
 
 import { attrString } from '@arpadroid/tools';
-import { Default as ListStory } from '../list/stories/stories.util.js';
+import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
 import { userEvent, within, waitFor, expect } from 'storybook/test';
+import { playSetup, renderItemTemplate, renderSimple } from '../listManager/stories/listManager.stories.util.js';
 
 const html = String.raw;
+
+/** @type {Meta} */
 const Default = {
     ...ListStory,
-    title: 'Lists/Controls/Views',
+    title: 'List Manager/Controls/Views',
     args: {
         ...ListStory.args,
         hasPager: false,
@@ -21,11 +25,13 @@ const Default = {
         itemsPerPage: 40,
         hasInfo: false
     },
-    render: ListStory.renderSimple
+    render: renderSimple
 };
 
+/** @type {StoryObj} */
 export const Render = Default;
 
+/** @type {StoryObj} */
 export const Test = {
     args: {
         ...Default.args,
@@ -34,13 +40,8 @@ export const Test = {
         defaultView: 'list',
         views: 'list,grid'
     },
-    /**
-     * Plays the test scenario.
-     * @param {{ canvasElement: HTMLElement, step: StepFunction }} options
-     * @returns {Promise<void>}
-     */
     play: async ({ canvasElement, step }) => {
-        const setup = await Default.playSetup(canvasElement);
+        const setup = await playSetup(canvasElement);
         const { canvas, listNode } = setup;
         await listNode?.setView('list');
 
@@ -90,6 +91,7 @@ export const Test = {
     }
 };
 
+/** @type {StoryObj} */
 export const CustomView = {
     args: {
         ...Default.args,
@@ -99,13 +101,8 @@ export const CustomView = {
         defaultView: 'custom-view',
         views: 'list,custom-view'
     },
-    /**
-     * Plays the test scenario.
-     * @param {{ canvasElement: HTMLElement, step: StepFunction }} options
-     * @returns {Promise<void>}
-     */
     play: async ({ canvasElement, step }) => {
-        const setup = await Default.playSetup(canvasElement);
+        const setup = await playSetup(canvasElement);
         const { listNode, canvas } = setup;
         await step('Renders the custom view', async () => {
             await listNode?.setView('custom-view');
@@ -136,14 +133,9 @@ export const CustomView = {
             expect(listNode).toHaveClass('listView--custom-view');
         });
     },
-    /**
-     * Renders the list component.
-     * @param {Record<string, unknown>} args
-     * @returns {string}
-     */
     render(args) {
         return html`
-            <arpa-list ${attrString(args)}>
+            <list-manager ${attrString(args)}>
                 <zone name="messages">
                     <info-message>
                         This example demonstrates how to create a custom view for the list component. The custom view is
@@ -172,8 +164,8 @@ export const CustomView = {
                     </div>
                 </template>
 
-                ${ListStory.renderItemTemplate({ elementTruncateContent: 180, elementTitleIcon: 'dashboard' })}
-            </arpa-list>
+                ${renderItemTemplate({ elementTruncateContent: 180, elementTitleIcon: 'dashboard' })}
+            </list-manager>
 
             <!-- Custom View Styles -->
 

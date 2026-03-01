@@ -1,17 +1,21 @@
 /**
- * @typedef {import('../list/list.js').default} List
- * @typedef {import('../listViews/listViews.stories.js').StepFunction} StepFunction
+ * @typedef {import('../listManager/listManager.js').default} ListManager
  * @typedef {import('@arpadroid/forms').SelectCombo} SelectCombo
+ * @typedef {import('@storybook/web-components-vite').Meta} Meta
+ * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
  */
 
-import { Default as ListStory } from '../list/stories/stories.util.js';
+import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
 import { within, waitFor, userEvent, expect, fireEvent } from 'storybook/test';
 import { attrString } from '@arpadroid/tools';
+import { playSetup, renderItemTemplate } from '../listManager/stories/listManager.stories.util.js';
 
 const html = String.raw;
+
+/** @type {Meta} */
 const Default = {
     ...ListStory,
-    title: 'Lists/Controls/Batch Operations',
+    title: 'List Manager/Controls/Batch Operations',
     args: {
         ...ListStory.args,
         id: 'batch-operations',
@@ -19,14 +23,9 @@ const Default = {
         itemsPerPage: 1,
         title: 'Batch Operations'
     },
-    /**
-     * Renders the list component.
-     * @param {Record<string, unknown>} args
-     * @returns {string}
-     */
     render: args => {
         return html`
-            <arpa-list ${attrString(args)}>
+            <list-manager ${attrString(args)}>
                 <zone name="batch-operations">
                     <select-option value="delete" icon="delete">
                         Delete
@@ -35,27 +34,24 @@ const Default = {
                         </delete-dialog>
                     </select-option>
                 </zone>
-                ${ListStory.renderItemTemplate()}
-            </arpa-list>
+                ${renderItemTemplate()}
+            </list-manager>
         `;
     }
 };
 
+/** @type {StoryObj} */
 export const Render = Default;
 
+/** @type {StoryObj} */
 export const Test = {
     args: {
         ...Default.args,
         id: 'test-batch-operations',
         itemsPerPage: 1
     },
-    /**
-     * Plays the test scenario.
-     * @param {{ canvasElement: HTMLElement, step: StepFunction }} options
-     * @returns {Promise<void>}
-     */
     play: async ({ canvasElement, step }) => {
-        const setup = await ListStory.playSetup(canvasElement);
+        const setup = await playSetup(canvasElement);
         await waitFor(() => expect(document.querySelector('.listMultiSelect__form')).toBeInTheDocument());
         const { canvas } = setup;
         const formNode = /** @type {HTMLFormElement} */ (document.querySelector('.listMultiSelect__form'));

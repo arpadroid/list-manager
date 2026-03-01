@@ -1,8 +1,9 @@
 /**
- * @typedef {import('../list/list.js').default} List
- * @typedef {import('./listItem.js').default} ListItem
- * @typedef {import('@arpadroid/module').StepFunction} StepFunction
+ * @typedef {import('../listManager/listManager.js').default} ListManager
+ * @typedef {import('./listManagerItem.js').default} ListManagerItem
  * @typedef {import('@arpadroid/resources').ListResource} ListResource
+ * @typedef {import('@storybook/web-components-vite').Meta} Meta
+ * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
  */
 
 import { waitFor, expect, userEvent, within } from 'storybook/test';
@@ -10,28 +11,31 @@ import { attrString } from '@arpadroid/tools';
 
 const html = String.raw;
 
+/**
+ * Sets up the test scenario.
+ * @param {HTMLElement} canvasElement
+ * @returns {Promise<{ canvas: ReturnType<typeof within>, listItem: ListManagerItem | null }>}
+ */
+async function playSetup(canvasElement) {
+    const canvas = within(canvasElement);
+    /** @type {ListManagerItem | null} */
+    const listItem = canvasElement.querySelector('list-manager-item');
+    await customElements.whenDefined('list-manager');
+    await customElements.whenDefined('list-manager-item');
+    await listItem?.promise;
+    return { canvas, listItem };
+}
+
+/** @type {Meta} */
 const Default = {
-    title: 'Lists/List Item',
+    title: 'List Manager/Item',
     args: {},
-    /**
-     * Sets up the test scenario.
-     * @param {HTMLElement} canvasElement
-     * @returns {Promise<import('../list/stories/list.stories.types.js').ListPlaySetupResponseType>}
-     */
-    playSetup: async canvasElement => {
-        const canvas = within(canvasElement);
-        /** @type {ListItem | null} */
-        const listItem = canvasElement.querySelector('list-item');
-        await customElements.whenDefined('arpa-list');
-        await customElements.whenDefined('list-item');
-        await listItem?.promise;
-        return { canvas, listItem };
-    },
     parameters: {
         layout: 'centered'
     }
 };
 
+/** @type {StoryObj} */
 export const Render = {
     args: {
         icon: 'list',
@@ -40,14 +44,9 @@ export const Render = {
         subtitle: 'Test subtitle',
         image: '/test-assets/artists/phidias.jpg'
     },
-    /**
-     * Plays the test scenario.
-     * @param {{ canvasElement: HTMLElement, step: StepFunction, args: Record<string, any> }} options
-     * @returns {Promise<void>}
-     */
     play: async ({ canvasElement, step }) => {
-        const { listItem, canvas } = await Default.playSetup(canvasElement);
-        const icon = canvasElement.querySelector('list-item arpa-icon');
+        const { canvas } = await playSetup(canvasElement);
+        const icon = canvasElement.querySelector('list-manager-item arpa-icon');
 
         await step('Renders the list item with the expected content', async () => {
             expect(canvas.getByText('List item')).toBeInTheDocument();
@@ -58,16 +57,17 @@ export const Render = {
             expect(canvas.getByText('test content')).toBeInTheDocument();
         });
     },
-    render: (/** @type {Record<string, any>} */ args) => {
-        return html`<arpa-list id="list-item-list" controls=" ">
-            <list-item ${attrString(args)}> test content </list-item>
-        </arpa-list>`;
+    render: args => {
+        return html`<list-manager id="list-item-list" controls=" ">
+            <list-manager-item ${attrString(args)}> test content </list-manager-item>
+        </list-manager>`;
     }
 };
 
 const longText =
     'Morning motivation is key to setting a positive tone for the day. Starting your morning with an energizing mindset can enhance focus, boost productivity, and improve overall well-being. When you take time in the morning to set goals or engage in uplifting activities, it strengthens mental resilience and prepares you to handle challenges. This initial boost also impacts mood, helping maintain a positive outlook. Consistently practicing morning motivation can gradually lead to more fulfilling days and a healthier lifestyle.';
 
+/** @type {StoryObj} */
 export const WithZones = {
     args: {
         titleIcon: 'auto_awesome',
@@ -76,25 +76,20 @@ export const WithZones = {
         truncateButton: true,
         image: '/test-assets/artists/phidias.jpg'
     },
-    params: {
+    parameters: {
         layout: 'padded'
     },
-    render: (/** @type {Record<string, any>} */ args) => {
-        return html`<arpa-list id="list-item-list" title="List Item" controls=" ">
-            <list-item ${attrString(args)}>
+    render: args => {
+        return html`<list-manager id="list-item-list" title="List Item" controls=" ">
+            <list-manager-item ${attrString(args)}>
                 <zone name="title"><strong>Morning Motivation</strong></zone>
                 <zone name="subtitle">Start your day with a burst of energy!</zone>
                 ${longText}
-            </list-item></arpa-list
-        >`;
+            </list-manager-item>
+        </list-manager>`;
     },
-    /**
-     * Plays the test scenario.
-     * @param {{ canvasElement: HTMLElement, step: StepFunction, args: Record<string, any> }} options
-     * @returns {Promise<void>}
-     */
     play: async ({ canvasElement, step }) => {
-        const { canvas } = await Default.playSetup(canvasElement);
+        const { canvas } = await playSetup(canvasElement);
         await step('Renders the list item with the expected zones', async () => {
             await new Promise(resolve => setTimeout(resolve, 100)); // Wait for truncation to apply
             expect(canvas.getByText('Morning Motivation')).toBeInTheDocument();
@@ -119,6 +114,7 @@ export const WithZones = {
     }
 };
 
+/** @type {StoryObj} */
 export const WithTemplate = {
     args: {
         subtitle: 'Test sub title',
@@ -126,7 +122,7 @@ export const WithTemplate = {
         image: '/test-assets/artists/phidias.jpg'
     },
     render: (/** @type {Record<string, any>} */ args) => {
-        return html`<arpa-list id="item-with-template-list" controls=" ">
+        return html`<list-manager id="item-with-template-list" controls=" ">
             <template template-type="list-item">
                 <div class="customContent">
                     {image}
@@ -135,16 +131,11 @@ export const WithTemplate = {
                 </div>
                 {rhs}
             </template>
-            <list-item ${attrString(args)}> </list-item>
-        </arpa-list>`;
+            <list-manager-item ${attrString(args)}> </list-manager-item>
+        </list-manager>`;
     },
-    /**
-     * Plays the test scenario.
-     * @param {{ canvasElement: HTMLElement, step: StepFunction, args: Record<string, any> }} options
-     * @returns {Promise<void>}
-     */
     play: async ({ canvasElement, step }) => {
-        const { canvas, listItem } = await Default.playSetup(canvasElement);
+        const { canvas, listItem } = await playSetup(canvasElement);
         await step('Renders the list item with the expected template', async () => {
             expect(canvas.getByText('Item with template')).toBeInTheDocument();
             expect(canvas.getByText('Test sub title')).toBeInTheDocument();

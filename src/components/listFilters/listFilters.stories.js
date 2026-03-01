@@ -2,31 +2,37 @@
  * @typedef {import('@arpadroid/forms').FormComponent} FormComponent
  * @typedef {import('@arpadroid/forms').NumberField} NumberField
  * @typedef {import('@arpadroid/forms').SelectCombo} SelectCombo
+ * @typedef {import('@storybook/web-components-vite').Meta} Meta
+ * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
  */
-import { Default as ListStory } from '../list/stories/stories.util.js';
+import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
 import { within, userEvent, expect, waitFor, fireEvent } from 'storybook/test';
+import { playSetup, renderSimple } from '../listManager/stories/listManager.stories.util.js';
 
+/** @type {Meta} */
 const Default = {
     ...ListStory,
-    title: 'Lists/Controls/Filters',
+    title: 'List Manager/Controls/Filters',
     args: {
         ...ListStory.args,
         id: 'list-filters',
         controls: 'filters',
         title: 'List Filters'
     },
-    render: ListStory.renderSimple
+    render: renderSimple
 };
 
+/** @type {StoryObj} */
 export const Render = Default;
 
+/** @type {StoryObj} */
 export const Test = {
     args: {
         ...Default.args,
         id: 'test-filters'
     },
-    play: async (/** @type {import('@storybook/web-components-vite').StoryContext} */ { canvasElement, step }) => {
-        const setup = await Default.playSetup(canvasElement);
+    play: async ({ canvasElement, step }) => {
+        const setup = await playSetup(canvasElement);
         const { canvas, listNode } = setup;
         const filtersBtn = canvas.getByRole('button', { name: /Filters/i });
         const filtersNode = filtersBtn.closest('icon-menu');
@@ -95,7 +101,7 @@ export const Test = {
                 expect(setup.listResource?.getPerPage()).toEqual(5);
                 const currPage = canvas.getByLabelText('Current page');
                 expect(currPage).toHaveAttribute('value', '1');
-                expect(canvasElement.querySelectorAll('list-item')).toHaveLength(5);
+                expect(canvasElement.querySelectorAll('list-manager-item')).toHaveLength(5);
             });
         });
     }

@@ -1,13 +1,16 @@
 /**
- * @typedef {import('../list/list.js').default} List
- * @typedef {import('@arpadroid/module').StepFunction} StepFunction
+ * @typedef {import('../listManager/listManager.js').default} ListManager
+ * @typedef {import('@storybook/web-components-vite').Meta} Meta
+ * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
  */
-import { Default as ListStory } from '../list/stories/stories.util.js';
+import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
 import { expect, waitFor, fireEvent } from 'storybook/test';
+import { playSetup, renderSimple } from '../listManager/stories/listManager.stories.util.js';
 
+/** @type {Meta} */
 const Default = {
     ...ListStory,
-    title: 'Lists/Controls/Search',
+    title: 'List Manager/Controls/Search',
     args: {
         ...ListStory.args,
         controls: 'search',
@@ -17,19 +20,21 @@ const Default = {
         hasSelection: null,
         searchPlaceholder: 'List Search'
     },
-    render: ListStory.renderSimple
+    render: renderSimple
 };
 
+/** @type {StoryObj} */
 export const Render = Default;
 
+/** @type {StoryObj} */
 export const Test = {
     args: {
         ...Default.args,
         id: 'test-search',
         searchPlaceholder: 'List Search Test'
     },
-    play: async (/** @type {import('@storybook/web-components-vite').StoryContext} */ { canvasElement, step }) => {
-        const setup = await Default.playSetup(canvasElement);
+    play: async ({ canvasElement, step }) => {
+        const setup = await playSetup(canvasElement);
         await customElements.whenDefined('field-input');
         const { canvas } = setup;
         const input = canvas.getByRole('searchbox');

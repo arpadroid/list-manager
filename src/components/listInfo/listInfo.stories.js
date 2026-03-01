@@ -1,15 +1,18 @@
 /**
- * @typedef {import('../list/list.js').default} List
+ * @typedef {import('../listManager/listManager.js').default} ListManager
  * @typedef {import('@arpadroid/navigation').IconMenu} IconMenu
- * @typedef {import('@arpadroid/module').StepFunction} StepFunction
+ * @typedef {import('@storybook/web-components-vite').Meta} Meta
+ * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
  */
 
-import { Default as ListStory } from '../list/stories/stories.util.js';
+import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
 import { userEvent, fireEvent, waitFor, expect } from 'storybook/test';
+import { renderSimple, playSetup } from '../listManager/stories/listManager.stories.util.js';
 
+/** @type {Meta} */
 const Default = {
     ...ListStory,
-    title: 'Lists/Controls/List Info',
+    title: 'List Manager/Controls/List Info',
     args: {
         ...ListStory.args,
         id: 'list-info',
@@ -18,24 +21,21 @@ const Default = {
         hasInfo: true,
         itemsPerPage: 5
     },
-    render: ListStory.renderSimple
+    render: renderSimple
 };
 
+/** @type {StoryObj} */
 export const Render = Default;
 
+/** @type {StoryObj} */
 export const Test = {
     args: {
         ...Default.args,
         id: 'test-list-info',
         title: 'List Info Test'
     },
-    /**
-     * Plays the test scenario.
-     * @param {{ canvasElement: HTMLElement, step: StepFunction }} options
-     * @returns {Promise<void>}
-     */
     play: async ({ canvasElement, step }) => {
-        const setup = await Default.playSetup(canvasElement);
+        const setup = await playSetup(canvasElement);
         const { canvas, listNode } = setup;
         const prevBtn = canvas.getByText(/Previous page/i).closest('button');
         const nextBtn = canvas.getByText(/Next page/i).closest('button');
