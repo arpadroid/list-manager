@@ -13,4 +13,5 @@ export type ListManagerConfigType = ListConfigType & {
     sortDefault?: string;
     sortDirParam?: string;
     sortOptions?: FieldOptionConfigType[];
+    hasMiniSearch?: boolean;
 };
