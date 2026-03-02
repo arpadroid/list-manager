@@ -1,7 +1,7 @@
 import { within } from 'storybook/test';
 import { ListResource } from '@arpadroid/resources';
 import ListManager from '../listManager';
-import { ListManagerItem } from 'src/exports';
+import ListManagerItem from '../../listManagerItem/listManagerItem.js';
 
 export type ListManagerPlaySetupResponseType = {
     listResource?: ListResource;
