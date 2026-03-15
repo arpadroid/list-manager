@@ -12,6 +12,7 @@
  * @typedef {import('../listManagerItem/listManagerItem.js').default} ListManagerItem
  * @typedef {import('./listSort.types').ListSortConfigType} ListSortConfigType
  * @typedef {import('@arpadroid/navigation').IconMenu} IconMenu
+ * @typedef {import('@arpadroid/navigation').NavLink} NavLink
  * @typedef {import('@arpadroid/navigation').NavList} NavList
  */
 
@@ -50,10 +51,12 @@ class ListSort extends ArpaElement {
         this.router = this.list?.getRouter();
         /** @type {ListResource} */
         this.listResource = this.list?.listResource;
-        /** @type {ListFilter} sortDirFilter */
+        /** @type {ListFilter} */
         this.sortDirFilter = this.listResource?.getSortDirFilter();
-        /** @type {ListFilter} sortDirFilter */
+        this.sortDirFilter?.on('value', dir => this.updateSortLink(dir));
+        /** @type {ListFilter} */
         this.sortFilter = this.listResource?.getSortFilter();
+
         return true;
     }
     ////////////////////////////////
@@ -88,18 +91,24 @@ class ListSort extends ArpaElement {
     }
 
     _onRouteChange() {
-        this.updateSortLink();
+        this._initializeNav();
+        // this.updateSortLink();
     }
 
-    updateSortLink(sortLink = this.sortLink) {
-        const sortDir = this.getSortDir();
+    async updateSortLink(sortDir = this.getSortDir(), sortLink = this.sortLink) {
+        await this.promise;
+        await sortLink?.promise;
         /** @type {Icon | null | undefined} */
-        const icon = sortLink?.querySelector('arpa-icon');
-        icon?.setIcon(this.getSortDirIcon());
+        const iconNode = sortLink?.querySelector('arpa-icon');
+        await customElements.whenDefined('arpa-icon');
+        const icon = this.getSortDirIcon(sortDir);
+        iconNode?.setIcon(icon);
         sortLink?.setAttribute('param-value', sortDir === 'asc' ? 'desc' : 'asc');
         /** @type {Tooltip | null | undefined} */
         const tooltip = sortLink?.querySelector('arpa-tooltip');
-        tooltip?.setContent(this.getSortDirTooltip());
+        const tooltipText = this.getSortDirTooltip(sortDir);
+        await tooltip?.promise;
+        tooltip?.setContent(tooltipText);
     }
 
     /////////////////////////////
@@ -112,19 +121,14 @@ class ListSort extends ArpaElement {
 
     render() {
         const sortDir = this.listResource?.getSortDirection() === 'asc' ? 'desc' : 'asc';
-        const sortOptions = this.list?.getSortOptions() || [];
-        // @ts-ignore
-        const links = mapHTML(sortOptions, payload => {
-            const { value = '', icon = '', label = '' } = payload;
-            return html`<nav-link link="${value}" icon-left="${icon}" label="${label}"></nav-link>`;
-        });
+
         this.innerHTML = html`<icon-menu
                 class="sortMenu"
                 icon="sort_by_alpha"
                 tooltip="${this.i18nText('lblSortBy')}"
                 zone="sort-options"
             >
-                ${links}
+                ${this.renderSortLinks()}
             </icon-menu>
             <nav-link
                 class="sortDirButton iconButton__button"
@@ -137,30 +141,44 @@ class ListSort extends ArpaElement {
             >
                 <zone name="tooltip-content">${this.getSortDirTooltip()}</zone>
             </nav-link>`;
+
+        /** @type {NavLink | null} */
         this.sortLink = this.querySelector('.sortDirButton');
         this._initializeNav();
     }
 
-    _initializeNav() {
+    renderSortLinks(sortOptions = this.list?.getSortOptions() || []) {
+        // @ts-ignore
+        return mapHTML(sortOptions, payload => {
+            const { value = '', icon = '', label = '' } = payload;
+            return html`<nav-link link="${value}" icon-left="${icon}" label="${label}"></nav-link>`;
+        });
+    }
+
+    async _initializeNav() {
+        await customElements.whenDefined('nav-list');
+        await this.promise;
         /** @type {IconMenu | null} */
         this.sortByMenu = this.querySelector('icon-menu');
-        this.sortByMenu &&
-            this.sortByMenu?.onRenderReady(async () => {
-                await customElements.whenDefined('nav-list');
-                /** @type {NavList | null} */
-                this.sortNav = this.sortByMenu?.navigation;
-                if (this.sortNav) {
-                    if (this.sortNav?._config && typeof this._isItemSelected === 'function') {
-                        this.sortNav._config.isItemSelected = this._isItemSelected;
-                    }
-                    attr(this.sortNav, {
-                        'param-name': this.list?.getParamName('sortBy'),
-                        'use-router': '',
-                        'param-clear': this.list?.getParamName('page')
-                    });
-                    this.sortNav.on('selected', this._onSortBySelected, this._unsubscribes);
-                }
-            });
+        if (!this.sortByMenu) {
+            console.warn('No nav node found');
+            return;
+        }
+        await this.sortByMenu.promise;
+        /** @type {NavList | null} */
+        this.sortNav = this.sortByMenu?.navigation;
+        if (!this.sortNav) {
+            return;
+        }
+        if (this.sortNav?._config && typeof this._isItemSelected === 'function') {
+            this.sortNav._config.isItemSelected = this._isItemSelected;
+        }
+        attr(this.sortNav, {
+            'param-name': this.list?.getParamName('sortBy'),
+            'use-router': '',
+            'param-clear': this.list?.getParamName('page')
+        });
+        this.sortNav.on('selected', this._onSortBySelected, this._unsubscribes);
     }
 
     /**

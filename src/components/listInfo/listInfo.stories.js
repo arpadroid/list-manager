@@ -19,7 +19,8 @@ const Default = {
         title: 'List Info',
         controls: 'search',
         hasInfo: true,
-        itemsPerPage: 5
+        itemsPerPage: 5,
+        hasPager: 'false'
     },
     render: renderSimple
 };

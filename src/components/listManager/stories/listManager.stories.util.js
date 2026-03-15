@@ -20,16 +20,24 @@ const html = String.raw;
 export async function playSetup(canvasElement, options) {
     await customElements.whenDefined('list-manager');
     await customElements.whenDefined('list-manager-item');
-    const { initList = true, preRenderCallback } = options || {};
+    const { initList = true, preRenderCallback, items } = options || {};
     const canvas = within(canvasElement);
     /** @type {ListManager | null} */
     const listNode = canvasElement.querySelector('list-manager');
     /** @type {ListManagerItem | null} */
     const listItem = canvasElement.querySelector('list-manager-item');
+
     const listResource = listNode?.listResource;
-    typeof preRenderCallback === 'function' && preRenderCallback({ listResource, listNode, listItem });
+    if (typeof preRenderCallback === 'function') {
+        const rv = preRenderCallback({ listResource, listNode, listItem });
+        if (rv instanceof Promise) {
+            await rv;
+        }
+    }
+
     await listNode?.promise;
-    listNode?.id && initList && (await initializeList(listNode?.id));
+    listNode?.id && initList && (await initializeList(listNode?.id, items));
+    await listItem?.promise;
     await new Promise(resolve => setTimeout(resolve, 50));
     return { canvas, listNode, listItem, listResource };
 }

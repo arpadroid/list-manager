@@ -114,7 +114,7 @@ class ListInfo extends ArpaElement {
     renderRefresh() {
         if (!this.hasRefresh()) return '';
         return html`<icon-button class="listInfo__refresh" icon="refresh">
-            <zone name="tooltip-content">${this.i18n('txtRefresh')}</zone>
+            <zone name="tooltip">${this.i18n('txtRefresh')}</zone>
         </icon-button>`;
     }
 
@@ -122,10 +122,10 @@ class ListInfo extends ArpaElement {
         if (!this.hasPrevNext()) return '';
         return html`
             <icon-button class="listInfo__previous" icon="skip_previous">
-                <zone name="tooltip-content">${this.i18n('txtPrevPage')}</zone>
+                <zone name="tooltip">${this.i18n('txtPrevPage')}</zone>
             </icon-button>
             <icon-button class="listInfo__next" icon="skip_next">
-                <zone name="tooltip-content">${this.i18n('txtNextPage')}</zone>
+                <zone name="tooltip">${this.i18n('txtNextPage')}</zone>
             </icon-button>
         `;
     }

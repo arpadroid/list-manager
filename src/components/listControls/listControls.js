@@ -74,9 +74,9 @@ class ListControls extends ArpaElement {
         controls?.forEach(control => {
             const fnName = /** @type {keyof ListControls} */ (`render${ucFirst(control)}`);
             if (this.hasControl(control)) {
+                /** @type {(() => string) | unknown} */
                 const fn = this[fnName];
                 if (typeof fn === 'function') {
-                    // @ts-ignore
                     content += fn.call(this);
                 } else {
                     const tagName = `gallery-${camelToDashed(control)}`;

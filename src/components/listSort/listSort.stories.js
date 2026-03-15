@@ -5,9 +5,10 @@
  * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
  */
 import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
-import { within, waitFor, expect, userEvent, fireEvent } from 'storybook/test';
+import { within, waitFor, expect, fireEvent, userEvent } from 'storybook/test';
 import { attrString } from '@arpadroid/tools';
-import { playSetup, renderItemTemplate, renderSimple } from '../listManager/stories/listManager.stories.util.js';
+import { playSetup, renderItemTemplate } from '../listManager/stories/listManager.stories.util.js';
+import artists from '../../mockData/artists.json';
 
 const html = String.raw;
 
@@ -21,6 +22,7 @@ const Default = {
         controls: 'sort',
         title: 'List Sort',
         hasInfo: false,
+        hasMessages: false,
         currentPage: 1,
         itemsPerPage: 10
     },
@@ -32,6 +34,16 @@ const Default = {
             </zone>
             ${renderItemTemplate()}
         </list-manager>`;
+    },
+    play: async ({ canvasElement, step }) => {
+        await playSetup(canvasElement, {
+            initList: true,
+            items: artists,
+            preRenderCallback: async ({ listResource }) => {
+                await listResource?.setSort('title', 'asc');
+                return true;
+            }
+        });
     }
 };
 
@@ -42,19 +54,26 @@ export const Render = Default;
 export const Test = {
     args: {
         ...Default.args,
-        id: 'test-sort'
+        id: 'test-sorted'
     },
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement, {
             initList: true,
-            preRenderCallback: ({ listResource }) => {
-                listResource?.clearFilters();
-                listResource?.setSort('title', 'asc');
+            items: [
+                artists.find(item => item?.lastName === 'da Vinci'),
+                artists.find(item => item?.lastName === 'Picasso'),
+                artists.find(item => item?.firstName === 'Phidias')
+            ].filter(item => item !== undefined),
+            preRenderCallback: async ({ listResource }) => {
+                await listResource?.clearFilters();
+                await listResource?.setSort('title', 'desc');
+                return true;
             }
         });
         const { canvas } = setup;
         const sortByButton = canvas.getByRole('button', { name: /Sort by/i });
         const sortOrderButton = canvas.getByLabelText('Sort order');
+
         const sortByMenu = sortByButton.closest('icon-menu');
         await sortByMenu.promise;
         const sortByCombo = sortByMenu.navigation;
@@ -62,64 +81,68 @@ export const Test = {
         /** @type {ReturnType<typeof within>} */
         const combo = within(sortByCombo);
 
-        const getItems = () => setup.listNode?.getItemNodes() || [];
+        /**
+         * Asserts the index of an item in the list based on its name.
+         * @param {string} name - The name of the item to check.
+         * @param {number} index - The expected index of the item in the list.
+         */
+        const assertItemIndex = (name, index) => {
+            const item = canvas.getByText(name).closest('list-manager-item');
+            expect(Array.from(item.parentNode.children).indexOf(item)).toBe(index);
+        };
 
         await step('Renders the sort controls.', async () => {
             expect(sortByButton).toBeInTheDocument();
 
             const sortedBy = canvas.getByRole('button', { name: /Sort by/i });
             expect(sortedBy).toBeInTheDocument();
-            expect(sortOrderButton).toHaveTextContent('Sorted ascending');
+            await waitFor(() => {
+                expect(sortOrderButton).toHaveTextContent('Sorted descending');
+            });
         });
 
         await step('Opens the sort menu and verifies "title" sort is selected.', async () => {
             await fireEvent.click(sortByButton);
             const sortByCombo = sortByMenu.navigation;
-            // expect(sortByCombo.querySelector('a[aria-current="page"]')).toHaveTextContent('Title');
+            expect(sortByCombo.querySelector('a[aria-current="page"]')).toHaveTextContent('Title');
             expect(sortByCombo).toBeVisible();
         });
 
-        await step('Verifies items are sorted by title ascending by default.', async () => {
+        await step('Verifies items are sorted by title descending by default.', async () => {
             await waitFor(() => {
-                const items = getItems();
-                console.log('items', items);
-                expect(items[0]).toHaveTextContent('Ai Weiwei');
-                expect(items[1]).toHaveTextContent('Alexander Calder');
-                expect(items[2]).toHaveTextContent('Andy Warhol');
-                expect(items[3]).toHaveTextContent('Ansel Adams');
+                assertItemIndex('Phidias', 0);
+                assertItemIndex('Pablo Picasso', 1);
+                assertItemIndex('Leonardo da Vinci', 2);
             });
         });
 
         await step('Sorts item descending by title and verifies items.', async () => {
-            await fireEvent.click(sortOrderButton);
-            expect(sortOrderButton).toHaveTextContent('ascending');
+            await userEvent.click(sortOrderButton);
             await waitFor(() => {
-                const items = getItems();
-                expect(items[0]).toHaveTextContent('Zaha Hadid');
-                expect(items[1]).toHaveTextContent('Yayoi Kusama');
-                expect(items[2]).toHaveTextContent('William Blake');
-                expect(items[3]).toHaveTextContent('Wassily Kandinsky');
+                expect(sortOrderButton).toHaveTextContent('ascending');
+                assertItemIndex('Leonardo da Vinci', 0);
+                assertItemIndex('Pablo Picasso', 1);
+                assertItemIndex('Phidias', 2);
             });
         });
 
         await step('Selects "Date" sort option and verifies items', async () => {
             const dateLink = combo.getByText('Date').closest('a');
-            await fireEvent.click(dateLink);
-            await new Promise(resolve => setTimeout(resolve, 40));
-
-            /**
-             * @todo Fix bug where the tooltip text content is not updated after clicking the sort option. The test works when running locally but fails in CI, needs investigation.
-             */
-            // const tooltip = sortByButton.querySelector('.iconMenu__tooltip');
-            // await waitFor(() => {
-            //     expect(tooltip).toHaveTextContent('Sorted by: Date');
-            // });
-            await fireEvent.click(sortOrderButton);
+            await userEvent.click(dateLink);
+            const tooltip = sortByButton.querySelector('.iconMenu__tooltip');
             await waitFor(() => {
-                expect(canvas.getByText('Leonardo da Vinci')).toBeInTheDocument();
-                expect(canvas.getByText('Michelangelo Buonarroti')).toBeInTheDocument();
-                expect(canvas.getByText('Raphael')).toBeInTheDocument();
-                expect(canvas.getByText('El Greco')).toBeInTheDocument();
+                expect(tooltip).toHaveTextContent('Sorted by: Date');
+                assertItemIndex('Phidias', 0);
+                assertItemIndex('Leonardo da Vinci', 1);
+                assertItemIndex('Pablo Picasso', 2);
+            });
+            await userEvent.click(sortOrderButton);
+            await waitFor(() => {
+                expect(sortOrderButton).toHaveTextContent('descending');
+                assertItemIndex('Pablo Picasso', 0);
+                const item2 = canvas.getByText('Leonardo da Vinci').closest('list-manager-item');
+                assertItemIndex('Leonardo da Vinci', 1);
+                assertItemIndex('Phidias', 2);
             });
         });
     }

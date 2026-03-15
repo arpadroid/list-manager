@@ -11,6 +11,7 @@ export type ListManagerPlaySetupResponseType = {
 };
 
 export type ListManagerPlaySetupPayloadType = {
-    preRenderCallback: (payload: ListManagerPlaySetupResponseType) => void;
+    preRenderCallback?: (payload: ListManagerPlaySetupResponseType) => Promise<unknown> | void;
     initList?: boolean;
+    items?: Record<string, unknown>[];
 };

@@ -191,6 +191,7 @@ class ListManager extends List {
     /////////////////
 
     /**
+     * @todo - Fix / finish this function. For starters FieldOptionConfigType is wrong.
      * Sets the sort options for the list.
      * @param {FieldOptionConfigType[]} options
      * @param {string} defaultValue
@@ -201,8 +202,7 @@ class ListManager extends List {
         /** @type {ListSort | undefined} */
         const listSort = /** @type {ListSort | undefined} */ (this.controls?.search?.listSort);
         const sortField = listSort?.sortByMenu;
-        // @ts-ignore
-        sortField?.setOptions(options, defaultValue);
+        // sortField?.setOptions(options, defaultValue);
     }
 
     // #endregion Set
