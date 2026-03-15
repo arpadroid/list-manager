@@ -111,9 +111,7 @@ class ListSort extends ArpaElement {
         tooltip?.setContent(tooltipText);
     }
 
-    /////////////////////////////
     // #endregion LIFECYCLE
-    ////////////////////////////
 
     ///////////////////////////
     // #region RENDERING
