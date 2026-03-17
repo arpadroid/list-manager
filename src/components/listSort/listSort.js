@@ -146,7 +146,6 @@ class ListSort extends ArpaElement {
     }
 
     renderSortLinks(sortOptions = this.list?.getSortOptions() || []) {
-        // @ts-ignore
         return mapHTML(sortOptions, payload => {
             const { value = '', icon = '', label = '' } = payload;
             return html`<nav-link link="${value}" icon-left="${icon}" label="${label}"></nav-link>`;
