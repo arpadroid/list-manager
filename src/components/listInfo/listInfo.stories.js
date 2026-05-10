@@ -13,6 +13,7 @@ import { renderSimple, playSetup } from '../listManager/stories/listManager.stor
 const Default = {
     ...ListStory,
     title: 'List Manager/Controls/List Info',
+    component: 'list-manager',
     args: {
         ...ListStory.args,
         id: 'list-info',

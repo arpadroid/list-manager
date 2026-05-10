@@ -1,8 +1,8 @@
 /**
  * @typedef {import('../listManager/listManager.js').default} ListManager
  * @typedef {import('../listManager/listManager.types.js').ListManagerConfigType} ListManagerConfigType
- * @typedef {import('@storybook/web-components-vite').Meta} Meta
- * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
+ * @typedef {import('@storybook/web-components-vite').Meta<ListManagerConfigType>} Meta
+ * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} StoryObj
  */
 import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
 import { within, waitFor, expect, fireEvent, userEvent } from 'storybook/test';
@@ -16,14 +16,14 @@ const html = String.raw;
 const Default = {
     ...ListStory,
     title: 'List Manager/Controls/Sort',
+    component: 'list-manager',
     args: {
-        ...ListStory.args,
+        hasResource: true,
         id: 'list-sort',
-        controls: 'sort',
+        controls: ['sort'],
         title: 'List Sort',
-        hasInfo: false,
+        // hasInfo: false,
         hasMessages: false,
-        currentPage: 1,
         itemsPerPage: 10
     },
     render: args => {
@@ -35,7 +35,7 @@ const Default = {
             ${renderItemTemplate()}
         </list-manager>`;
     },
-    play: async ({ canvasElement, step }) => {
+    play: async ({ canvasElement }) => {
         await playSetup(canvasElement, {
             initList: true,
             items: artists,
@@ -140,7 +140,7 @@ export const Test = {
             await waitFor(() => {
                 expect(sortOrderButton).toHaveTextContent('descending');
                 assertItemIndex('Pablo Picasso', 0);
-                const item2 = canvas.getByText('Leonardo da Vinci').closest('list-manager-item');
+                // const item2 = canvas.getByText('Leonardo da Vinci').closest('list-manager-item');
                 assertItemIndex('Leonardo da Vinci', 1);
                 assertItemIndex('Phidias', 2);
             });

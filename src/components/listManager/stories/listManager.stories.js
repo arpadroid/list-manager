@@ -1,23 +1,22 @@
 /**
  * @typedef {import('../listManager.js').default} ListManager
+ * @typedef {import('../listManager.types.js').ListManagerConfigType} ListManagerConfigType
+ * @typedef {import('@storybook/web-components-vite').Meta<ListManagerConfigType>} Meta
+ * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} Story
  * @typedef {import('../../listManagerItem/listManagerItem.js').default} ListManagerItem
- * @typedef {import('@arpadroid/resources').ListResource} ListResource
- * @typedef {import('@storybook/web-components-vite').Args} Args
- * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
- * @typedef {import('@storybook/web-components-vite').Meta} Meta
- *
+ * @typedef {import('@arpadroid/resources').ListResource} ListResource *
  */
 
 import { attrString } from '@arpadroid/tools';
-import { getArgTypes, renderItemTemplate } from '@arpadroid/lists/stories/utils';
+import { renderItemTemplate } from '@arpadroid/lists/stories/utils';
 import { playSetup } from './listManager.stories.util.js';
-
 
 const html = String.raw;
 /** @type {Meta} */
 const ListManagerStory = {
     title: 'List Manager/Lists',
     tags: ['docs'],
+    component: 'list-manager',
     parameters: {
         layout: 'padded'
     },
@@ -31,9 +30,8 @@ const ListManagerStory = {
         controls: ['search', 'sort', 'views', 'multiselect', 'filters'],
         views: ['grid', 'list', 'list-compact', 'grid-compact']
     },
-    argTypes: getArgTypes(),
     render: args => {
-        delete args.text;
+        // delete args.text;
         return html`
             <list-manager ${attrString(args)} views="grid, list">
                 <list-manager-item title="Some title" title-link="/some-link" image="/some-image.jpg">
@@ -51,14 +49,13 @@ const ListManagerStory = {
     }
 };
 
-/** @type {StoryObj} */
+/** @type {Story} */
 export const ResourceDriven = {
-    argTypes: getArgTypes(),
     parameters: {
         layout: 'flexColumn'
     },
     args: {
-        ...ListManagerStory.args,
+        // ...ListManagerStory.args,
         id: 'list-manager',
         title: 'List Component',
         itemsPerPage: 10,

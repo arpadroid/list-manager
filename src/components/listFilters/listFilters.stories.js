@@ -12,6 +12,7 @@ import { playSetup, renderSimple } from '../listManager/stories/listManager.stor
 /** @type {Meta} */
 const Default = {
     ...ListStory,
+    component: 'list-manager',
     title: 'List Manager/Controls/Filters',
     args: {
         ...ListStory.args,

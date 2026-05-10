@@ -1,0 +1,2139 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/exports.js",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ListManager",
+          "declaration": {
+            "name": "default",
+            "module": "./components/listManager/listManager.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ListInfo",
+          "declaration": {
+            "name": "default",
+            "module": "./components/listInfo/listInfo.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ListManagerItem",
+          "declaration": {
+            "name": "default",
+            "module": "./components/listManagerItem/listManagerItem.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ListControls",
+          "declaration": {
+            "name": "default",
+            "module": "./components/listControls/listControls.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ListSearch",
+          "declaration": {
+            "name": "default",
+            "module": "./components/listSearch/listSearch.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ListSort",
+          "declaration": {
+            "name": "default",
+            "module": "./components/listSort/listSort.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ListViews",
+          "declaration": {
+            "name": "default",
+            "module": "./components/listViews/listViews.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ListFilters",
+          "declaration": {
+            "name": "default",
+            "module": "./components/listFilters/listFilters.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "BatchOperation",
+          "declaration": {
+            "name": "default",
+            "module": "./components/batchOperation/batchOperation.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "MultiSelect",
+          "declaration": {
+            "name": "default",
+            "module": "./components/multiSelect/multiSelect.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/index.js",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/exports.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/batchOperation/batchOperation.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "BatchOperation",
+          "members": [
+            {
+              "kind": "field",
+              "name": "innerHTML",
+              "default": "html`<select-option class=\"comboBox__item\" ${this.getAttributes()}> ${this.innerHTML} </select-option>`"
+            },
+            {
+              "kind": "field",
+              "name": "node"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "value",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": false
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": false
+            },
+            {
+              "name": "action",
+              "type": {
+                "text": "(ids: string[]) => void",
+                "summary": "string"
+              },
+              "serializedAs": "json",
+              "description": "TS type: (ids: string[]) => void",
+              "optional": false
+            }
+          ],
+          "superclass": {
+            "name": "ArpaFragment",
+            "package": "@arpadroid/ui"
+          },
+          "tagName": "batch-operation",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "BatchOperation",
+            "module": "src/components/batchOperation/batchOperation.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/listFilters/listFilters.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ListFilters",
+          "members": [
+            {
+              "kind": "field",
+              "name": "_config",
+              "type": {
+                "text": "ListFiltersConfigType"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getDefaultConfig"
+            },
+            {
+              "kind": "method",
+              "name": "initializeProperties"
+            },
+            {
+              "kind": "method",
+              "name": "getPerPage"
+            },
+            {
+              "kind": "method",
+              "name": "render"
+            },
+            {
+              "kind": "method",
+              "name": "_initializeIconMenu"
+            },
+            {
+              "kind": "method",
+              "name": "_initializeForm"
+            },
+            {
+              "kind": "method",
+              "name": "renderForm",
+              "parameters": [
+                {
+                  "name": "pageFilter",
+                  "default": "this.pageFilter",
+                  "optional": true,
+                  "type": {
+                    "text": "ListFilter"
+                  }
+                },
+                {
+                  "name": "perPageFilter",
+                  "default": "this.perPageFilter",
+                  "optional": true,
+                  "type": {
+                    "text": "ListFilter"
+                  }
+                }
+              ],
+              "description": "Renders the form for the list filters.",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "update",
+              "parameters": [
+                {
+                  "name": "listResource",
+                  "default": "this.listResource",
+                  "optional": true,
+                  "type": {
+                    "text": "ListResource"
+                  }
+                }
+              ],
+              "description": "Updates the list filters."
+            },
+            {
+              "kind": "method",
+              "name": "onSubmit",
+              "parameters": [
+                {
+                  "name": "payload",
+                  "default": "{}",
+                  "type": {
+                    "text": "Record<string, any>"
+                  }
+                }
+              ],
+              "description": "Called when the form is submitted.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "filters",
+              "type": {
+                "text": "string[]",
+                "summary": "string"
+              },
+              "serializedAs": "json",
+              "description": "TS type: string[]",
+              "optional": true
+            },
+            {
+              "name": "on-submit",
+              "type": {
+                "text": "(value: string) => void",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: (value: string) => void",
+              "optional": true
+            },
+            {
+              "name": "per-page-options",
+              "type": {
+                "text": "number[]",
+                "summary": "number"
+              },
+              "serializedAs": "json",
+              "description": "TS type: number[]",
+              "optional": true
+            },
+            {
+              "name": "button-label",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "icon",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            }
+          ],
+          "superclass": {
+            "name": "ArpaElement",
+            "package": "@arpadroid/ui"
+          },
+          "tagName": "list-filters",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "ListFilters",
+            "module": "src/components/listFilters/listFilters.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/listControls/listControls.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ListControls",
+          "members": [
+            {
+              "kind": "field",
+              "name": "_config",
+              "type": {
+                "text": "ListControlsConfigType"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getList",
+              "description": "Returns the list component.",
+              "return": {
+                "type": {
+                  "text": "ListManager | null"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "initializeProperties",
+              "description": "Initializes the properties.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getDefaultConfig",
+              "description": "Returns the default config.",
+              "return": {
+                "type": {
+                  "text": "ListControlsConfigType"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hasControl",
+              "parameters": [
+                {
+                  "name": "control",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Checks if the control exists.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getControls",
+              "description": "Returns the controls.",
+              "return": {
+                "type": {
+                  "text": "string[]"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getControl",
+              "parameters": [
+                {
+                  "name": "control",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Returns the control element given its name.",
+              "return": {
+                "type": {
+                  "text": "HTMLElement | null"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "render"
+            },
+            {
+              "kind": "method",
+              "name": "renderSort",
+              "parameters": [
+                {
+                  "name": "list",
+                  "default": "this.getList()",
+                  "type": {
+                    "text": "ListManager | null"
+                  }
+                }
+              ],
+              "description": "Renders the sort component.",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "renderMultiselect"
+            },
+            {
+              "kind": "method",
+              "name": "renderViews"
+            },
+            {
+              "kind": "method",
+              "name": "renderSearch"
+            },
+            {
+              "kind": "method",
+              "name": "renderFilters"
+            },
+            {
+              "kind": "method",
+              "name": "_onConnected"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "controls",
+              "type": {
+                "text": "string[]",
+                "summary": "string"
+              },
+              "serializedAs": "json",
+              "description": "TS type: string[]",
+              "optional": true
+            }
+          ],
+          "superclass": {
+            "name": "ArpaElement",
+            "package": "@arpadroid/ui"
+          },
+          "tagName": "list-controls",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "ListControls",
+            "module": "src/components/listControls/listControls.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/listInfo/listInfo.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ListInfo",
+          "members": [
+            {
+              "kind": "field",
+              "name": "_config",
+              "type": {
+                "text": "ListInfoConfigType"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getDefaultConfig",
+              "description": "Default component config.",
+              "return": {
+                "type": {
+                  "text": "ListInfoConfigType"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "initializeProperties"
+            },
+            {
+              "kind": "method",
+              "name": "updateText"
+            },
+            {
+              "kind": "method",
+              "name": "hasRefresh"
+            },
+            {
+              "kind": "method",
+              "name": "hasPrevNext"
+            },
+            {
+              "kind": "method",
+              "name": "render"
+            },
+            {
+              "kind": "method",
+              "name": "renderInfoText"
+            },
+            {
+              "kind": "method",
+              "name": "handlePreviousPage"
+            },
+            {
+              "kind": "method",
+              "name": "handleNextPage"
+            },
+            {
+              "kind": "method",
+              "name": "handleRefresh"
+            },
+            {
+              "kind": "method",
+              "name": "renderButtons"
+            },
+            {
+              "kind": "method",
+              "name": "renderRefresh"
+            },
+            {
+              "kind": "method",
+              "name": "renderPrevNext"
+            },
+            {
+              "kind": "method",
+              "name": "renderResults",
+              "parameters": [
+                {
+                  "name": "range",
+                  "default": "this.listResource?.getItemRange() ?? []",
+                  "type": {
+                    "text": "number[]"
+                  }
+                },
+                {
+                  "name": "total",
+                  "default": "this.listResource?.getTotalItems()",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "Render the results text.",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "renderSearchResults",
+              "parameters": [
+                {
+                  "name": "resultTotal",
+                  "default": "this.listResource?.getTotalItems()",
+                  "type": {
+                    "text": "number"
+                  }
+                },
+                {
+                  "name": "query",
+                  "default": "String(this.searchFilter?.getValue() || '')",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Renders the search results text.",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "renderNoResults",
+              "parameters": [
+                {
+                  "name": "query",
+                  "default": "String(this.searchFilter?.getValue() || '')",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Renders the no results text.",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "has-prev-next",
+              "type": {
+                "text": "boolean",
+                "summary": "boolean"
+              },
+              "serializedAs": "boolean-attr",
+              "description": "TS type: boolean",
+              "optional": true
+            },
+            {
+              "name": "has-refresh",
+              "type": {
+                "text": "boolean",
+                "summary": "boolean"
+              },
+              "serializedAs": "boolean-attr",
+              "description": "TS type: boolean",
+              "optional": true
+            }
+          ],
+          "superclass": {
+            "name": "ArpaElement",
+            "package": "@arpadroid/ui"
+          },
+          "tagName": "list-info",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "ListInfo",
+            "module": "src/components/listInfo/listInfo.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/listManager/listManager.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ListManager",
+          "members": [
+            {
+              "kind": "field",
+              "name": "_config",
+              "type": {
+                "text": "ListManagerConfigType"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getDefaultConfig",
+              "parameters": [
+                {
+                  "name": "config",
+                  "default": "{}",
+                  "type": {
+                    "text": "ListManagerConfigType"
+                  }
+                }
+              ],
+              "description": "Returns the default configuration for this component.",
+              "return": {
+                "type": {
+                  "text": "ListManagerConfigType"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setConfig",
+              "parameters": [
+                {
+                  "name": "config",
+                  "default": "{}",
+                  "type": {
+                    "text": "ListManagerConfigType"
+                  }
+                }
+              ],
+              "description": "Sets the configuration for the component.",
+              "return": {
+                "type": {
+                  "text": "ListManagerConfigType"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "instantiateResource",
+              "parameters": [
+                {
+                  "name": "id",
+                  "default": "this.getId()"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_initializeTemplates"
+            },
+            {
+              "kind": "method",
+              "name": "hasControls",
+              "description": "Returns true if the list has any controls enabled.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hasControl",
+              "parameters": [
+                {
+                  "name": "control",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Returns true if the list has a specific control.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hasHeaderControls"
+            },
+            {
+              "kind": "method",
+              "name": "getList",
+              "static": true,
+              "parameters": [
+                {
+                  "name": "element",
+                  "type": {
+                    "text": "Element"
+                  }
+                }
+              ],
+              "description": "Returns the parent list component from a given element.",
+              "return": {
+                "type": {
+                  "text": "ListManager | null"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getTemplateVars"
+            },
+            {
+              "kind": "method",
+              "name": "getRouter",
+              "description": "Returns the router service.",
+              "return": {
+                "type": {
+                  "text": "Router"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getControls",
+              "description": "Returns the list of controls assigned to the list.",
+              "return": {
+                "type": {
+                  "text": "string[]"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getSortOptions",
+              "description": "Returns the different options by which the list items can be sorted.",
+              "return": {
+                "type": {
+                  "text": "FieldOptionConfigType[]"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getControl",
+              "parameters": [
+                {
+                  "name": "control",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Returns the control element given its name.",
+              "return": {
+                "type": {
+                  "text": "HTMLElement | undefined | null"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getSortDefault",
+              "description": "Returns the default sort option value.",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setSortOptions",
+              "parameters": [
+                {
+                  "name": "options",
+                  "type": {
+                    "text": "FieldOptionConfigType[]"
+                  }
+                },
+                {
+                  "name": "defaultValue",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderHeaderControls"
+            },
+            {
+              "kind": "method",
+              "name": "_initializeNodes"
+            },
+            {
+              "kind": "method",
+              "name": "onPagerChange",
+              "parameters": [
+                {
+                  "name": "payload",
+                  "type": {
+                    "text": "PagerCallbackPayloadType"
+                  }
+                }
+              ],
+              "description": "Handles the pager change event."
+            },
+            {
+              "kind": "method",
+              "name": "setView",
+              "parameters": [
+                {
+                  "name": "view",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Sets the view for the list."
+            },
+            {
+              "kind": "method",
+              "name": "getDefaultView"
+            },
+            {
+              "kind": "method",
+              "name": "getViewFilter"
+            },
+            {
+              "kind": "method",
+              "name": "getView"
+            },
+            {
+              "kind": "method",
+              "name": "getViewTemplate",
+              "parameters": [
+                {
+                  "name": "view",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Returns the view template for a given view.",
+              "return": {
+                "type": {
+                  "text": "HTMLTemplateElement | undefined"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_selectViewTemplates",
+              "description": "Selects the view templates for the element.",
+              "return": {
+                "type": {
+                  "text": "HTMLTemplateElement[]"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "actions",
+              "type": {
+                "text": "FieldOptionConfigType[]",
+                "summary": "array"
+              },
+              "serializedAs": "json",
+              "description": "TS type: FieldOptionConfigType[]",
+              "optional": true
+            },
+            {
+              "name": "view-options",
+              "type": {
+                "text": "NavLinkConfigType[]",
+                "summary": "array"
+              },
+              "serializedAs": "json",
+              "description": "TS type: NavLinkConfigType[]",
+              "optional": true
+            },
+            {
+              "name": "router",
+              "type": {
+                "text": "Router",
+                "summary": "unknown"
+              },
+              "serializedAs": "property-only",
+              "description": "TS type: Router",
+              "optional": true
+            },
+            {
+              "name": "sort-by-param",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "item-component",
+              "type": {
+                "text": "typeof ListManagerItem",
+                "summary": "unknown"
+              },
+              "serializedAs": "property-only",
+              "description": "TS type: typeof ListManagerItem",
+              "optional": true
+            },
+            {
+              "name": "sort-default",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "sort-dir-param",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "sort-options",
+              "type": {
+                "text": "FieldOptionConfigType[]",
+                "summary": "array"
+              },
+              "serializedAs": "json",
+              "description": "TS type: FieldOptionConfigType[]",
+              "optional": true
+            },
+            {
+              "name": "has-mini-search",
+              "type": {
+                "text": "boolean",
+                "summary": "boolean"
+              },
+              "serializedAs": "boolean-attr",
+              "description": "TS type: boolean",
+              "optional": true
+            }
+          ],
+          "superclass": {
+            "name": "List",
+            "package": "@arpadroid/lists"
+          },
+          "tagName": "list-manager",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "ListManager",
+            "module": "src/components/listManager/listManager.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/listSearch/listSearch.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ListSearch",
+          "members": [
+            {
+              "kind": "field",
+              "name": "_config",
+              "type": {
+                "text": "ListSearchConfigType"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getDefaultConfig",
+              "description": "Default component config.",
+              "return": {
+                "type": {
+                  "text": "ListSearchConfigType"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "initializeProperties"
+            },
+            {
+              "kind": "method",
+              "name": "onReady",
+              "description": "Returns a promise that must be resolved before the component is ready.",
+              "return": {
+                "type": {
+                  "text": "Promise<any>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_initializeNodes"
+            },
+            {
+              "kind": "method",
+              "name": "initializeSearch"
+            },
+            {
+              "kind": "method",
+              "name": "getFiltersWrapper"
+            },
+            {
+              "kind": "method",
+              "name": "render"
+            },
+            {
+              "kind": "method",
+              "name": "getTemplateVars"
+            },
+            {
+              "kind": "method",
+              "name": "_onSubmit",
+              "description": "Called when the form is submitted.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_onSearch"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "has-mini-search",
+              "type": {
+                "text": "boolean",
+                "summary": "boolean"
+              },
+              "serializedAs": "boolean-attr",
+              "description": "TS type: boolean",
+              "optional": true
+            },
+            {
+              "name": "search-selector",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "on-submit",
+              "type": {
+                "text": "(value: string) => void",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: (value: string) => void",
+              "optional": true
+            }
+          ],
+          "superclass": {
+            "name": "ArpaElement",
+            "package": "@arpadroid/ui"
+          },
+          "tagName": "list-search",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "ListSearch",
+            "module": "src/components/listSearch/listSearch.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/listManagerItem/listItem.views.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "ListView",
+          "type": {
+            "text": "ListItemViewConfigType"
+          },
+          "default": "{ id: 'list', label: 'List', className: 'listItem--list', template: html`<{wrapperComponent} {wrapperAttributes}> {icon} {image} <div class=\"listItem__contentWrapper\"> <div class=\"listItem__contentHeader\">{titleContainer}</div> {children} {tags} </div> {iconRight} </{wrapperComponent}> {rhs}` }"
+        },
+        {
+          "kind": "variable",
+          "name": "ListCompactView",
+          "type": {
+            "text": "object"
+          },
+          "default": "{ id: 'list-compact', label: 'List Compact', className: 'listItem--compact', template: html`<{wrapperComponent} {wrapperAttributes}> {checkbox}{icon}{image} <div class=\"listItem__contentWrapper\"> <div class=\"listItem__contentHeader\">{titleContainer}</div> {children} </div> {iconRight} </{wrapperComponent}> <div class=\"listItem__rhs\" zone=\"rhs\"> {tags} {nav} </div>` }"
+        },
+        {
+          "kind": "variable",
+          "name": "GridView",
+          "type": {
+            "text": "object"
+          },
+          "default": "{ id: 'grid', label: 'Grid', className: 'listItem--grid', template: html`<{wrapperComponent} {wrapperAttributes}> {icon} <div class=\"listItem__contentWrapper\"> <div class=\"listItem__contentHeader\">{titleContainer}{image}{tags}</div> {children} </div> {iconRight} </{wrapperComponent}> {rhs}` }"
+        },
+        {
+          "kind": "variable",
+          "name": "GridCompactView",
+          "type": {
+            "text": "object"
+          },
+          "default": "{ id: 'grid-compact', label: 'Grid Compact', className: 'listItem--grid-compact', template: html`<{wrapperComponent} {wrapperAttributes}> {icon} <div class=\"listItem__contentHeader\">{titleContainer}{image}{tags}</div> {iconRight} </{wrapperComponent}> {rhs}` }"
+        },
+        {
+          "kind": "variable",
+          "name": "ListItemViews",
+          "type": {
+            "text": "Record<string, ListItemViewConfigType>"
+          },
+          "default": "{ list: ListView, listCompact: ListCompactView, grid: GridView, gridCompact: GridCompactView }"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ListView",
+          "declaration": {
+            "name": "ListView",
+            "module": "src/components/listManagerItem/listItem.views.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ListCompactView",
+          "declaration": {
+            "name": "ListCompactView",
+            "module": "src/components/listManagerItem/listItem.views.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "GridView",
+          "declaration": {
+            "name": "GridView",
+            "module": "src/components/listManagerItem/listItem.views.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "GridCompactView",
+          "declaration": {
+            "name": "GridCompactView",
+            "module": "src/components/listManagerItem/listItem.views.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "ListItemViews",
+            "module": "src/components/listManagerItem/listItem.views.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/listManagerItem/listManagerItem.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ListManagerItem",
+          "members": [
+            {
+              "kind": "field",
+              "name": "list",
+              "type": {
+                "text": "ListManager"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_config",
+              "type": {
+                "text": "ListManagerItemConfigType"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getDefaultConfig",
+              "description": "Returns the default config for the component.",
+              "return": {
+                "type": {
+                  "text": "ListManagerItemConfigType"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "initializeProperties"
+            },
+            {
+              "kind": "method",
+              "name": "hasNav"
+            },
+            {
+              "kind": "method",
+              "name": "hasSelection"
+            },
+            {
+              "kind": "method",
+              "name": "_getImageDimensions",
+              "parameters": [
+                {
+                  "name": "memoized",
+                  "description": "Indicates whether to use the memoized dimensions.",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ],
+              "description": "Returns image dimensions.",
+              "return": {
+                "type": {
+                  "text": "ListItemImageSizeType"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_getTemplate"
+            },
+            {
+              "kind": "method",
+              "name": "_onConnected"
+            },
+            {
+              "kind": "method",
+              "name": "_initializeNodes"
+            },
+            {
+              "kind": "method",
+              "name": "_onComplete"
+            },
+            {
+              "kind": "method",
+              "name": "getViewConfig",
+              "parameters": [
+                {
+                  "name": "viewId",
+                  "default": "this.getView()",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Returns the view configuration for the list item.",
+              "return": {
+                "type": {
+                  "text": "ListItemViewConfigType"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getView"
+            },
+            {
+              "kind": "method",
+              "name": "getViewTemplate",
+              "parameters": [
+                {
+                  "name": "viewId",
+                  "default": "this.getView()"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "setViewClass",
+              "parameters": [
+                {
+                  "name": "view",
+                  "default": "this.view"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_initializeView",
+              "description": "Initializes the view filter.\nAn item can have a view filter that changes the view of the list: grid, list, compact etc..."
+            },
+            {
+              "kind": "method",
+              "name": "_onViewChange",
+              "parameters": [
+                {
+                  "name": "view",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Called when the view changes."
+            },
+            {
+              "kind": "method",
+              "name": "initializeNav"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "nav",
+              "type": {
+                "text": "NavListConfigType",
+                "summary": "unknown"
+              },
+              "serializedAs": "property-only",
+              "description": "TS type: NavListConfigType",
+              "optional": true
+            }
+          ],
+          "superclass": {
+            "name": "ListItem",
+            "package": "@arpadroid/lists"
+          },
+          "tagName": "list-manager-item",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "ListManagerItem",
+            "module": "src/components/listManagerItem/listManagerItem.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/listSort/listSort.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ListSort",
+          "members": [
+            {
+              "kind": "field",
+              "name": "_config",
+              "type": {
+                "text": "ListSortConfigType"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getDefaultConfig",
+              "description": "Returns the default configuration for the list sort component.",
+              "return": {
+                "type": {
+                  "text": "ListSortConfigType"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "initializeProperties"
+            },
+            {
+              "kind": "method",
+              "name": "getSortDir"
+            },
+            {
+              "kind": "method",
+              "name": "getSortDirIcon",
+              "parameters": [
+                {
+                  "name": "dir",
+                  "default": "this.getSortDir()"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getSortDirTooltip",
+              "parameters": [
+                {
+                  "name": "dir",
+                  "default": "this.getSortDir()"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_onConnected"
+            },
+            {
+              "kind": "method",
+              "name": "_onRouteChange"
+            },
+            {
+              "kind": "method",
+              "name": "updateSortLink",
+              "parameters": [
+                {
+                  "name": "sortDir",
+                  "default": "this.getSortDir()"
+                },
+                {
+                  "name": "sortLink",
+                  "default": "this.sortLink"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "render"
+            },
+            {
+              "kind": "method",
+              "name": "renderSortLinks",
+              "parameters": [
+                {
+                  "name": "sortOptions",
+                  "default": "this.list?.getSortOptions() || []"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_initializeNav"
+            },
+            {
+              "kind": "method",
+              "name": "_isItemSelected",
+              "parameters": [
+                {
+                  "name": "payload",
+                  "type": {
+                    "text": "SelectedCallbackPayloadType"
+                  }
+                }
+              ],
+              "description": "Checks if the item is selected.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_onSortBySelected",
+              "parameters": [
+                {
+                  "name": "item",
+                  "type": {
+                    "text": "ListManagerItem"
+                  }
+                }
+              ],
+              "description": "When a sort option is selected."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "icon-asc",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "icon-desc",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "icon-sort",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "param-asc",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "param-desc",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            }
+          ],
+          "superclass": {
+            "name": "ArpaElement",
+            "package": "@arpadroid/ui"
+          },
+          "tagName": "list-sort",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "ListSort",
+            "module": "src/components/listSort/listSort.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/listViews/listViews.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "LIST_VIEW_GRID",
+          "type": {
+            "text": "string"
+          },
+          "default": "'grid'"
+        },
+        {
+          "kind": "variable",
+          "name": "LIST_VIEW_GRID_COMPACT",
+          "type": {
+            "text": "string"
+          },
+          "default": "'grid-compact'"
+        },
+        {
+          "kind": "variable",
+          "name": "LIST_VIEW_LIST",
+          "type": {
+            "text": "string"
+          },
+          "default": "'list'"
+        },
+        {
+          "kind": "variable",
+          "name": "LIST_VIEW_LIST_COMPACT",
+          "type": {
+            "text": "string"
+          },
+          "default": "'list-compact'"
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ListViews",
+          "members": [
+            {
+              "kind": "field",
+              "name": "_config",
+              "type": {
+                "text": "ListViewsConfigType"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getDefaultConfig"
+            },
+            {
+              "kind": "method",
+              "name": "render"
+            },
+            {
+              "kind": "method",
+              "name": "initializeProperties"
+            },
+            {
+              "kind": "method",
+              "name": "_initializeViewsConfig"
+            },
+            {
+              "kind": "method",
+              "name": "_initializeViewFilter"
+            },
+            {
+              "kind": "method",
+              "name": "getOptions",
+              "description": "Returns the options.",
+              "return": {
+                "type": {
+                  "text": "ListViewConfigType[]"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getDefaultOptions"
+            },
+            {
+              "kind": "method",
+              "name": "getViewsConfig",
+              "description": "Returns the views config.",
+              "return": {
+                "type": {
+                  "text": "string[]"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "addView",
+              "parameters": [
+                {
+                  "name": "view",
+                  "type": {
+                    "text": "ListViewConfigType"
+                  }
+                }
+              ],
+              "description": "Adds a view."
+            },
+            {
+              "kind": "method",
+              "name": "setView",
+              "parameters": [
+                {
+                  "name": "view",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Sets the view."
+            },
+            {
+              "kind": "method",
+              "name": "viewExists",
+              "parameters": [
+                {
+                  "name": "view",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Checks if the view exists.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "applyView",
+              "parameters": [
+                {
+                  "name": "view",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Applies the view."
+            },
+            {
+              "kind": "method",
+              "name": "_onConnected"
+            },
+            {
+              "kind": "method",
+              "name": "initializeView",
+              "parameters": [
+                {
+                  "name": "view",
+                  "default": "String(this.viewFilter?.getValue() || '')",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Initializes the view."
+            },
+            {
+              "kind": "method",
+              "name": "onChange",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "Event"
+                  }
+                },
+                {
+                  "name": "navLink",
+                  "type": {
+                    "text": "NavLink"
+                  }
+                }
+              ],
+              "description": "On change view callback."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "icon",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "views",
+              "type": {
+                "text": "string[]",
+                "summary": "string"
+              },
+              "serializedAs": "json",
+              "description": "TS type: string[]",
+              "optional": true
+            },
+            {
+              "name": "links",
+              "type": {
+                "text": "ListViewConfigType[]",
+                "summary": "array"
+              },
+              "serializedAs": "json",
+              "description": "TS type: ListViewConfigType[]",
+              "optional": true
+            },
+            {
+              "name": "options",
+              "type": {
+                "text": "ListViewConfigType[]",
+                "summary": "array"
+              },
+              "serializedAs": "json",
+              "description": "TS type: ListViewConfigType[]",
+              "optional": true
+            },
+            {
+              "name": "default-options",
+              "type": {
+                "text": "ListViewConfigType[]",
+                "summary": "array"
+              },
+              "serializedAs": "json",
+              "description": "TS type: ListViewConfigType[]",
+              "optional": true
+            }
+          ],
+          "superclass": {
+            "name": "ArpaElement",
+            "package": "@arpadroid/ui"
+          },
+          "tagName": "list-views",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "LIST_VIEW_GRID",
+          "declaration": {
+            "name": "LIST_VIEW_GRID",
+            "module": "src/components/listViews/listViews.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "LIST_VIEW_GRID_COMPACT",
+          "declaration": {
+            "name": "LIST_VIEW_GRID_COMPACT",
+            "module": "src/components/listViews/listViews.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "LIST_VIEW_LIST",
+          "declaration": {
+            "name": "LIST_VIEW_LIST",
+            "module": "src/components/listViews/listViews.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "LIST_VIEW_LIST_COMPACT",
+          "declaration": {
+            "name": "LIST_VIEW_LIST_COMPACT",
+            "module": "src/components/listViews/listViews.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "ListViews",
+            "module": "src/components/listViews/listViews.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/multiSelect/multiSelect.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "MultiSelect",
+          "members": [
+            {
+              "kind": "method",
+              "name": "_preInitialize"
+            },
+            {
+              "kind": "method",
+              "name": "getDefaultConfig"
+            },
+            {
+              "kind": "method",
+              "name": "initializeProperties"
+            },
+            {
+              "kind": "method",
+              "name": "getIcon"
+            },
+            {
+              "kind": "method",
+              "name": "getSelectedIcon"
+            },
+            {
+              "kind": "method",
+              "name": "getTooltip"
+            },
+            {
+              "kind": "method",
+              "name": "getInfoNode"
+            },
+            {
+              "kind": "method",
+              "name": "_getTemplate"
+            },
+            {
+              "kind": "method",
+              "name": "_initializeNodes"
+            },
+            {
+              "kind": "method",
+              "name": "_initializeSelectionFilter"
+            },
+            {
+              "kind": "method",
+              "name": "_initializeToggle"
+            },
+            {
+              "kind": "method",
+              "name": "_initializeActions",
+              "parameters": [
+                {
+                  "name": "actionsField",
+                  "default": "(this.form?.getField('actions'))",
+                  "optional": true,
+                  "type": {
+                    "text": "SelectCombo"
+                  }
+                }
+              ],
+              "description": "Initializes the actions field.",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "update"
+            },
+            {
+              "kind": "method",
+              "name": "updateMenu"
+            },
+            {
+              "kind": "method",
+              "name": "updateClassNames"
+            },
+            {
+              "kind": "method",
+              "name": "updateDisabledState"
+            },
+            {
+              "kind": "method",
+              "name": "updateMessage"
+            },
+            {
+              "kind": "method",
+              "name": "renderItemList"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "icon",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "tooltip",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "actions",
+              "type": {
+                "text": "FieldOptionConfigType[]",
+                "summary": "array"
+              },
+              "serializedAs": "json",
+              "description": "TS type: FieldOptionConfigType[]",
+              "optional": true
+            }
+          ],
+          "superclass": {
+            "name": "ArpaElement",
+            "package": "@arpadroid/ui"
+          },
+          "tagName": "list-multi-select",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "MultiSelect",
+            "module": "src/components/multiSelect/multiSelect.js"
+          }
+        }
+      ]
+    }
+  ]
+}
