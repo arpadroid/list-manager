@@ -48,7 +48,11 @@ class ListInfo extends ArpaElement {
         if (!infoText) return;
         const newNode = renderNode(infoText);
         if (newNode) {
-            this.textNode ? this.textNode.replaceWith(newNode) : this.prepend(newNode);
+            if (this.textNode) {
+                this.textNode.parentNode?.replaceChild(newNode, this.textNode);
+            } else {
+                this.prepend(newNode);
+            }
         }
         this.textNode = newNode;
         const buttons = this.querySelectorAll('.listInfo__next, .listInfo__previous');
