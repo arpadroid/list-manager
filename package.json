@@ -42,6 +42,7 @@
         "@babel/preset-env": "^7.23.9"
     },
     "peerDependencies": {
+        "@arpadroid/i18n": "file:../i18n",
         "@arpadroid/module": "file:../module",
         "@arpadroid/lists": "file:../lists",
         "@arpadroid/tools": "file:../tools",
