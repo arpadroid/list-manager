@@ -5,7 +5,7 @@ const config = {
     deps: ['messages', 'navigation', 'forms'],
     buildType: 'uiComponent',
     storybook_port: 6011,
-    buildManifest: true,
+    buildManifest: false,
     turbo: false,
     logo: `           ┓    • ┓  ┓•   
   ┏┓┏┓┏┓┏┓┏┫┏┓┏┓┓┏┫  ┃┓┏╋┏

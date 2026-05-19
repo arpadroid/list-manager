@@ -106,60 +106,157 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/batchOperation/batchOperation.js",
+      "path": "src/components/listControls/listControls.js",
       "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "BatchOperation",
+          "name": "ListControls",
           "members": [
             {
               "kind": "field",
-              "name": "innerHTML",
-              "default": "html`<select-option class=\"comboBox__item\" ${this.getAttributes()}> ${this.innerHTML} </select-option>`"
+              "name": "_config",
+              "type": {
+                "text": "ListControlsConfigType"
+              }
             },
             {
-              "kind": "field",
-              "name": "node"
+              "kind": "method",
+              "name": "getList",
+              "description": "Returns the list component.",
+              "return": {
+                "type": {
+                  "text": "ListManager | null"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "initializeProperties",
+              "description": "Initializes the properties.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getDefaultConfig",
+              "description": "Returns the default config.",
+              "return": {
+                "type": {
+                  "text": "ListControlsConfigType"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hasControl",
+              "parameters": [
+                {
+                  "name": "control",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Checks if the control exists.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getControls",
+              "description": "Returns the controls.",
+              "return": {
+                "type": {
+                  "text": "string[]"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getControl",
+              "parameters": [
+                {
+                  "name": "control",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Returns the control element given its name.",
+              "return": {
+                "type": {
+                  "text": "HTMLElement | null"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "render"
+            },
+            {
+              "kind": "method",
+              "name": "renderSort",
+              "parameters": [
+                {
+                  "name": "list",
+                  "default": "this.getList()",
+                  "type": {
+                    "text": "ListManager | null"
+                  }
+                }
+              ],
+              "description": "Renders the sort component.",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "renderMultiselect"
+            },
+            {
+              "kind": "method",
+              "name": "renderViews"
+            },
+            {
+              "kind": "method",
+              "name": "renderSearch"
+            },
+            {
+              "kind": "method",
+              "name": "renderFilters"
+            },
+            {
+              "kind": "method",
+              "name": "_onConnected"
             }
           ],
           "attributes": [
             {
-              "name": "value",
+              "name": "controls",
               "type": {
-                "text": "string",
-                "summary": "string"
-              },
-              "serializedAs": "string",
-              "description": "TS type: string",
-              "optional": false
-            },
-            {
-              "name": "label",
-              "type": {
-                "text": "string",
-                "summary": "string"
-              },
-              "serializedAs": "string",
-              "description": "TS type: string",
-              "optional": false
-            },
-            {
-              "name": "action",
-              "type": {
-                "text": "(ids: string[]) => void",
+                "text": "string[]",
                 "summary": "string"
               },
               "serializedAs": "json",
-              "description": "TS type: (ids: string[]) => void",
-              "optional": false
+              "description": "TS type: string[]",
+              "optional": true
             }
           ],
           "superclass": {
-            "name": "ArpaFragment",
+            "name": "ArpaElement",
             "package": "@arpadroid/ui"
           },
-          "tagName": "batch-operation",
+          "tagName": "list-controls",
           "customElement": true
         }
       ],
@@ -168,8 +265,8 @@
           "kind": "js",
           "name": "default",
           "declaration": {
-            "name": "BatchOperation",
-            "module": "src/components/batchOperation/batchOperation.js"
+            "name": "ListControls",
+            "module": "src/components/listControls/listControls.js"
           }
         }
       ]
@@ -360,157 +457,60 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/listControls/listControls.js",
+      "path": "src/components/batchOperation/batchOperation.js",
       "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "ListControls",
+          "name": "BatchOperation",
           "members": [
             {
               "kind": "field",
-              "name": "_config",
-              "type": {
-                "text": "ListControlsConfigType"
-              }
+              "name": "innerHTML",
+              "default": "html`<select-option class=\"comboBox__item\" ${this.getAttributes()}> ${this.innerHTML} </select-option>`"
             },
             {
-              "kind": "method",
-              "name": "getList",
-              "description": "Returns the list component.",
-              "return": {
-                "type": {
-                  "text": "ListManager | null"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "initializeProperties",
-              "description": "Initializes the properties.",
-              "return": {
-                "type": {
-                  "text": "boolean"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "getDefaultConfig",
-              "description": "Returns the default config.",
-              "return": {
-                "type": {
-                  "text": "ListControlsConfigType"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "hasControl",
-              "parameters": [
-                {
-                  "name": "control",
-                  "type": {
-                    "text": "string"
-                  }
-                }
-              ],
-              "description": "Checks if the control exists.",
-              "return": {
-                "type": {
-                  "text": "boolean"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "getControls",
-              "description": "Returns the controls.",
-              "return": {
-                "type": {
-                  "text": "string[]"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "getControl",
-              "parameters": [
-                {
-                  "name": "control",
-                  "type": {
-                    "text": "string"
-                  }
-                }
-              ],
-              "description": "Returns the control element given its name.",
-              "return": {
-                "type": {
-                  "text": "HTMLElement | null"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "render"
-            },
-            {
-              "kind": "method",
-              "name": "renderSort",
-              "parameters": [
-                {
-                  "name": "list",
-                  "default": "this.getList()",
-                  "type": {
-                    "text": "ListManager | null"
-                  }
-                }
-              ],
-              "description": "Renders the sort component.",
-              "return": {
-                "type": {
-                  "text": "string"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "renderMultiselect"
-            },
-            {
-              "kind": "method",
-              "name": "renderViews"
-            },
-            {
-              "kind": "method",
-              "name": "renderSearch"
-            },
-            {
-              "kind": "method",
-              "name": "renderFilters"
-            },
-            {
-              "kind": "method",
-              "name": "_onConnected"
+              "kind": "field",
+              "name": "node"
             }
           ],
           "attributes": [
             {
-              "name": "controls",
+              "name": "value",
               "type": {
-                "text": "string[]",
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": false
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": false
+            },
+            {
+              "name": "action",
+              "type": {
+                "text": "(ids: string[]) => void",
                 "summary": "string"
               },
               "serializedAs": "json",
-              "description": "TS type: string[]",
-              "optional": true
+              "description": "TS type: (ids: string[]) => void",
+              "optional": false
             }
           ],
           "superclass": {
-            "name": "ArpaElement",
+            "name": "ArpaFragment",
             "package": "@arpadroid/ui"
           },
-          "tagName": "list-controls",
+          "tagName": "batch-operation",
           "customElement": true
         }
       ],
@@ -519,8 +519,8 @@
           "kind": "js",
           "name": "default",
           "declaration": {
-            "name": "ListControls",
-            "module": "src/components/listControls/listControls.js"
+            "name": "BatchOperation",
+            "module": "src/components/batchOperation/batchOperation.js"
           }
         }
       ]
@@ -1099,132 +1099,6 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/listSearch/listSearch.js",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "ListSearch",
-          "members": [
-            {
-              "kind": "field",
-              "name": "_config",
-              "type": {
-                "text": "ListSearchConfigType"
-              }
-            },
-            {
-              "kind": "method",
-              "name": "getDefaultConfig",
-              "description": "Default component config.",
-              "return": {
-                "type": {
-                  "text": "ListSearchConfigType"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "initializeProperties"
-            },
-            {
-              "kind": "method",
-              "name": "onReady",
-              "description": "Returns a promise that must be resolved before the component is ready.",
-              "return": {
-                "type": {
-                  "text": "Promise<any>"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "_initializeNodes"
-            },
-            {
-              "kind": "method",
-              "name": "initializeSearch"
-            },
-            {
-              "kind": "method",
-              "name": "getFiltersWrapper"
-            },
-            {
-              "kind": "method",
-              "name": "render"
-            },
-            {
-              "kind": "method",
-              "name": "getTemplateVars"
-            },
-            {
-              "kind": "method",
-              "name": "_onSubmit",
-              "description": "Called when the form is submitted.",
-              "return": {
-                "type": {
-                  "text": "boolean"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "_onSearch"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "has-mini-search",
-              "type": {
-                "text": "boolean",
-                "summary": "boolean"
-              },
-              "serializedAs": "boolean-attr",
-              "description": "TS type: boolean",
-              "optional": true
-            },
-            {
-              "name": "search-selector",
-              "type": {
-                "text": "string",
-                "summary": "string"
-              },
-              "serializedAs": "string",
-              "description": "TS type: string",
-              "optional": true
-            },
-            {
-              "name": "on-submit",
-              "type": {
-                "text": "(value: string) => void",
-                "summary": "string"
-              },
-              "serializedAs": "string",
-              "description": "TS type: (value: string) => void",
-              "optional": true
-            }
-          ],
-          "superclass": {
-            "name": "ArpaElement",
-            "package": "@arpadroid/ui"
-          },
-          "tagName": "list-search",
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "default",
-          "declaration": {
-            "name": "ListSearch",
-            "module": "src/components/listSearch/listSearch.js"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
       "path": "src/components/listManagerItem/listItem.views.js",
       "declarations": [
         {
@@ -1484,6 +1358,132 @@
           "declaration": {
             "name": "ListManagerItem",
             "module": "src/components/listManagerItem/listManagerItem.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/listSearch/listSearch.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ListSearch",
+          "members": [
+            {
+              "kind": "field",
+              "name": "_config",
+              "type": {
+                "text": "ListSearchConfigType"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getDefaultConfig",
+              "description": "Default component config.",
+              "return": {
+                "type": {
+                  "text": "ListSearchConfigType"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "initializeProperties"
+            },
+            {
+              "kind": "method",
+              "name": "onReady",
+              "description": "Returns a promise that must be resolved before the component is ready.",
+              "return": {
+                "type": {
+                  "text": "Promise<any>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_initializeNodes"
+            },
+            {
+              "kind": "method",
+              "name": "initializeSearch"
+            },
+            {
+              "kind": "method",
+              "name": "getFiltersWrapper"
+            },
+            {
+              "kind": "method",
+              "name": "render"
+            },
+            {
+              "kind": "method",
+              "name": "getTemplateVars"
+            },
+            {
+              "kind": "method",
+              "name": "_onSubmit",
+              "description": "Called when the form is submitted.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_onSearch"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "has-mini-search",
+              "type": {
+                "text": "boolean",
+                "summary": "boolean"
+              },
+              "serializedAs": "boolean-attr",
+              "description": "TS type: boolean",
+              "optional": true
+            },
+            {
+              "name": "search-selector",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: string",
+              "optional": true
+            },
+            {
+              "name": "on-submit",
+              "type": {
+                "text": "(value: string) => void",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "description": "TS type: (value: string) => void",
+              "optional": true
+            }
+          ],
+          "superclass": {
+            "name": "ArpaElement",
+            "package": "@arpadroid/ui"
+          },
+          "tagName": "list-search",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "ListSearch",
+            "module": "src/components/listSearch/listSearch.js"
           }
         }
       ]
