@@ -6,11 +6,7 @@ const config = {
     buildType: 'uiComponent',
     storybook_port: 6011,
     buildManifest: false,
-    turbo: false,
-    logo: `           ┓    • ┓  ┓•   
-  ┏┓┏┓┏┓┏┓┏┫┏┓┏┓┓┏┫  ┃┓┏╋┏
-  ┗┻┛ ┣┛┗┻┗┻┛ ┗┛┗┗┻  ┗┗┛┗┛
-------┛---------------------`
+    turbo: false
 };
 
 export default config;
