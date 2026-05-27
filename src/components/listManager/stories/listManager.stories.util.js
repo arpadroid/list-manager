@@ -52,7 +52,7 @@ export function renderItemTemplate(attr = {}) {
         <template
             template-type="list-item"
             template-mode="append"
-            truncate-content="200"
+            truncate-content="10"
             image="{portraitURL}"
             truncate-button
             ${attrString(attr)}

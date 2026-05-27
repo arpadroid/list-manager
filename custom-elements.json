@@ -106,6 +106,73 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/batchOperation/batchOperation.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "BatchOperation",
+          "members": [
+            {
+              "kind": "field",
+              "name": "innerHTML",
+              "default": "html`<select-option class=\"comboBox__item\" ${this.getAttributes()}> ${this.innerHTML} </select-option>`"
+            },
+            {
+              "kind": "field",
+              "name": "node"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "value",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "optional": false
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string",
+                "summary": "string"
+              },
+              "serializedAs": "string",
+              "optional": false
+            },
+            {
+              "name": "action",
+              "type": {
+                "text": "(ids: string[]) => void",
+                "summary": "string"
+              },
+              "serializedAs": "json",
+              "optional": false
+            }
+          ],
+          "superclass": {
+            "name": "ArpaFragment",
+            "package": "@arpadroid/ui"
+          },
+          "tagName": "batch-operation",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "BatchOperation",
+            "module": "src/components/batchOperation/batchOperation.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/listControls/listControls.js",
       "declarations": [
         {
@@ -248,7 +315,6 @@
                 "summary": "string"
               },
               "serializedAs": "json",
-              "description": "TS type: string[]",
               "optional": true
             }
           ],
@@ -382,7 +448,6 @@
                 "summary": "string"
               },
               "serializedAs": "json",
-              "description": "TS type: string[]",
               "optional": true
             },
             {
@@ -392,7 +457,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: (value: string) => void",
               "optional": true
             },
             {
@@ -402,7 +466,6 @@
                 "summary": "number"
               },
               "serializedAs": "json",
-              "description": "TS type: number[]",
               "optional": true
             },
             {
@@ -412,7 +475,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             },
             {
@@ -422,7 +484,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             },
             {
@@ -432,7 +493,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             }
           ],
@@ -451,76 +511,6 @@
           "declaration": {
             "name": "ListFilters",
             "module": "src/components/listFilters/listFilters.js"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/batchOperation/batchOperation.js",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "BatchOperation",
-          "members": [
-            {
-              "kind": "field",
-              "name": "innerHTML",
-              "default": "html`<select-option class=\"comboBox__item\" ${this.getAttributes()}> ${this.innerHTML} </select-option>`"
-            },
-            {
-              "kind": "field",
-              "name": "node"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "value",
-              "type": {
-                "text": "string",
-                "summary": "string"
-              },
-              "serializedAs": "string",
-              "description": "TS type: string",
-              "optional": false
-            },
-            {
-              "name": "label",
-              "type": {
-                "text": "string",
-                "summary": "string"
-              },
-              "serializedAs": "string",
-              "description": "TS type: string",
-              "optional": false
-            },
-            {
-              "name": "action",
-              "type": {
-                "text": "(ids: string[]) => void",
-                "summary": "string"
-              },
-              "serializedAs": "json",
-              "description": "TS type: (ids: string[]) => void",
-              "optional": false
-            }
-          ],
-          "superclass": {
-            "name": "ArpaFragment",
-            "package": "@arpadroid/ui"
-          },
-          "tagName": "batch-operation",
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "default",
-          "declaration": {
-            "name": "BatchOperation",
-            "module": "src/components/batchOperation/batchOperation.js"
           }
         }
       ]
@@ -679,7 +669,6 @@
                 "summary": "boolean"
               },
               "serializedAs": "boolean-attr",
-              "description": "TS type: boolean",
               "optional": true
             },
             {
@@ -689,7 +678,6 @@
                 "summary": "boolean"
               },
               "serializedAs": "boolean-attr",
-              "description": "TS type: boolean",
               "optional": true
             }
           ],
@@ -994,7 +982,6 @@
                 "summary": "array"
               },
               "serializedAs": "json",
-              "description": "TS type: FieldOptionConfigType[]",
               "optional": true
             },
             {
@@ -1004,7 +991,6 @@
                 "summary": "array"
               },
               "serializedAs": "json",
-              "description": "TS type: NavLinkConfigType[]",
               "optional": true
             },
             {
@@ -1014,7 +1000,6 @@
                 "summary": "unknown"
               },
               "serializedAs": "property-only",
-              "description": "TS type: Router",
               "optional": true
             },
             {
@@ -1024,7 +1009,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             },
             {
@@ -1034,7 +1018,6 @@
                 "summary": "unknown"
               },
               "serializedAs": "property-only",
-              "description": "TS type: typeof ListManagerItem",
               "optional": true
             },
             {
@@ -1044,7 +1027,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             },
             {
@@ -1054,7 +1036,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             },
             {
@@ -1064,7 +1045,6 @@
                 "summary": "array"
               },
               "serializedAs": "json",
-              "description": "TS type: FieldOptionConfigType[]",
               "optional": true
             },
             {
@@ -1074,7 +1054,6 @@
                 "summary": "boolean"
               },
               "serializedAs": "boolean-attr",
-              "description": "TS type: boolean",
               "optional": true
             }
           ],
@@ -1339,7 +1318,6 @@
                 "summary": "unknown"
               },
               "serializedAs": "property-only",
-              "description": "TS type: NavListConfigType",
               "optional": true
             }
           ],
@@ -1445,7 +1423,6 @@
                 "summary": "boolean"
               },
               "serializedAs": "boolean-attr",
-              "description": "TS type: boolean",
               "optional": true
             },
             {
@@ -1455,7 +1432,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             },
             {
@@ -1465,7 +1441,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: (value: string) => void",
               "optional": true
             }
           ],
@@ -1622,7 +1597,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             },
             {
@@ -1632,7 +1606,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             },
             {
@@ -1642,7 +1615,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             },
             {
@@ -1652,7 +1624,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             },
             {
@@ -1662,7 +1633,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             }
           ],
@@ -1881,7 +1851,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             },
             {
@@ -1891,7 +1860,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             },
             {
@@ -1901,37 +1869,36 @@
                 "summary": "string"
               },
               "serializedAs": "json",
-              "description": "TS type: string[]",
               "optional": true
             },
             {
               "name": "links",
               "type": {
                 "text": "ListViewConfigType[]",
-                "summary": "array"
+                "summary": "array",
+                "detail": "any[]"
               },
               "serializedAs": "json",
-              "description": "TS type: ListViewConfigType[]",
               "optional": true
             },
             {
               "name": "options",
               "type": {
                 "text": "ListViewConfigType[]",
-                "summary": "array"
+                "summary": "array",
+                "detail": "any[]"
               },
               "serializedAs": "json",
-              "description": "TS type: ListViewConfigType[]",
               "optional": true
             },
             {
               "name": "default-options",
               "type": {
                 "text": "ListViewConfigType[]",
-                "summary": "array"
+                "summary": "array",
+                "detail": "any[]"
               },
               "serializedAs": "json",
-              "description": "TS type: ListViewConfigType[]",
               "optional": true
             }
           ],
@@ -2092,7 +2059,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             },
             {
@@ -2102,7 +2068,6 @@
                 "summary": "string"
               },
               "serializedAs": "string",
-              "description": "TS type: string",
               "optional": true
             },
             {
@@ -2112,7 +2077,6 @@
                 "summary": "array"
               },
               "serializedAs": "json",
-              "description": "TS type: FieldOptionConfigType[]",
               "optional": true
             }
           ],

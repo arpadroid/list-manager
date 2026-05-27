@@ -72,7 +72,7 @@ export const WithZones = {
     args: {
         titleIcon: 'auto_awesome',
         titleLink: '#test-link',
-        truncateContent: 100,
+        truncateContent: 50,
         truncateButton: true,
         image: '/test-assets/artists/phidias.jpg'
     },
@@ -99,7 +99,7 @@ export const WithZones = {
             expect(titleLink).toHaveAttribute('href', '#test-link');
             const content = canvasElement.querySelector('.truncateText__content');
             expect(content).toBeInTheDocument();
-            expect(content?.textContent).toHaveLength(103);
+            expect(content?.textContent).toHaveLength(53);
         });
 
         await step('Expands the content when the Read more button is clicked', async () => {
