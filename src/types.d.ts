@@ -12,8 +12,6 @@ export { ListSortConfigType } from './components/listSort/listSort.types';
 
 export { MultiSelectConfigType } from './components/multiSelect/multiSelect.types';
 
-export { BatchOperationConfigType } from './components/batchOperation/batchOperation.types';
-
 export { ListManagerItemConfigType } from './components/listManagerItem/listManagerItem.types';
 
 export { ListInfoConfigType } from './components/listInfo/listInfo.types';

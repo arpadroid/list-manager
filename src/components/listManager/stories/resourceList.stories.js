@@ -1,8 +1,10 @@
 /**
  * @typedef {import('../listManager.js').default} ListManager
  * @typedef {import('../../listManagerItem/listManagerItem.js').default} ListManagerItem
- * @typedef {import('@storybook/web-components-vite').Meta} Meta
- * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
+ * @typedef {import('../listManager.types.js').ListManagerConfigType} ListManagerConfigType
+ * @typedef {import('@storybook/web-components-vite').Meta<ListManagerConfigType>} Meta
+ * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} Story
+ * @typedef {import('@arpadroid/resources').ListResource} ListResource
  */
 import ListManagerStory from './listManager.stories.js';
 import { attrString, getInitials } from '@arpadroid/tools';
@@ -10,11 +12,16 @@ import { within } from 'storybook/test';
 import { getArgTypes } from './listManager.stories.util.js';
 
 const html = String.raw;
+/** @type {Meta} */
 const ApiDrivenListStory = {
     ...ListManagerStory,
     title: 'List Manager/Lists'
 };
 
+/**
+ * Renders the list item template with the provided attributes.
+ * @returns {string}
+ */
 function renderItemTemplate() {
     return html`<template
         template-type="list-item"
@@ -70,7 +77,7 @@ async function playSetup(canvasElement, initList = true) {
     return { canvas, listNode, listItem };
 }
 
-/** @type {StoryObj} */
+/** @type {Story} */
 export const ApiDrivenList = {
     name: 'API Driven',
     argTypes: getArgTypes(),

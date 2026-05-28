@@ -6,12 +6,14 @@ import ListManagerItem from '../listManagerItem/listManagerItem.js';
 
 export type ListManagerConfigType = ListConfigType & {
     actions?: FieldOptionConfigType[];
-    viewOptions?: NavLinkConfigType[];
+    hasMiniSearch?: boolean;
+    hasSelection?: boolean;
+    itemComponent?: typeof ListManagerItem;
     router?: Router;
     sortByParam?: string;
-    itemComponent?: typeof ListManagerItem;
     sortDefault?: string;
     sortDirParam?: string;
     sortOptions?: FieldOptionConfigType[];
-    hasMiniSearch?: boolean;
+    url?: string;
+    viewOptions?: NavLinkConfigType[];
 };
