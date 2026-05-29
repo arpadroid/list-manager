@@ -199,9 +199,12 @@ class ListManager extends List {
     async setSortOptions(options, defaultValue) {
         this._config.sortOptions = options;
         this._config.sortDefault = defaultValue;
+        /**
+         * @todo - Implement below functionality.
+         */
         /** @type {ListSort | undefined} */
-        const listSort = /** @type {ListSort | undefined} */ (this.controls?.search?.listSort);
-        const sortField = listSort?.sortByMenu;
+        // const listSort = /** @type {ListSort | undefined} */ (this.controls?.search?.listSort);
+        // const sortField = listSort?.sortByMenu;
         // sortField?.setOptions(options, defaultValue);
     }
 

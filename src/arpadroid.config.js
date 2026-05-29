@@ -2,6 +2,7 @@
 const config = {
     buildTypes: true,
     buildI18n: true,
+    buildManifest: true,
     deps: ['messages', 'navigation', 'forms'],
     buildType: 'uiComponent',
     storybook_port: 6011,
