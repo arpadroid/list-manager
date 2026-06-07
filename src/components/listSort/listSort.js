@@ -44,7 +44,7 @@ class ListSort extends ArpaElement {
         };
     }
 
-    initializeProperties() {
+    $initializeProperties() {
         /** @type {ListManager | null} */
         this.list = ListManager.getList(this);
         /** @type {Router} */
@@ -86,7 +86,7 @@ class ListSort extends ArpaElement {
     // #region LIFECYCLE
     ////////////////////////////
 
-    _onConnected() {
+    $onConnected() {
         this.router?.on('route_changed', this._onRouteChange);
     }
 

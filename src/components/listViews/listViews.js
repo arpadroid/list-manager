@@ -63,8 +63,8 @@ class ListViews extends ArpaElement {
         this.innerHTML = html`<icon-menu ${attrString({ tooltip: label, icon })}></icon-menu>`;
     }
 
-    initializeProperties() {
-        super.initializeProperties();
+    $initializeProperties() {
+        super.$initializeProperties();
         /** @type {ListManager | null} */
         this.list = ListManager.getList(this);
         /** @type {Router} */
@@ -183,8 +183,8 @@ class ListViews extends ArpaElement {
         selected?.setAttribute('aria-current', 'location');
     }
 
-    async _onConnected() {
-        super._onConnected();
+    async $onConnected() {
+        super.$onConnected();
         await customElements.whenDefined('icon-menu');
         /** @type {IconMenu | null} */
         this.iconMenu = this.querySelector('icon-menu');

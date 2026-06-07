@@ -35,8 +35,8 @@ class ListManagerItem extends ListItem {
         return mergeObjects(super.getDefaultConfig(), conf);
     }
 
-    initializeProperties() {
-        super.initializeProperties();
+    $initializeProperties() {
+        super.$initializeProperties();
         this.grabList();
 
         /** @type {ListFilter} */
@@ -86,7 +86,7 @@ class ListManagerItem extends ListItem {
         return (sizeName && imageSizes[sizeName]) || super._getImageDimensions(memoized);
     }
 
-    _getTemplate() {
+    $renderTemplate() {
         return this.getViewTemplate();
     }
 
@@ -96,19 +96,19 @@ class ListManagerItem extends ListItem {
     // #region Lifecycle
     ////////////////////////
 
-    _onConnected() {
-        super._onConnected();
+    $onConnected() {
+        super.$onConnected();
         this.viewsFilter && this._initializeView();
     }
 
-    async _initializeNodes() {
-        await super._initializeNodes();
+    async $initializeNodes() {
+        await super.$initializeNodes();
         this.initializeNav();
         return true;
     }
 
-    _onComplete() {
-        super._onComplete();
+    $onComplete() {
+        super.$onComplete();
         this.setViewClass();
     }
 

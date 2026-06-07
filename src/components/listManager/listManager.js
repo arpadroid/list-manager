@@ -232,8 +232,8 @@ class ListManager extends List {
     // #region Lifecycle
     //////////////////////
 
-    async _initializeNodes() {
-        await super._initializeNodes();
+    async $initializeNodes() {
+        await super.$initializeNodes();
         /** @type {ListControls | null} */
         this.controls = this.querySelector('list-controls');
         /** @type {Messages | null} */

@@ -24,10 +24,10 @@ class ListControls extends ArpaElement {
      * Initializes the properties.
      * @returns {boolean}
      */
-    initializeProperties() {
+    $initializeProperties() {
         this.list = this.getList();
         this.listResource = this.list?.listResource;
-        super.initializeProperties();
+        super.$initializeProperties();
         return true;
     }
 
@@ -122,8 +122,8 @@ class ListControls extends ArpaElement {
         return html`<list-filters></list-filters>`;
     }
 
-    _onConnected() {
-        super._onConnected();
+    $onConnected() {
+        super.$onConnected();
         /** @type {ListSearch | null} */
         this.search = this.querySelector('list-search');
         /** @type {ListViews | null} */

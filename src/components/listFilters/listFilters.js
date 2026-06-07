@@ -30,8 +30,8 @@ class ListFilters extends ArpaElement {
         });
     }
 
-    initializeProperties() {
-        super.initializeProperties();
+    $initializeProperties() {
+        super.$initializeProperties();
         /** @type {ListManager | null} */
         this.list = this.closest('.arpaList, .gallery');
         /** @type {Router} */

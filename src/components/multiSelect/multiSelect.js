@@ -13,7 +13,7 @@ const html = String.raw;
 class MultiSelect extends ArpaElement {
     // #region INITIALIZATION
 
-    _preInitialize() {
+    $preInitialize() {
         this.i18nKey = 'list-manager.multiSelect';
         /** @type {ListManager | null} */
         this.list = this.closest('.arpaList');
@@ -30,8 +30,8 @@ class MultiSelect extends ArpaElement {
         });
     }
 
-    initializeProperties() {
-        super.initializeProperties();
+    $initializeProperties() {
+        super.$initializeProperties();
         this.resource?.on('selection_change', () => this.update());
         return true;
     }
@@ -67,7 +67,7 @@ class MultiSelect extends ArpaElement {
 
     // #region RENDERING
 
-    _getTemplate() {
+    $renderTemplate() {
         const menuProps = this.getProperties('icon');
         const formId = this.list?.id + '-multiSelectForm';
         return html`<icon-menu
@@ -103,8 +103,8 @@ class MultiSelect extends ArpaElement {
 
     // #region LIFECYCLE
 
-    async _initializeNodes() {
-        await super._initializeNodes();
+    async $initializeNodes() {
+        await super.$initializeNodes();
         /** @type {FormComponent | null} */
         this.form = this.querySelector('.listMultiSelect__form');
         this.messages = this.querySelector('arpa-messages');

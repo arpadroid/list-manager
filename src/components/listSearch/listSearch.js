@@ -34,7 +34,7 @@ class ListSearch extends ArpaElement {
         };
     }
 
-    initializeProperties() {
+    $initializeProperties() {
         /** @type {ListManager | null} */
         this.list = this.closest('.arpaList');
         /** @type {Router} */
@@ -55,7 +55,7 @@ class ListSearch extends ArpaElement {
         return await customElements.whenDefined('arpa-form');
     }
 
-    async _initializeNodes() {
+    async $initializeNodes() {
         /** @type {FormComponent | null} */
         this.form = /** @type {FormComponent | null} */ (this.querySelector('arpa-form'));
         await customElements.whenDefined('arpa-form');
