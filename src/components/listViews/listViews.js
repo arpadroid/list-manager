@@ -121,7 +121,7 @@ class ListViews extends ArpaElement {
      * @returns {string[]}
      */
     getViewsConfig() {
-        const rv = this.list?.getArrayProperty('views') ?? this.getArrayProperty('views') ?? [];
+        const rv = this.list?.getArrayProp('views') ?? this.getArrayProp('views') ?? [];
         return Array.isArray(rv) ? rv : [];
     }
 

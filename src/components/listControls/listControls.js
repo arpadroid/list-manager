@@ -56,7 +56,7 @@ class ListControls extends ArpaElement {
      * @returns {string[]}
      */
     getControls() {
-        return /** @type {string[]} */ (this.getArrayProperty('controls') || []);
+        return /** @type {string[]} */ (this.getArrayProp('controls') || []);
     }
 
     /**
@@ -98,10 +98,10 @@ class ListControls extends ArpaElement {
     renderSort(list = this.getList()) {
         return html`<list-sort
             ${attrString({
-                'lbl-sort-asc': list?.getProperty('lbl-sort-asc'),
-                'lbl-sort-desc': list?.getProperty('lbl-sort-desc'),
-                'lbl-no-selection': list?.getProperty('lbl-no-selection'),
-                'lbl-sorted-by': list?.getProperty('lbl-sorted-by')
+                'lbl-sort-asc': list?.getProp('lbl-sort-asc'),
+                'lbl-sort-desc': list?.getProp('lbl-sort-desc'),
+                'lbl-no-selection': list?.getProp('lbl-no-selection'),
+                'lbl-sorted-by': list?.getProp('lbl-sorted-by')
             })}
         ></list-sort>`;
     }

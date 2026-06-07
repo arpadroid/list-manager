@@ -47,13 +47,13 @@ class ListFilters extends ArpaElement {
     }
 
     getPerPage() {
-        this.list?.getArrayProperty('per-page-options') || this.getArrayProperty('per-page-options');
+        this.list?.getArrayProp('per-page-options') || this.getArrayProp('per-page-options');
     }
 
     async render() {
         const props = {
             ...this.getProperties('icon', 'label'),
-            tooltip: this.getProperty('btn-label')
+            tooltip: this.getProp('btn-label')
         };
         this.innerHTML = html`<icon-menu ${attrString(props)} nav-class="listFilters__nav">
             <div class="listFilters__content">${this.renderForm()}</div>
@@ -94,7 +94,7 @@ class ListFilters extends ArpaElement {
      * @returns {string} The form HTML.
      */
     renderForm(pageFilter = this.pageFilter, perPageFilter = this.perPageFilter) {
-        const opt = this.getArrayProperty('per-page-options');
+        const opt = this.getArrayProp('per-page-options');
         /** @type {number[]} */
         const perPageOptions = Array.isArray(opt) ? opt : [];
         const page = pageFilter?.getValue();

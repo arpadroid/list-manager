@@ -66,11 +66,11 @@ class ListInfo extends ArpaElement {
     }
 
     hasRefresh() {
-        return this.getProperty('has-refresh');
+        return this.getProp('has-refresh');
     }
 
     hasPrevNext() {
-        return this.getProperty('has-prev-next');
+        return this.getProp('has-prev-next');
     }
 
     render() {

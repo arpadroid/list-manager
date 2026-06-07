@@ -73,9 +73,9 @@ class ListSearch extends ArpaElement {
         if (this.searchField?.input instanceof HTMLInputElement) {
             this.search = new SearchTool(this.searchField?.input, {
                 container: this.list?.itemsNode,
-                searchSelector: this.getProperty('search-selector'),
+                searchSelector: this.getProp('search-selector'),
                 // onSearch: this._onSearch,
-                debounceDelay: this.getProperty('debounce-search'),
+                debounceDelay: this.getProp('debounce-search'),
                 hideNonMatches: false,
                 getNodes: () => Array.from(this.list?.itemsNode?.querySelectorAll('.listItem') || [])
             });
@@ -103,8 +103,8 @@ class ListSearch extends ArpaElement {
 
     render() {
         const searchAttr = attrString({
-            'has-mini-search': this.getProperty('has-mini-search'),
-            placeholder: this.list?.getProperty('search-placeholder'),
+            'has-mini-search': this.getProp('has-mini-search'),
+            placeholder: this.list?.getProp('search-placeholder'),
             value: this.searchFilter?.getValue()
         });
         this.innerHTML = processTemplate(

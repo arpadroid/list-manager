@@ -56,7 +56,7 @@ class ListManager extends List {
                     tag: 'list-controls',
                     content: ' ',
                     canRender: () => this.hasControls(),
-                    attr: { controls: () => this.getArrayProperty('controls')?.toString() || '' }
+                    attr: { controls: () => this.getArrayProp('controls')?.toString() || '' }
                 }
             }
         };
@@ -155,7 +155,7 @@ class ListManager extends List {
      * @returns {string[]}
      */
     getControls() {
-        const arr = this.getArrayProperty('controls');
+        const arr = this.getArrayProp('controls');
         return Array.isArray(arr) ? arr : [];
     }
 
@@ -164,7 +164,7 @@ class ListManager extends List {
      * @returns {FieldOptionConfigType[]}
      */
     getSortOptions() {
-        return this.getProperty('sort-options');
+        return this.getProp('sort-options');
     }
 
     /**
@@ -181,7 +181,7 @@ class ListManager extends List {
      * @returns {string}
      */
     getSortDefault() {
-        return this.getProperty('sort-default');
+        return this.getProp('sort-default');
     }
 
     // #endregion Get
@@ -217,7 +217,7 @@ class ListManager extends List {
     renderHeaderControls() {
         if (!this.hasHeaderControls()) return '';
         /** @type {string[]} */
-        const controls = /** @type {string[]} */ (this.getArrayProperty('controls') || []);
+        const controls = /** @type {string[]} */ (this.getArrayProp('controls') || []);
         const control = controls?.[0];
         if (!control) return '';
         const fn = /** @type {keyof ListControls} */ (`render${ucFirst(control)}`);
@@ -274,7 +274,7 @@ class ListManager extends List {
     }
 
     getDefaultView() {
-        return this.getProperty('default-view');
+        return this.getProp('default-view');
     }
 
     getViewFilter() {

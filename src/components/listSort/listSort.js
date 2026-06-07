@@ -72,7 +72,7 @@ class ListSort extends ArpaElement {
     }
 
     getSortDirIcon(dir = this.getSortDir()) {
-        return dir === 'asc' ? this.getProperty('icon-asc') : this.getProperty('icon-desc');
+        return dir === 'asc' ? this.getProp('icon-asc') : this.getProp('icon-desc');
     }
 
     getSortDirTooltip(dir = this.getSortDir()) {
@@ -195,7 +195,7 @@ class ListSort extends ArpaElement {
      * @param {ListManagerItem} item
      */
     _onSortBySelected(item) {
-        const icon = item.getProperty('icon') || item.getProperty('icon-right');
+        const icon = item.getProp('icon') || item.getProp('icon-right');
         this.sortByMenu?.setIcon(icon);
         this.sortByMenu?.setTooltip(
             html`<span>${this.i18n('lblSortedBy')}</span> <strong>${item.getLabelText()}</strong>`
