@@ -18,8 +18,8 @@
     }
 
     arpa-image {
-        --preloader-size: 3rem;
-        --preloader-border-width: 4px;
+        --spinner-size: 3rem;
+        --spinner-thickness: 4px;
         --preloader-outline-width: 4px;
     }
 }
