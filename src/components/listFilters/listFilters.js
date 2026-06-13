@@ -51,12 +51,15 @@ class ListFilters extends ArpaElement {
     }
 
     async render() {
+        const label = this.getProp('btn-label') || this.getProp('label');
         const props = {
-            ...this.getProperties('icon', 'label'),
-            tooltip: this.getProp('btn-label')
+            ...this.getProperties('icon'),
+            label,
+            buttonAria: label
         };
         this.innerHTML = html`<icon-menu ${attrString(props)} nav-class="listFilters__nav">
             <div class="listFilters__content">${this.renderForm()}</div>
+            <arpa-zone name="tooltip"> ${label} </arpa-zone>
         </icon-menu>`;
         /** @type {IconMenu | null} */
         this.menuNode = this.querySelector('icon-menu');
@@ -99,12 +102,9 @@ class ListFilters extends ArpaElement {
         const perPageOptions = Array.isArray(opt) ? opt : [];
         const page = pageFilter?.getValue();
         const perPage = perPageFilter?.getValue();
-        const perPageOptionsHTML = /** @type {any} */ (mapHTML)(
-            perPageOptions,
-            (/** @type {number}*/ value) => {
-                return html`<select-option label="${value}" value="${value}"></select-option>`;
-            }
-        );
+        const perPageOptionsHTML = /** @type {any} */ (mapHTML)(perPageOptions, (/** @type {number}*/ value) => {
+            return html`<select-option label="${value}" value="${value}"></select-option>`;
+        });
         return html`<arpa-form
             variant="compact"
             id="${this.list?.getId()}-filters-form"
