@@ -48,10 +48,10 @@ class ListManager extends List {
             sortDirParam: 'sortDir',
             sortOptions: [],
             tagName: 'list-manager',
-            templateChildren: {
+            nodesConfig: {
                 messages: { canRender: 'has-messages', tag: 'arpa-messages', id: '{id}-messages' },
                 info: { tag: 'list-info', canRender: 'has-info' },
-                ...super.getTemplateChildren(),
+                ...super.getNodesConfig(),
                 controls: {
                     tag: 'list-controls',
                     content: ' ',
