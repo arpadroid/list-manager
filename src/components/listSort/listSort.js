@@ -196,8 +196,9 @@ class ListSort extends ArpaElement {
      */
     _onSortBySelected(item) {
         const icon = item.getProp('icon') || item.getProp('icon-right');
-        this.sortByMenu?.setIcon(icon);
-        this.sortByMenu?.setTooltip(
+        this.sortByMenu?.setProp('icon', icon);
+        this.sortByMenu?.setProp(
+            'tooltip',
             html`<span>${this.i18n('lblSortedBy')}</span> <strong>${item.getLabelText()}</strong>`
         );
     }

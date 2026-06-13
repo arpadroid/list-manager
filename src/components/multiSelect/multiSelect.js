@@ -166,8 +166,8 @@ class MultiSelect extends ArpaElement {
     }
 
     updateMenu() {
-        this.menu?.setTooltip(this.getTooltip());
-        this.menu?.setIcon(this.getIcon());
+        this.menu?.setProp('tooltip', this.getTooltip());
+        this.menu?.setProp('icon', this.getIcon());
     }
 
     updateClassNames() {
