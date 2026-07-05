@@ -29,15 +29,15 @@ function renderItemTemplate() {
         id="{id}"
         image="/api/image/convert?width=[width]&height=[height]&quality=[quality]&source={image_url}"
     >
-        <zone name="tags">
+        <arpa-zone name="tags">
             <tag-item label="{author_initials}" icon="person"></tag-item>
             <tag-item label="{date}" icon="calendar_month"></tag-item>
-        </zone>
+        </arpa-zone>
 
-        <zone name="nav">
+        <arpa-zone name="nav">
             <nav-link link="/gallery/{id}" icon-right="visibility">View</nav-link>
             <nav-link link="/gallery/{id}/edit" icon-right="edit">Edit</nav-link>
-        </zone>
+        </arpa-zone>
     </template>`;
 }
 
@@ -101,22 +101,22 @@ export const ApiDrivenList = {
     render: args => {
         return html`
             <arpa-list ${attrString(args)}>
-                <zone name="batch-operations">
+                <arpa-zone name="batch-operations">
                     <select-option value="delete" icon="delete">
                         Delete
                         <delete-dialog>
-                            <zone name="header"> Delete items </zone>
-                            <zone name="content"> Are you sure you want to delete the selected items? </zone>
+                            <arpa-zone name="header"> Delete items </arpa-zone>
+                            <arpa-zone name="content"> Are you sure you want to delete the selected items? </arpa-zone>
                         </delete-dialog>
                     </select-option>
-                </zone>
+                </arpa-zone>
 
-                <zone name="sort-options">
+                <arpa-zone name="sort-options">
                     <nav-link param-value="title" icon-right="sort_by_alpha"> Title </nav-link>
                     <nav-link param-value="date" icon-right="calendar_month" default> Date </nav-link>
-                </zone>
+                </arpa-zone>
 
-                <zone name="list-filters"> </zone>
+                <arpa-zone name="list-filters"> </arpa-zone>
                 ${renderItemTemplate()}
             </arpa-list>
         `;

@@ -136,14 +136,14 @@ export const CustomView = {
     render(args) {
         return html`
             <list-manager ${attrString(args)}>
-                <zone name="messages">
+                <arpa-zone name="messages">
                     <info-message>
                         This example demonstrates how to create a custom view for the list component. The custom view is
                         defined as a template with the type "view" and an id of our choice e.g. "custom-view". The
                         template can be styled using CSS and can include any HTML elements or components.
                         <br />
                     </info-message>
-                </zone>
+                </arpa-zone>
 
                 <!-- Custom View Template -->
 

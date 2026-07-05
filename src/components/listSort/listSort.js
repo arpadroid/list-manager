@@ -126,7 +126,7 @@ class ListSort extends ArpaElement {
                 tooltip="${this.i18nText('lblSortBy')}"
                 zone="sort-options"
             >
-                ${this.renderSortLinks()}
+                <arpa-zone name="nav"> ${this.renderSortLinks()} </arpa-zone>
             </icon-menu>
             <nav-link
                 class="sortDirButton iconButton__button"
@@ -137,7 +137,7 @@ class ListSort extends ArpaElement {
                 label="${this.i18nText('lblSortOrder')}"
                 use-router
             >
-                <zone name="tooltip-content">${this.getSortDirTooltip()}</zone>
+                <arpa-zone name="tooltip-content">${this.getSortDirTooltip()}</arpa-zone>
             </nav-link>`;
 
         /** @type {NavLink | null} */

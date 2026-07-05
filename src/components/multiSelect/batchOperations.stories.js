@@ -26,14 +26,14 @@ const Default = {
     render: args => {
         return html`
             <list-manager ${attrString(args)}>
-                <zone name="batch-operations">
+                <arpa-zone name="batch-operations">
                     <select-option value="delete" icon="delete">
                         Delete
                         <delete-dialog title="Delete items">
-                            <zone name="content"> Are you sure you want to delete the selected items? </zone>
+                            <arpa-zone name="content"> Are you sure you want to delete the selected items? </arpa-zone>
                         </delete-dialog>
                     </select-option>
-                </zone>
+                </arpa-zone>
                 ${renderItemTemplate()}
             </list-manager>
         `;

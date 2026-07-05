@@ -28,10 +28,10 @@ const Default = {
     },
     render: args => {
         return html`<list-manager ${attrString(args)}>
-            <zone name="sort-options">
+            <arpa-zone name="sort-options">
                 <nav-link param-value="title" icon-right="sort_by_alpha" default> Title </nav-link>
                 <nav-link param-value="date" icon-right="calendar_month"> Date </nav-link>
-            </zone>
+            </arpa-zone>
             ${renderItemTemplate()}
         </list-manager>`;
     },

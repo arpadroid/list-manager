@@ -58,7 +58,9 @@ class ListFilters extends ArpaElement {
             buttonAria: label
         };
         this.innerHTML = html`<icon-menu ${attrString(props)} nav-class="listFilters__nav">
-            <div class="listFilters__content">${this.renderForm()}</div>
+            <arpa-zone name="nav">
+                <div class="listFilters__content">${this.renderForm()}</div>
+            </arpa-zone>
             <arpa-zone name="tooltip"> ${label} </arpa-zone>
         </icon-menu>`;
         /** @type {IconMenu | null} */

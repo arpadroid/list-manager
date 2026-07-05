@@ -64,7 +64,7 @@ class ListManagerItem extends ListItem {
     hasSelection() {
         return (
             (typeof this.list?.hasControl === 'function' && this.list?.hasControl('multiselect')) ??
-            super.hasSelection()
+            this.listResource?.hasSelection()
         );
     }
 

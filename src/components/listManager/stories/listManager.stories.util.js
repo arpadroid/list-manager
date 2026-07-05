@@ -57,15 +57,15 @@ export function renderItemTemplate(attr = {}) {
             truncate-button
             ${attrString(attr)}
         >
-            <zone name="tags">
+            <arpa-zone name="tags">
                 <tag-item label="{date}" icon="calendar_month"></tag-item>
                 <tag-item label="{movement}" icon="palette"></tag-item>
-            </zone>
-            <zone name="nav">
+            </arpa-zone>
+            <arpa-zone name="nav">
                 <nav-link link="javascript:void(0)" icon-right="visibility">View</nav-link>
                 <nav-link link="javascript:void(0)" icon-right="edit">Edit</nav-link>
-            </zone>
-            <zone name="content">{legacy}</zone>
+            </arpa-zone>
+            <arpa-zone name="content">{legacy}</arpa-zone>
         </template>`;
 }
 

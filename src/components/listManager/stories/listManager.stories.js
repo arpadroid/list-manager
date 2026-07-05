@@ -67,30 +67,30 @@ export const ResourceDriven = {
     render: args => {
         return html`
             <list-manager ${attrString(args)}>
-                <zone name="messages">
+                <arpa-zone name="messages">
                     <info-message>
                         The list component is an advanced list creation tool, which aims to simplify the process of
                         creating and managing advanced UI lists with search and filtering functionality. It features
                         highly customizable list items via templates, multiple view modes, and seamless integration with
                         data resources.
                     </info-message>
-                </zone>
-                <zone name="batch-operations">
+                </arpa-zone>
+                <arpa-zone name="batch-operations">
                     <select-option value="delete" icon="delete">
                         Delete
                         <delete-dialog>
-                            <zone name="header"> Delete items </zone>
-                            <zone name="content"> Are you sure you want to delete the selected items? </zone>
+                            <arpa-zone name="header"> Delete items </arpa-zone>
+                            <arpa-zone name="content"> Are you sure you want to delete the selected items? </arpa-zone>
                         </delete-dialog>
                     </select-option>
-                </zone>
+                </arpa-zone>
 
-                <zone name="sort-options">
+                <arpa-zone name="sort-options">
                     <nav-link param-value="title" icon-right="sort_by_alpha"> Title </nav-link>
                     <nav-link param-value="date" icon-right="calendar_month" default> Date </nav-link>
-                </zone>
+                </arpa-zone>
 
-                <zone name="list-filters"> </zone>
+                <arpa-zone name="list-filters"> </arpa-zone>
                 ${renderItemTemplate()}
             </list-manager>
         `;

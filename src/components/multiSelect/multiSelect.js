@@ -76,26 +76,28 @@ class MultiSelect extends ArpaElement {
             tooltip="${this.i18nText('txtBatchOperations')}"
             ${attrString(menuProps)}
         >
-            <arpa-form id="${formId}" class="listMultiSelect__form" variant="compact" has-submit="false">
-                <zone name="form-title"> ${this.i18n('txtBatchOperations')} </zone>
-                <zone name="messages">
-                    <info-message id="info-message" class="listMultiSelect__infoMessage">
-                        ${this.getTooltip()}
-                    </info-message>
-                </zone>
-                <checkbox-field id="toggleAll" value="select-all" icon="select_all">
-                    <zone name="checkbox-label"> ${this.i18n('txtSelectAll')} </zone>
-                </checkbox-field>
-                <checkbox-field id="selectFilter" icon="filter_alt">
-                    <zone name="checkbox-label"> ${this.i18n('txtShowSelectedOnly')} </zone>
-                </checkbox-field>
-                <select-combo
-                    id="actions"
-                    placeholder="${this.getText('txtSelectAction')}"
-                    icon="layers"
-                    option-component="batch-operation"
-                ></select-combo>
-            </arpa-form>
+            <arpa-zone name="nav">
+                <arpa-form id="${formId}" class="listMultiSelect__form" variant="compact" has-submit="false">
+                    <arpa-zone name="form-title"> ${this.i18n('txtBatchOperations')} </arpa-zone>
+                    <arpa-zone name="messages">
+                        <info-message id="info-message" class="listMultiSelect__infoMessage">
+                            ${this.getTooltip()}
+                        </info-message>
+                    </arpa-zone>
+                    <checkbox-field id="toggleAll" value="select-all" icon="select_all">
+                        <arpa-zone name="checkbox-label"> ${this.i18n('txtSelectAll')} </arpa-zone>
+                    </checkbox-field>
+                    <checkbox-field id="selectFilter" icon="filter_alt">
+                        <arpa-zone name="checkbox-label"> ${this.i18n('txtShowSelectedOnly')} </arpa-zone>
+                    </checkbox-field>
+                    <select-combo
+                        id="actions"
+                        placeholder="${this.getText('txtSelectAction')}"
+                        icon="layers"
+                        option-component="batch-operation"
+                    ></select-combo>
+                </arpa-form>
+            </arpa-zone>
         </icon-menu>`;
     }
 

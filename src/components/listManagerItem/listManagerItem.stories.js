@@ -82,8 +82,8 @@ export const WithZones = {
     render: args => {
         return html`<list-manager id="list-item-list" title="List Item" controls=" ">
             <list-manager-item ${attrString(args)}>
-                <zone name="title"><strong>Morning Motivation</strong></zone>
-                <zone name="subtitle">Start your day with a burst of energy!</zone>
+                <arpa-zone name="title"><strong>Morning Motivation</strong></arpa-zone>
+                <arpa-zone name="subtitle">Start your day with a burst of energy!</arpa-zone>
                 ${longText}
             </list-manager-item>
         </list-manager>`;

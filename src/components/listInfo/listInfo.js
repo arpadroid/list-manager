@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-nested-template-literals */
 /**
  * @typedef {import('@arpadroid/resources').ListResource} ListResource
  * @typedef {import('@arpadroid/resources').ListFilter} ListFilter
@@ -118,7 +117,7 @@ class ListInfo extends ArpaElement {
     renderRefresh() {
         if (!this.hasRefresh()) return '';
         return html`<icon-button class="listInfo__refresh" icon="refresh">
-            <zone name="tooltip">${this.i18n('txtRefresh')}</zone>
+            <arpa-zone name="tooltip">${this.i18n('txtRefresh')}</arpa-zone>
         </icon-button>`;
     }
 
@@ -126,10 +125,10 @@ class ListInfo extends ArpaElement {
         if (!this.hasPrevNext()) return '';
         return html`
             <icon-button class="listInfo__previous" icon="skip_previous">
-                <zone name="tooltip">${this.i18n('txtPrevPage')}</zone>
+                <arpa-zone name="tooltip">${this.i18n('txtPrevPage')}</arpa-zone>
             </icon-button>
             <icon-button class="listInfo__next" icon="skip_next">
-                <zone name="tooltip">${this.i18n('txtNextPage')}</zone>
+                <arpa-zone name="tooltip">${this.i18n('txtNextPage')}</arpa-zone>
             </icon-button>
         `;
     }
