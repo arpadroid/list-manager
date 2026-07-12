@@ -4,6 +4,7 @@ import ListManagerItem from './listManagerItem.js';
 
 export type ListManagerItemConfigType = ListItemConfigType & {
     nav?: NavListConfigType;
+    view?: string;
 };
 
 export type ListItemViewConfigType = {

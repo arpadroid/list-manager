@@ -10,6 +10,7 @@
 import { attrString } from '@arpadroid/tools';
 import { renderItemTemplate } from '@arpadroid/lists/stories/utils';
 import { playSetup } from './listManager.stories.util.js';
+import { within, userEvent, expect, waitFor } from 'storybook/test';
 
 const html = String.raw;
 /** @type {Meta} */
@@ -61,8 +62,12 @@ export const ResourceDriven = {
         itemsPerPage: 10,
         hasResource: true
     },
-    play: async ({ canvasElement }) => {
+    play: async ({ canvasElement, canvas, step }) => {
         await playSetup(canvasElement);
+
+        await step('Renders the list manager with the expected title', async () => {
+            expect(canvas.getByText('List Component')).toBeInTheDocument();
+        });
     },
     render: args => {
         return html`

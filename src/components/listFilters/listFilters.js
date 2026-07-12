@@ -51,17 +51,16 @@ class ListFilters extends ArpaElement {
     }
 
     async render() {
-        const label = this.getProp('btn-label') || this.getProp('label');
+        const label = this.getProp('btnLabel') || this.getProp('label');
         const props = {
             ...this.getProperties('icon'),
-            label,
+            tooltip: label,
             buttonAria: label
         };
         this.innerHTML = html`<icon-menu ${attrString(props)} nav-class="listFilters__nav">
             <arpa-zone name="nav">
                 <div class="listFilters__content">${this.renderForm()}</div>
             </arpa-zone>
-            <arpa-zone name="tooltip"> ${label} </arpa-zone>
         </icon-menu>`;
         /** @type {IconMenu | null} */
         this.menuNode = this.querySelector('icon-menu');

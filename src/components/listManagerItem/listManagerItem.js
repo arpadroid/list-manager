@@ -28,9 +28,11 @@ class ListManagerItem extends ListItem {
         /** @type {ListManagerItemConfigType} */
         const conf = {
             selectedClass: 'listManagerItem--selected',
+            blueprint: ListItem.prototype.$renderTemplate.bind(this),
             className: 'listItem',
-            classNames: ['listManagerItem'],
-            listSelector: 'list-manager'
+            classNames: ['listManagerItem', () => this.getViewClass()],
+            listSelector: 'list-manager',
+            view: 'list'
         };
         return mergeObjects(super.getDefaultConfig(), conf);
     }
@@ -58,7 +60,7 @@ class ListManagerItem extends ListItem {
     //////////////////
 
     hasNav() {
-        return Boolean(this._config.nav);
+        return this.hasContent('nav');
     }
 
     hasSelection() {
@@ -107,11 +109,6 @@ class ListManagerItem extends ListItem {
         return true;
     }
 
-    $onComplete() {
-        super.$onComplete();
-        this.setViewClass();
-    }
-
     // #endregion Lifecycle
 
     ////////////////////
@@ -130,15 +127,30 @@ class ListManagerItem extends ListItem {
     }
 
     getView() {
-        return (typeof this.list?.getView === 'function' && this.list?.getView()) || this.view || 'list';
+        return this.getProp('view') || this.list?.getView() || 'list';
     }
 
     getViewTemplate(viewId = this.getView()) {
-        return this.getViewConfig(viewId)?.template || this.list?.getViewTemplate(viewId)?.innerHTML || '';
+        if (viewId === 'list') {
+            return super.$renderTemplate();
+        }
+        const viewConfig = this.getViewConfig(viewId);
+        const viewTemplate = this.list?.getViewTemplate(viewId);
+        if (!viewConfig && !viewTemplate) {
+            console.warn(`No view configuration or template found for view: ${viewId}`);
+        }
+        return (
+            viewConfig?.template ||
+            viewTemplate?.innerHTML ||
+            ListItemViews.list.template ||
+            super.$renderTemplate() ||
+            ''
+        );
     }
 
-    setViewClass(view = this.view) {
-        view && this.classList.add('listItem--' + view);
+    getViewClass(view = this.getProp('view')) {
+        const viewConfig = this.getViewConfig(view);
+        return viewConfig?.className || 'listItem--' + view;
     }
 
     /**
@@ -148,7 +160,7 @@ class ListManagerItem extends ListItem {
     _initializeView() {
         const val = String(this.viewsFilter?.getValue() || 'list');
         /** @type {string} */
-        this.view = val;
+        this.setProp('view', val);
         this.viewsFilter?.on('value', this._onViewChange);
     }
 
@@ -157,8 +169,8 @@ class ListManagerItem extends ListItem {
      * @param {string} view
      */
     _onViewChange(view) {
-        if (this.view !== view) {
-            this.view = view;
+        if (this.getProp('view') !== view) {
+            this.setProp('view', view);
             this?.isConnected && this.reRender();
         }
     }
