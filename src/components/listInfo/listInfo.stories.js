@@ -39,21 +39,26 @@ export const Test = {
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement);
         const { canvas, listNode } = setup;
-        const prevBtn = canvas.getByText(/Previous page/i).closest('button');
-        const nextBtn = canvas.getByText(/Next page/i).closest('button');
-        const refreshBtn = canvas.getByText(/Refresh list/i).closest('button');
+
         const listInfoClass = '.listInfo__text';
         await step('Renders the list info', async () => {
-            expect(refreshBtn).toBeInTheDocument();
-            expect(prevBtn).toBeInTheDocument();
-            expect(nextBtn).toBeInTheDocument();
-            const listInfo = canvasElement.querySelector(listInfoClass);
-            expect(listInfo).toHaveTextContent(
-                `Showing 1 - 5 out of ${listNode?.listResource?.getTotalItems()} results`
-            );
+            await waitFor(() => {
+                const prevBtn = canvas.getByText(/Previous page/i).closest('button');
+                const nextBtn = canvas.getByText(/Next page/i).closest('button');
+                const refreshBtn = canvas.getByText(/Refresh list/i).closest('button');
+                expect(refreshBtn).toBeInTheDocument();
+                expect(prevBtn).toBeInTheDocument();
+                expect(nextBtn).toBeInTheDocument();
+                const listInfo = canvasElement.querySelector(listInfoClass);
+                expect(listInfo).toHaveTextContent(
+                    `Showing 1 - 5 out of ${listNode?.listResource?.getTotalItems()} results`
+                );
+            });
         });
 
         await step('Clicks on the next page button and verifies the list info', async () => {
+            const nextBtn = canvas.getByText(/Next page/i).closest('button');
+
             userEvent.click(nextBtn);
             await waitFor(() => {
                 const listInfo = canvasElement.querySelector(listInfoClass);
@@ -77,6 +82,9 @@ export const Test = {
         });
 
         await step('Searches for "Leon" and expects 1 result to be produced with appropriate message.', async () => {
+            const prevBtn = canvas.getByText(/Previous page/i).closest('button');
+            const nextBtn = canvas.getByText(/Next page/i).closest('button');
+
             const input = canvas.getByRole('searchbox');
             const form = input.closest('arpa-form');
             form?._config && (form._config.debounce = false);

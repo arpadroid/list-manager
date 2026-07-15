@@ -38,7 +38,7 @@ export async function playSetup(canvasElement, options) {
     await listNode?.promise;
     listNode?.id && initList && (await initializeList(listNode?.id, items));
     await listItem?.promise;
-    await new Promise(resolve => setTimeout(resolve, 50));
+    // await new Promise(resolve => setTimeout(resolve, 50));
     return { canvas, listNode, listItem, listResource };
 }
 
@@ -48,7 +48,7 @@ export async function playSetup(canvasElement, options) {
  * @returns {string}
  */
 export function renderItemTemplate(attr = {}) {
-    return html` <!-- List Item Template -->
+    return html`
         <template
             template-type="list-item"
             template-mode="append"
@@ -58,15 +58,16 @@ export function renderItemTemplate(attr = {}) {
             ${attrString(attr)}
         >
             <arpa-zone name="tags">
-                <tag-item label="{date}" icon="calendar_month"></tag-item>
-                <tag-item label="{movement}" icon="palette"></tag-item>
+                <tag-item icon="calendar_month">{date}</tag-item>
+                <tag-item icon="palette">{movement}</tag-item>
             </arpa-zone>
             <arpa-zone name="nav">
                 <nav-link link="javascript:void(0)" icon-right="visibility">View</nav-link>
                 <nav-link link="javascript:void(0)" icon-right="edit">Edit</nav-link>
             </arpa-zone>
             <arpa-zone name="content">{legacy}</arpa-zone>
-        </template>`;
+        </template>
+    `;
 }
 
 /**

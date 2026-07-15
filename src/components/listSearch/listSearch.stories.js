@@ -29,15 +29,15 @@ export const Render = Default;
 /** @type {StoryObj} */
 export const Test = {
     args: {
-        ...Default.args,
         id: 'test-search',
+        title: 'List Search Test',
         searchPlaceholder: 'List Search Test'
     },
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement);
         await customElements.whenDefined('field-input');
         const { canvas } = setup;
-        const input = canvas.getByRole('searchbox');
+        const input = await waitFor(() => canvas.getByRole('searchbox'));
         const field = input.closest('search-field');
         await field.promise;
         const form = input.closest('arpa-form');

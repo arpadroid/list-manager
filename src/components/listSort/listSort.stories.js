@@ -22,6 +22,7 @@ const Default = {
         id: 'list-sort',
         controls: ['sort'],
         title: 'List Sort',
+        hasControls: false,
         // hasInfo: false,
         hasMessages: false,
         itemsPerPage: 10

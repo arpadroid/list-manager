@@ -102,7 +102,7 @@ class ListManager extends List {
      */
     hasControls() {
         if (this._config.hasControls === false) return false;
-        if (this.getControls().length === 0) return false;
+        if (this.getControls().length < 1) return false;
         return this.hasZone('controls') || !this.hasHeaderControls();
     }
 
@@ -270,7 +270,12 @@ class ListManager extends List {
      * @param {string} view
      */
     setView(view) {
+        this.classList.forEach(cls => cls.startsWith('listView--') && this.classList.remove(cls));
+        this.classList.add('listView--' + view);
+        view === 'grid-compact' && this.classList.add('listView--grid');
         this.getViewFilter()?.setValue(view);
+        const itemNodes = /** @type {ListManagerItem[]} */ (this.getItemNodes() || []);
+        itemNodes.forEach(item => item.setView(view));
     }
 
     getDefaultView() {

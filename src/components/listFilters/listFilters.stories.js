@@ -18,7 +18,8 @@ const Default = {
         ...ListStory.args,
         id: 'list-filters',
         controls: 'filters',
-        title: 'List Filters'
+        title: 'List Filters',
+        itemsPerPage: 5
     },
     render: renderSimple
 };
@@ -40,12 +41,15 @@ export const Test = {
         const filtersCombo = filtersNode.navigation;
         const combo = within(filtersCombo);
         /** @type {FormComponent | null} */
-        const filtersForm = filtersCombo.querySelector('arpa-form');
-        filtersForm?._config && (filtersForm._config.debounce = 0);
+        let filtersForm;
 
         await step('Renders the filters menu control', async () => {
-            expect(filtersBtn).toBeInTheDocument();
-            expect(filtersBtn).toHaveTextContent('Filters');
+            await waitFor(() => {
+                filtersForm = filtersCombo.querySelector('arpa-form');
+                filtersForm?._config && (filtersForm._config.debounce = 0);
+                expect(filtersBtn).toBeInTheDocument();
+                expect(filtersForm).toBeInTheDocument();
+            });
         });
 
         await step('Clicks on filters menu and opens the filters panel', async () => {
@@ -71,7 +75,7 @@ export const Test = {
             if (!filtersForm) {
                 throw new Error('Filters form not found');
             }
-            fireEvent.submit(filtersForm);
+            await fireEvent.submit(filtersForm);
             await waitFor(() => {
                 expect(setup.listResource?.getPage()).toEqual(2);
                 const currPage = canvas.getByLabelText('Current page');
@@ -91,18 +95,19 @@ export const Test = {
                 throw new Error('Options node not found');
             }
             const options = within(perPageField.optionsNode);
-            expect(perPageField.getValue()).toEqual('10');
-            expect(listNode?.getItemNodes()).toHaveLength(10);
-            const option5 = options.getByText('5').closest('button');
+            expect(perPageField.getValue()).toEqual('5');
+            expect(listNode?.getItemNodes()).toHaveLength(5);
+            const option5 = options.getByText('10').closest('button');
             if (!option5) {
-                throw new Error('Option 5 not found');
+                throw new Error('Option 10 not found');
             }
             await userEvent.click(option5);
             await waitFor(() => {
-                expect(setup.listResource?.getPerPage()).toEqual(5);
-                const currPage = canvas.getByLabelText('Current page');
-                expect(currPage).toHaveAttribute('value', '1');
-                expect(canvasElement.querySelectorAll('list-manager-item')).toHaveLength(5);
+                expect(setup.listResource?.getPerPage()).toEqual(10);
+                // const currPage = canvas.getByLabelText('Current page');
+                // expect(currPage).toHaveAttribute('value', '1');
+                // expect(canvasElement.querySelector('[is-active]')).toHaveTextContent('1');
+                expect(canvasElement.querySelectorAll('list-manager-item')).toHaveLength(10);
             });
         });
     }

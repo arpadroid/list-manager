@@ -11,8 +11,8 @@
  * @typedef {import('@arpadroid/services').Router} Router
  */
 
-import { editURL, attrString, SearchTool, defineCustomElement } from '@arpadroid/tools';
-import { ArpaElement, processTemplate } from '@arpadroid/ui';
+import { editURL, SearchTool, defineCustomElement } from '@arpadroid/tools';
+import { ArpaElement } from '@arpadroid/ui';
 
 const html = String.raw;
 class ListSearch extends ArpaElement {
@@ -55,14 +55,55 @@ class ListSearch extends ArpaElement {
         return await customElements.whenDefined('arpa-form');
     }
 
+    // #endregion
+
+    ////////////////////
+    // #region ACCESSORS
+    ////////////////////
+
+    getFiltersWrapper() {
+        return this.list?.querySelector('.list__filtersMenu');
+    }
+
+    getSearchPlaceholder() {
+        return this.list?.getProp('search-placeholder') || this.getProp('placeholder') || 'Search';
+    }
+
+    // #endregion
+
+    ////////////////////
+    // #region RENDERING
+    ////////////////////
+
+    $renderTemplate() {
+        return html`
+            <arpa-form id="{formId}" variant="mini">
+                <search-field
+                    id="search"
+                    has-mini-search="{hasMiniSearch}"
+                    placeholder="{getSearchPlaceholder()}"
+                    value="${this.searchFilter?.getValue()}"
+                ></search-field>
+            </arpa-form>
+        `;
+    }
+
+    getTemplateVars() {
+        return {
+            id: this.id,
+            formId: `${this.list?.getId()}-list-search-form`
+        };
+    }
+
     async $initializeNodes() {
         /** @type {FormComponent | null} */
-        this.form = /** @type {FormComponent | null} */ (this.querySelector('arpa-form'));
         await customElements.whenDefined('arpa-form');
+        this.form = /** @type {FormComponent | null} */ (this.querySelector('arpa-form'));
         this.form?.onSubmit(this._onSubmit);
         this.searchField = /** @type {SearchField | null} */ (this.form?.getField('search'));
         await this.searchField?.promise;
         await this.initializeSearch();
+        this.listSort = this.querySelector('list-sort');
         return true;
     }
 
@@ -83,45 +124,6 @@ class ListSearch extends ArpaElement {
         this.searchField?.setValue(this.searchFilter.getValue());
         this.searchFilter.on('value', value => this.searchField?.setValue(value));
         return true;
-    }
-
-    // #endregion
-
-    ////////////////////
-    // #region ACCESSORS
-    ////////////////////
-
-    getFiltersWrapper() {
-        return this.list?.querySelector('.list__filtersMenu');
-    }
-
-    // #endregion
-
-    ////////////////////
-    // #region RENDERING
-    ////////////////////
-
-    render() {
-        const searchAttr = attrString({
-            'has-mini-search': this.getProp('has-mini-search'),
-            placeholder: this.list?.getProp('search-placeholder'),
-            value: this.searchFilter?.getValue()
-        });
-        this.innerHTML = processTemplate(
-            html`<arpa-form id="{formId}" variant="mini">
-                <search-field id="search" ${searchAttr}></search-field>
-            </arpa-form>`,
-            this.getTemplateVars(),
-            this
-        );
-        this.listSort = this.querySelector('list-sort');
-    }
-
-    getTemplateVars() {
-        return {
-            id: this.id,
-            formId: `${this.list?.getId()}-list-search-form`
-        };
     }
 
     // #endregion

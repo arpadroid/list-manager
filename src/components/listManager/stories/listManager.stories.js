@@ -62,11 +62,11 @@ export const ResourceDriven = {
         itemsPerPage: 10,
         hasResource: true
     },
-    play: async ({ canvasElement, canvas, step }) => {
+    play: async ({ canvasElement, canvas, step, args }) => {
         await playSetup(canvasElement);
 
         await step('Renders the list manager with the expected title', async () => {
-            expect(canvas.getByText('List Component')).toBeInTheDocument();
+            args.title && expect(canvas.getByText(args.title)).toBeInTheDocument();
         });
     },
     render: args => {

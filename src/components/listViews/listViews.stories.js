@@ -22,8 +22,9 @@ const Default = {
         controls: 'views',
         id: 'list-views',
         title: 'List Views',
-        itemsPerPage: 40,
-        hasInfo: false
+        itemsPerPage: 10,
+        hasInfo: false,
+        views: 'list,grid'
     },
     render: renderSimple
 };
@@ -37,8 +38,7 @@ export const Test = {
         ...Default.args,
         id: 'test-views',
         title: 'List Views Test',
-        defaultView: 'list',
-        views: 'list,grid'
+        defaultView: 'list'
     },
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement);
@@ -53,22 +53,23 @@ export const Test = {
         }
         await step('Renders the menu with the expected views', async () => {
             expect(viewsMenu).toBeInTheDocument();
-
-            const listView = within(viewsMenu).getByText('List');
-            const gridView = within(viewsMenu).getByText('Grid');
-            expect(listView).toBeInTheDocument();
-            expect(gridView).toBeInTheDocument();
-            expect(viewsMenu?.querySelectorAll('nav-link')).toHaveLength(2);
+            await waitFor(() => {
+                const listView = within(viewsMenu).getByText('List');
+                const gridView = within(viewsMenu).getByText('Grid');
+                expect(listView).toBeInTheDocument();
+                expect(gridView).toBeInTheDocument();
+                expect(viewsMenu?.querySelectorAll('nav-link')).toHaveLength(2);
+            });
         });
 
         await step('Opens the Views menu and verifies the list item is selected', async () => {
             const viewsButton = canvas.getByRole('button', { name: /Views/i });
-            userEvent.click(viewsButton);
-            const listView = within(viewsMenu).getByText('List').closest('button');
+            await userEvent.click(viewsButton);
             await waitFor(() => {
+                const listView = within(viewsMenu).getByText('List').closest('button');
                 expect(listView).toHaveAttribute('aria-current', 'location');
+                expect(listNode).toHaveClass('listView--list');
             });
-            expect(listNode).toHaveClass('listView--list');
         });
 
         await step('Clicks on the Grid view and verifies the list item is selected', async () => {
@@ -99,7 +100,8 @@ export const CustomView = {
         title: 'Custom View',
         titleIcon: 'dashboard',
         defaultView: 'custom-view',
-        views: 'list,custom-view'
+        views: 'list,custom-view',
+        itemsPerPage: 2,
     },
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement);
@@ -108,8 +110,10 @@ export const CustomView = {
             await listNode?.setView('custom-view');
             expect(listNode).toHaveClass('listView--custom-view');
             expect(canvas.getByRole('heading', { name: /Custom View/i })).toBeInTheDocument();
-            const imageContainer = canvasElement.querySelector('.test-image-container img');
-            expect(imageContainer).toBeInTheDocument();
+            await waitFor(() => {
+                const imageContainer = canvasElement.querySelector('.test-image-container img');
+                expect(imageContainer).toBeInTheDocument();
+            });
             const customViewContent = canvasElement.querySelector('.listItem__customView__content');
             expect(customViewContent).toBeInTheDocument();
             const customViewHeader = canvasElement.querySelector('.listItem__customView__header');
@@ -154,14 +158,14 @@ export const CustomView = {
                     icon="dashboard"
                     title-icon="dashboard"
                 >
-                    <div class="listItem__main">
+                    <arpa-node name="main">
                         <div class="test-image-container">{image}</div>
                         <div class="listItem__customView__content">
-                            <div class="listItem__customView__header">{titleContainer}{nav}</div>
-                            {tags} {children}
-                            <span>custom text</span>
+                            <div class="listItem__customView__header">{titleWrapper}{subtitle}{nav}</div>
+                            <div class="listItem__customView__body">{content}</div>
+                            custom text
                         </div>
-                    </div>
+                    </arpa-node>
                 </template>
 
                 ${renderItemTemplate({ elementTruncateContent: 180, elementTitleIcon: 'dashboard' })}

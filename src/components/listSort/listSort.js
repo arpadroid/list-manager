@@ -40,7 +40,8 @@ class ListSort extends ArpaElement {
             iconDesc: 'keyboard_double_arrow_down',
             iconSort: 'sort',
             paramAsc: 'asc',
-            paramDesc: 'desc'
+            paramDesc: 'desc',
+            sortDirection: 'asc'
         };
     }
 
@@ -68,15 +69,15 @@ class ListSort extends ArpaElement {
     ////////////////////
 
     getSortDir() {
-        return this.listResource?.getSortDirection() || 'asc';
+        return this.listResource?.getSortDirection() || this.getProp('sortDirection') || 'asc';
     }
 
     getSortDirIcon(dir = this.getSortDir()) {
-        return dir === 'asc' ? this.getProp('icon-asc') : this.getProp('icon-desc');
+        return dir === 'asc' ? this.getProp('iconAsc') : this.getProp('iconDesc');
     }
 
     getSortDirTooltip(dir = this.getSortDir()) {
-        return this.i18n(dir === 'asc' ? 'lblSortAsc' : 'lblSortDesc');
+        return this.i18nText(dir === 'asc' ? 'lblSortAsc' : 'lblSortDesc');
     }
     ///////////////////////////////
     // #endregion ACCESSORS
@@ -92,23 +93,19 @@ class ListSort extends ArpaElement {
 
     _onRouteChange() {
         this._initializeNav();
-        // this.updateSortLink();
+        this.updateSortLink();
     }
 
-    async updateSortLink(sortDir = this.getSortDir(), sortLink = this.sortLink) {
-        await this.promise;
-        await sortLink?.promise;
-        /** @type {Icon | null | undefined} */
-        const iconNode = sortLink?.querySelector('arpa-icon');
-        await customElements.whenDefined('arpa-icon');
-        const icon = this.getSortDirIcon(sortDir);
-        iconNode?.setIcon(icon);
+    /**
+     * Updates the sort link based on the current sort direction.
+     * @param {string} sortDir - The current sort direction.
+     * @returns {Promise<void>}
+     */
+    async updateSortLink(sortDir = this.getSortDir()) {
+        const sortLink = /** @type {NavLink | null} */ (this.nodes.sortLink);
+        sortLink?.setProp('icon', this.getSortDirIcon(sortDir));
         sortLink?.setAttribute('param-value', sortDir === 'asc' ? 'desc' : 'asc');
-        /** @type {Tooltip | null | undefined} */
-        const tooltip = sortLink?.querySelector('arpa-tooltip');
-        const tooltipText = this.getSortDirTooltip(sortDir);
-        await tooltip?.promise;
-        tooltip?.setContent(tooltipText);
+        sortLink?.setProp('tooltip', this.getSortDirTooltip(sortDir));
     }
 
     // #endregion LIFECYCLE
@@ -117,32 +114,27 @@ class ListSort extends ArpaElement {
     // #region RENDERING
     //////////////////////////
 
-    render() {
+    $renderTemplate() {
         const sortDir = this.listResource?.getSortDirection() === 'asc' ? 'desc' : 'asc';
 
-        this.innerHTML = html`<icon-menu
-                class="sortMenu"
-                icon="sort_by_alpha"
-                tooltip="${this.i18nText('lblSortBy')}"
-                zone="sort-options"
-            >
+        return html`
+            <icon-menu icon="sort_by_alpha" tooltip="${this.i18nText('lblSortBy')}" zone="sort-options">
                 <arpa-zone name="nav"> ${this.renderSortLinks()} </arpa-zone>
             </icon-menu>
-            <nav-link
-                class="sortDirButton iconButton__button"
+            <arpa-node
+                tag="nav-link"
+                name="sortLink"
+                class="sortDirButton iconButton__button tooltip__handler"
                 param-name="${this.list?.getParamName('sortDir')}"
                 param-value="${sortDir}"
                 param-clear="${this.list?.getParamName('page')}"
-                icon="${this.getSortDirIcon()}"
-                label="${this.i18nText('lblSortOrder')}"
+                icon="{getSortDirIcon()}"
+                label="{i18n:lblSortOrder}"
+                tooltip="{getSortDirTooltip()}"
                 use-router
             >
-                <arpa-zone name="tooltip-content">${this.getSortDirTooltip()}</arpa-zone>
-            </nav-link>`;
-
-        /** @type {NavLink | null} */
-        this.sortLink = this.querySelector('.sortDirButton');
-        this._initializeNav();
+            </arpa-node>
+        `;
     }
 
     renderSortLinks(sortOptions = this.list?.getSortOptions() || []) {
@@ -150,6 +142,12 @@ class ListSort extends ArpaElement {
             const { value = '', icon = '', label = '' } = payload;
             return html`<nav-link link="${value}" icon-left="${icon}" label="${label}"></nav-link>`;
         });
+    }
+
+    async $initializeNodes() {
+        await super.$initializeNodes();
+        this._initializeNav();
+        return true;
     }
 
     async _initializeNav() {

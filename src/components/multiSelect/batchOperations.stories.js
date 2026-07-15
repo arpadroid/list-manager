@@ -26,7 +26,7 @@ const Default = {
     render: args => {
         return html`
             <list-manager ${attrString(args)}>
-                <arpa-zone name="batch-operations">
+                <arpa-zone name="batchOperations">
                     <select-option value="delete" icon="delete">
                         Delete
                         <delete-dialog title="Delete items">

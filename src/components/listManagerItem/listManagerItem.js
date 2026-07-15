@@ -6,9 +6,8 @@
  * @typedef {import('./listManagerItem.types').ListItemViewConfigType} ListItemViewConfigType
  * @typedef {import('@arpadroid/resources').ListFilter} ListFilter
  */
-import { defineCustomElement, dashedToCamel } from '@arpadroid/tools';
+import { defineCustomElement, dashedToCamel, mergeObjects, attr } from '@arpadroid/tools';
 import { ListItem } from '@arpadroid/lists';
-import { mergeObjects } from '@arpadroid/tools';
 import ListItemViews from './listItem.views.js';
 
 class ListManagerItem extends ListItem {
@@ -19,6 +18,24 @@ class ListManagerItem extends ListItem {
     list = this.list;
     /** @type {ListManagerItemConfigType} */
     _config = this._config;
+
+    static get observedAttributes() {
+        return ['view'];
+    }
+
+    /**
+     * Called when an observed attribute changes.
+     * @param {string} name
+     * @param {string | null} oldValue
+     * @param {string | null} newValue
+     */
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === 'view' && oldValue && newValue) {
+            oldValue?.length && this.classList.remove('listItem--' + oldValue);
+            this.classList.add('listItem--' + newValue);
+        }
+    }
+
     /**
      * Returns the default config for the component.
      * @returns {ListManagerItemConfigType}
@@ -99,8 +116,8 @@ class ListManagerItem extends ListItem {
     ////////////////////////
 
     $onConnected() {
-        super.$onConnected();
         this.viewsFilter && this._initializeView();
+        super.$onConnected();
     }
 
     async $initializeNodes() {
@@ -130,6 +147,14 @@ class ListManagerItem extends ListItem {
         return this.getProp('view') || this.list?.getView() || 'list';
     }
 
+    /**
+     * Sets the view for the list item.
+     * @param {string} view
+     */
+    setView(view) {
+        this.setAttribute('view', view);
+    }
+
     getViewTemplate(viewId = this.getView()) {
         if (viewId === 'list') {
             return super.$renderTemplate();
@@ -139,16 +164,16 @@ class ListManagerItem extends ListItem {
         if (!viewConfig && !viewTemplate) {
             console.warn(`No view configuration or template found for view: ${viewId}`);
         }
-        return (
-            viewConfig?.template ||
-            viewTemplate?.innerHTML ||
-            ListItemViews.list.template ||
-            super.$renderTemplate() ||
-            ''
-        );
+        if (viewConfig?.template) return viewConfig.template;
+        if (viewTemplate?.innerHTML) {
+            const mainNode = viewTemplate.content.querySelector(':scope > arpa-node[name="main"]');
+            mainNode instanceof HTMLElement && attr(mainNode, this.getWrapperAttr());
+            return viewTemplate?.innerHTML;
+        }
+        return ListItemViews.list.template || super.$renderTemplate() || '';
     }
 
-    getViewClass(view = this.getProp('view')) {
+    getViewClass(view = this.getView()) {
         const viewConfig = this.getViewConfig(view);
         return viewConfig?.className || 'listItem--' + view;
     }
@@ -166,13 +191,10 @@ class ListManagerItem extends ListItem {
 
     /**
      * Called when the view changes.
-     * @param {string} view
+     * @param {string} _view
      */
-    _onViewChange(view) {
-        if (this.getProp('view') !== view) {
-            this.setProp('view', view);
-            this?.isConnected && this.reRender();
-        }
+    _onViewChange(_view) {
+        this.reRender();
     }
 
     // #endregion Views
