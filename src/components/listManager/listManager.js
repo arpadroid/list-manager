@@ -101,7 +101,8 @@ class ListManager extends List {
      * @returns {boolean}
      */
     hasControls() {
-        if (this._config.hasControls === false) return false;
+        const { hasControls } = this._config;
+        if (typeof hasControls === 'boolean') return hasControls;
         if (this.getControls().length < 1) return false;
         return this.hasZone('controls') || !this.hasHeaderControls();
     }

@@ -5,7 +5,7 @@
  * @typedef {import('../listViews/listViews').default} ListViews
  */
 import { ArpaElement } from '@arpadroid/ui';
-import { appendNodes, attrString, ucFirst, camelToDashed, defineCustomElement } from '@arpadroid/tools';
+import { attrString, ucFirst, camelToDashed, defineCustomElement, $map } from '@arpadroid/tools';
 
 const html = String.raw;
 class ListControls extends ArpaElement {
@@ -68,26 +68,17 @@ class ListControls extends ArpaElement {
         return this.querySelector(`gallery-${camelToDashed(control)}`);
     }
 
-    render() {
-        const controls = this.getControls();
-        let content = '';
-        controls?.forEach(control => {
+    $renderTemplate() {
+        return $map(this.getControls(), control => {
             const fnName = /** @type {keyof ListControls} */ (`render${ucFirst(control)}`);
-            if (this.hasControl(control)) {
-                /** @type {(() => string) | unknown} */
-                const fn = this[fnName];
-                if (typeof fn === 'function') {
-                    content += fn.call(this);
-                } else {
-                    const tagName = `gallery-${camelToDashed(control)}`;
-                    content += html`<${tagName}></${tagName}>`;
-                }
+            /** @type {(() => string) | unknown} */
+            const fn = this[fnName];
+            if (typeof fn === 'function') {
+                return fn.call(this);
             }
+            const tagName = `gallery-${camelToDashed(control)}`;
+            return html`<${tagName}></${tagName}>`;
         });
-
-        if (controls?.length) {
-            this.innerHTML = content || '';
-        }
     }
 
     /**
@@ -129,7 +120,6 @@ class ListControls extends ArpaElement {
         /** @type {ListViews | null} */
         this.views = this.querySelector('list-views');
         this.multiSelect = this.querySelector('list-multi-select');
-        appendNodes(this, this._childNodes);
     }
 }
 

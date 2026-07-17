@@ -5,6 +5,7 @@
  * @typedef {import('@arpadroid/resources').ListResource} ListResource
  * @typedef {import('@arpadroid/navigation').IconMenu} IconMenu
  * @typedef {import('../listManager/listManager.js').default} ListManager
+ * @typedef {import('@arpadroid/navigation').NavList} NavList
  */
 import { ArpaElement } from '@arpadroid/ui';
 import { attrString, defineCustomElement } from '@arpadroid/tools';
@@ -52,7 +53,7 @@ class MultiSelect extends ArpaElement {
 
     getTooltip() {
         const count = String(this?.resource?.getSelectedCount() || '');
-        return count ? this.i18n('txtItemsSelected', { count }) : this.i18n('txtNoItemsSelected');
+        return count ? this.i18nText('txtItemsSelected', { count }) : this.i18nText('txtNoItemsSelected');
     }
 
     getInfoNode() {
@@ -107,11 +108,15 @@ class MultiSelect extends ArpaElement {
 
     async $initializeNodes() {
         await super.$initializeNodes();
-        /** @type {FormComponent | null} */
-        this.form = this.querySelector('.listMultiSelect__form');
-        this.messages = this.querySelector('arpa-messages');
         /** @type {IconMenu | null} */
         this.menu = this.querySelector('.listMultiSelect__nav');
+        await this.menu?.promise;
+        /** @type {NavList | null} */
+        this.nav = this.menu?.navigation;
+        await this.nav?.promise;
+        /** @type {FormComponent | null} */
+        this.form = this.nav?.querySelector('.listMultiSelect__form');
+        this.messages = this.nav?.querySelector('arpa-messages');
         this._initializeActions();
         this._initializeToggle();
         this._initializeSelectionFilter();
@@ -133,14 +138,15 @@ class MultiSelect extends ArpaElement {
 
     /**
      * Initializes the actions field.
-     * @param {SelectCombo} [actionsField]
      * @returns {Promise<void>}
      */
-    async _initializeActions(actionsField = /** @type {SelectCombo} */ (this.form?.getField('actions'))) {
+    async _initializeActions() {
+        await this.form?.promise;
+        const actionsField = /** @type {SelectCombo} */ (this.form?.getField('actions'));
         /** @type {SelectCombo | undefined} */
         this.actionsField = actionsField;
         await actionsField?.promise;
-        actionsField?.optionsNode?.setAttribute('zone', 'batch-operations');
+        actionsField?.optionsNode?.setAttribute('zone', 'batchOperations');
         actionsField?.on(
             'change',
             async (/** @type {unknown} */ value, /** @type {Field} */ field, /** @type {Event} */ event) => {
@@ -160,7 +166,8 @@ class MultiSelect extends ArpaElement {
 
     // #region UPDATE
 
-    update() {
+    async update() {
+        await this.promise;
         this.updateMenu();
         this.updateDisabledState();
         this.updateClassNames();
@@ -184,9 +191,10 @@ class MultiSelect extends ArpaElement {
         this.selectedFilterField?.[fn]();
     }
 
-    updateMessage() {
+    async updateMessage() {
         /** @type {ListResource | undefined} */
         const resource = this.form?.messages?.listResource;
+        await this.form?.messages?.promise;
         const msg = resource?.getItem('info-message');
         if (typeof msg?.node?.setContent === 'function') {
             msg.node.setContent(this.getTooltip());
