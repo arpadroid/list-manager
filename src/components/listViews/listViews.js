@@ -21,6 +21,7 @@ class ListViews extends ArpaElement {
     /** @type {ListViewsConfigType} */
     _config = this._config;
     getDefaultConfig() {
+        this.bind('$onChange');
         /** @type {ListViewsConfigType} */
         const conf = {
             icon: 'visibility',
