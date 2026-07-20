@@ -8,7 +8,7 @@
  * @typedef {import('@arpadroid/navigation').IconMenu} IconMenu
  * @typedef {import('@arpadroid/navigation').NavList} NavList
  */
-import { mergeObjects, clearLazyQueue, defineCustomElement, $map, $attr } from '@arpadroid/tools';
+import { mergeObjects, defineCustomElement, $map, $attr } from '@arpadroid/tools';
 import { ArpaElement } from '@arpadroid/ui';
 import ListManager from '../listManager/listManager.js';
 
@@ -74,9 +74,8 @@ class ListViews extends ArpaElement {
     }
 
     _initializeViewFilter() {
-        const defaultView = this.list?.getDefaultView();
         this.viewFilter = this.listResource?.getViewFilter({
-            defaultValue: defaultView ?? 'list'
+            defaultValue: this.list?.getProp('view')
         });
     }
 
@@ -175,7 +174,6 @@ class ListViews extends ArpaElement {
         if (!viewExists) {
             view = String(this?.viewFilter?.getDefaultValue() || '');
         }
-        clearLazyQueue();
         this?.viewFilter?.setValue(view);
         this.applyView(view);
     }

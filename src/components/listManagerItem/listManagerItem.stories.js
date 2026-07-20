@@ -328,5 +328,4 @@ export const GridCompactView = {
     }
 };
 
-
 export default ListManagerItemStory;

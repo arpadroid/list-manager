@@ -144,7 +144,7 @@ class ListManagerItem extends ListItem {
     }
 
     getView() {
-        return this.getProp('view') || this.list?.getView() || 'list';
+        return this.list?.getView() || this.getAttribute('view') || 'list';
     }
 
     /**

@@ -32,7 +32,6 @@ class ListManager extends List {
         const conf = {
             className: 'arpaList',
             controls: ['search', 'sort', 'views', 'multiselect', 'filters'],
-            defaultView: 'list',
             hasControls: undefined,
             hasInfo: false,
             hasMessages: false,
@@ -279,18 +278,14 @@ class ListManager extends List {
         itemNodes.forEach(item => item.setView(view));
     }
 
-    getDefaultView() {
-        return this.getProp('default-view');
-    }
-
     getViewFilter() {
         return this.listResource?.getViewFilter({
-            defaultValue: this.getDefaultView()
+            defaultValue: this.getProp('view')
         });
     }
 
     getView() {
-        return this.getViewFilter()?.getValue() || this.getDefaultView();
+        return this.getViewFilter()?.getValue() || this.getProp('view');
     }
 
     /**

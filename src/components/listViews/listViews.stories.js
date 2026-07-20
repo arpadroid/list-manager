@@ -38,7 +38,7 @@ export const Test = {
         ...Default.args,
         id: 'test-views',
         title: 'List Views Test',
-        defaultView: 'list'
+        view: 'list'
     },
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement);
@@ -99,7 +99,7 @@ export const CustomView = {
         id: 'custom-view',
         title: 'Custom View',
         titleIcon: 'dashboard',
-        defaultView: 'custom-view',
+        view: 'custom-view',
         views: 'list,custom-view',
         itemsPerPage: 2,
     },
