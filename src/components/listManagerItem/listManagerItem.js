@@ -10,6 +10,7 @@ import { defineCustomElement, dashedToCamel, mergeObjects, attr } from '@arpadro
 import { ListItem } from '@arpadroid/lists';
 import ListItemViews from './listItem.views.js';
 
+const html = String.raw;
 class ListManagerItem extends ListItem {
     /////////////////////////////
     // #region Initialization
@@ -45,13 +46,22 @@ class ListManagerItem extends ListItem {
         /** @type {ListManagerItemConfigType} */
         const conf = {
             selectedClass: 'listManagerItem--selected',
-            blueprint: ListItem.prototype.$renderTemplate.bind(this),
+            blueprint: () => html`
+                ${ListItem.prototype.$renderTemplate.call(this)}
+                <arpa-zone name="rhs">
+                    <arpa-node tag="icon-menu" name="nav" id="{id}-nav" can-render="hasNav()"></arpa-node>
+                </arpa-zone>
+            `,
             className: 'listItem',
             classNames: ['listManagerItem', () => this.getViewClass()],
             listSelector: 'list-manager',
             view: 'list'
         };
         return mergeObjects(super.getDefaultConfig(), conf);
+    }
+
+    canRenderRhs() {
+        return super.canRenderRhs() || this.hasContent('nav');
     }
 
     $initializeProperties() {

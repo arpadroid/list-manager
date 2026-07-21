@@ -22,6 +22,8 @@
 }
 
 .listItem--list-compact {
+    width: 100%;
+
     .listItem__contentWrapper {
         align-self: center;
     }
@@ -29,6 +31,7 @@
     .listItem__content {
         display: none;
     }
+
     .listItem__title {
         flex-direction: row;
         align-items: center;
@@ -57,8 +60,7 @@
     }
 
     .listItem__tags {
-        flex-direction: row-reverse;
-        flex-wrap: nowrap;
+        flex-flow: row-reverse nowrap;
     }
 
     .listItem__tags .tag {
