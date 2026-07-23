@@ -262,7 +262,6 @@ export const Template = {
             await waitFor(() => {
                 expect(canvas.getByText(args.title || '')).toBeInTheDocument();
                 expect(canvas.getByText(args.subtitle || '')).toBeInTheDocument();
-                console.log('listItem', listItem);
                 expect(listItem?.querySelector('.listItem__customContent')).toBeInTheDocument();
                 expect(listItem?.querySelector('img')).toHaveAttribute('src', '/test-assets/galaxy.jpg');
             });

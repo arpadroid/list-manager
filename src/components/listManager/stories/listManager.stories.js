@@ -10,7 +10,7 @@
 import { attrString } from '@arpadroid/tools';
 import { renderItemTemplate } from '@arpadroid/lists/stories/utils';
 import { playSetup } from './listManager.stories.util.js';
-import { within, userEvent, expect, waitFor } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 const html = String.raw;
 /** @type {Meta} */
@@ -80,7 +80,7 @@ export const ResourceDriven = {
                         data resources.
                     </info-message>
                 </arpa-zone>
-                <arpa-zone name="batch-operations">
+                <arpa-zone name="batchOperations">
                     <select-option value="delete" icon="delete">
                         Delete
                         <delete-dialog>

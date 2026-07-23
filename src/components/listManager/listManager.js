@@ -241,11 +241,9 @@ class ListManager extends List {
 
     async $initializeNodes() {
         await super.$initializeNodes();
-        /** @type {ListControls | null} */
-        this.controls = this.querySelector('list-controls');
+        this.controls = /** @type {ListControls | null} */ (this.nodes.controls);
         /** @type {Messages | null} */
-        this.messages = this.querySelector('arpa-messages');
-
+        this.messages = /** @type {Messages | null} */ (this.nodes.messages);
         return true;
     }
 
