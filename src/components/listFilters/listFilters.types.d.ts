@@ -7,6 +7,7 @@ export type ListFiltersConfigType = ArpaElementConfigType & {
     buttonLabel?: string;
     icon?: string;
     label?: string;
+    btnLabel?: string;
 };
 
 export type ListFiltersSubmitPayloadType = {

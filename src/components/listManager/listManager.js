@@ -14,6 +14,7 @@ import { ucFirst, mergeObjects, editURL } from '@arpadroid/tools';
 import { getService } from '@arpadroid/context';
 import ListManagerItem from '../listManagerItem/listManagerItem.js';
 
+const html = String.raw;
 class ListManager extends List {
     /** @type {ListManagerConfigType} */
     _config = this._config;
@@ -24,19 +25,20 @@ class ListManager extends List {
 
     /**
      * Returns the default configuration for this component.
-     * @param {ListManagerConfigType} config
      * @returns {ListManagerConfigType}
      */
-    getDefaultConfig(config = {}) {
+    getDefaultConfig() {
         /** @type {ListManagerConfigType} */
         const conf = {
             className: 'arpaList',
             controls: ['search', 'sort', 'views', 'multiselect', 'filters'],
+            controlsComponent: 'list-controls',
             hasControls: undefined,
             hasInfo: false,
             hasMessages: false,
             hasMiniSearch: true,
             itemComponent: ListManagerItem,
+            blueprint: List.prototype.$renderTemplate.bind(this),
             itemTag: 'list-manager-item',
             paramNamespace: '',
             perPageParam: 'perPage',
@@ -47,19 +49,24 @@ class ListManager extends List {
             sortDirParam: 'sortDir',
             sortOptions: [],
             tagName: 'list-manager',
-            nodesConfig: {
-                messages: { canRender: 'has-messages', tag: 'arpa-messages', id: '{id}-messages' },
-                info: { tag: 'list-info', canRender: 'has-info' },
-                ...super.getNodesConfig(),
-                controls: {
-                    tag: 'list-controls',
-                    content: ' ',
-                    canRender: () => this.hasControls(),
-                    attr: { controls: () => this.getArrayProp('controls')?.toString() || '' }
-                }
-            }
+            nodesConfig: super.getNodesConfig()
         };
-        return mergeObjects(super.getDefaultConfig(conf), config);
+        return mergeObjects(super.getDefaultConfig(), conf);
+    }
+
+    $renderTemplate() {
+        return html`
+            {header}
+            <arpa-node
+                name="controls"
+                tag="${this.getProp('controlsComponent')}"
+                can-render="hasControls()"
+                controls="${this.getArrayProp('controls')?.toString() || ''}"
+            ></arpa-node>
+            <arpa-node name="info" tag="list-info" can-render="hasInfo"></arpa-node>
+            <arpa-node name="messages" tag="arpa-messages" id="{id}-messages" can-render="hasMessages"></arpa-node>
+            {body} {footer}
+        `;
     }
 
     /**
@@ -269,7 +276,8 @@ class ListManager extends List {
      * Sets the view for the list.
      * @param {string} view
      */
-    setView(view) {
+    async setView(view) {
+        await this.promise;
         this.classList.forEach(cls => cls.startsWith('listView--') && this.classList.remove(cls));
         this.classList.add('listView--' + view);
         view === 'grid-compact' && this.classList.add('listView--grid');

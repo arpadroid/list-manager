@@ -53,7 +53,7 @@ export const Test = {
         });
 
         await step('Clicks on filters menu and opens the filters panel', async () => {
-            userEvent.click(filtersBtn);
+            await userEvent.click(filtersBtn);
             await waitFor(() => {
                 expect(filtersCombo).toBeVisible();
             });
@@ -87,7 +87,7 @@ export const Test = {
             const perPageInput = combo.getByLabelText(/Per page/i);
 
             const perPageField = /** @type {SelectCombo} */ (perPageInput.closest('select-combo'));
-            perPageInput.click();
+            await userEvent.click(perPageInput);
             await waitFor(() => {
                 expect(perPageField?.optionsNode).toBeInTheDocument();
             });

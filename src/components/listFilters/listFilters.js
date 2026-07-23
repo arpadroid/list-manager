@@ -22,11 +22,14 @@ class ListFilters extends ArpaElement {
 
     getDefaultConfig() {
         this.bind('onSubmit');
-        return mergeObjects(super.getDefaultConfig(), {
+        /** @type {ListFiltersConfigType} */
+        const conf = {
+            className: 'listFilters',
             icon: 'filter_alt',
             perPageOptions: [5, 10, 25, 50, 100, 200],
             btnLabel: 'Filters'
-        });
+        };
+        return mergeObjects(super.getDefaultConfig(), conf);
     }
 
     $initializeProperties() {
@@ -70,7 +73,9 @@ class ListFilters extends ArpaElement {
         >
             <arpa-zone name="nav">
                 <div class="listFilters__content">
-                    <arpa-form
+                    <arpa-node
+                        name="form"
+                        tag="arpa-form"
                         variant="compact"
                         id="${this.list?.getId()}-filters-form"
                         has-submit="false"
@@ -98,7 +103,7 @@ class ListFilters extends ArpaElement {
                                 variant="small"
                             ></number-field>
                         </group-field>
-                    </arpa-form>
+                    </arpa-node>
                 </div>
             </arpa-zone>
         </icon-menu>`;
@@ -106,24 +111,24 @@ class ListFilters extends ArpaElement {
 
     async $initializeNodes() {
         await super.$initializeNodes();
-        /** @type {IconMenu | null} */
-        this.menuNode = this.querySelector('icon-menu');
         await this._initializeIconMenu();
         this._initializeForm();
         return true;
     }
 
     async _initializeIconMenu() {
-        await customElements.whenDefined('icon-menu');
+        /** @type {IconMenu | null} */
+        this.menuNode = this.querySelector('icon-menu');
         await this.menuNode?.promise;
-        const itemsNode = /** @type {HTMLElement | null} */ (this.menuNode?.navigation?.itemsNode);
-        itemsNode?.setAttribute('zone', 'list-filters');
+        await this.menuNode?.navigation?.promise;
+        this.comboNode = this.menuNode?.navigation?.itemsNode;
+        this.comboNode?.setAttribute('zone', 'list-filters');
         return true;
     }
 
     async _initializeForm() {
         await customElements.whenDefined('arpa-form');
-        this.form = /** @type {FormComponent | undefined} */ (this.menuNode?.querySelector('arpa-form'));
+        this.form = /** @type {FormComponent | undefined} */ (this?.comboNode?.querySelector('arpa-form'));
         await this.form?.promise;
         this.form?.onSubmit(this.onSubmit);
         this.pageField = /** @type {NumberField} */ (this.form?.getField('page'));

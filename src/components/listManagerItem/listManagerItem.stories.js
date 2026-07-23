@@ -7,7 +7,7 @@
  * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerItemConfigType>} Story
  */
 
-import { waitFor, expect, userEvent, within } from 'storybook/test';
+import { waitFor, expect, userEvent } from 'storybook/test';
 import { $attr } from '@arpadroid/tools';
 import { defaultParams, testParams } from '@arpadroid/module/storybook/helper';
 const html = String.raw;
@@ -15,16 +15,18 @@ const html = String.raw;
 /**
  * Sets up the test scenario.
  * @param {HTMLElement} canvasElement
- * @returns {Promise<{ canvas: ReturnType<typeof within>, listItem: ListManagerItem | null }>}
+ * @returns {Promise<{ list: ListManager | null, listItem: ListManagerItem | null }>}
  */
 async function playSetup(canvasElement) {
-    const canvas = within(canvasElement);
-    /** @type {ListManagerItem | null} */
-    const listItem = canvasElement.querySelector('list-manager-item');
     await customElements.whenDefined('list-manager');
     await customElements.whenDefined('list-manager-item');
+    const list = /** @type {ListManager | null} */ (canvasElement.querySelector('list-manager'));
+    await list?.promise;
+    await new Promise(resolve => setTimeout(resolve, 0));
+    /** @type {ListManagerItem | null} */
+    const listItem = canvasElement.querySelector('list-manager-item');
     await listItem?.promise;
-    return { canvas, listItem };
+    return { listItem, list };
 }
 
 const ghostlyCrashContent = html`
@@ -101,10 +103,10 @@ export const Test = {
 
     play: async ({ step, args, canvas }) => {
         await step('Renders the list item with the expected content', async () => {
-            expect(canvas.getByText(args.title || '')).toBeInTheDocument();
-            expect(canvas.getByText(args.subtitle || '')).toBeInTheDocument();
-            expect(canvas.getByRole('link')).toHaveAttribute('href', 'javascript:void(0)');
             await waitFor(() => {
+                expect(canvas.getByText(args.title || '')).toBeInTheDocument();
+                expect(canvas.getByText(args.subtitle || '')).toBeInTheDocument();
+                expect(canvas.getByRole('link')).toHaveAttribute('href', 'javascript:void(0)');
                 expect(
                     canvas.getByText('There is a phantom structure holding the universe together')
                 ).toBeInTheDocument();
@@ -142,8 +144,8 @@ export const Zones = {
             </list-manager>
         `;
     },
-    play: async ({ canvasElement, step }) => {
-        const { canvas } = await playSetup(canvasElement);
+    play: async ({ canvasElement, step, canvas }) => {
+        await playSetup(canvasElement);
         await step('Renders the list item with the expected zones', async () => {
             await new Promise(resolve => setTimeout(resolve, 100)); // Wait for truncation to apply
             expect(canvas.getByText('The Recycling Planet')).toBeInTheDocument();
@@ -254,13 +256,14 @@ export const Template = {
             </list-manager>
         `;
     },
-    play: async ({ canvasElement, step, args }) => {
-        const { canvas, listItem } = await playSetup(canvasElement);
+    play: async ({ canvasElement, step, args, canvas }) => {
+        const { listItem } = await playSetup(canvasElement);
         await step('Renders the list item with the expected template', async () => {
-            expect(canvas.getByText(args.title)).toBeInTheDocument();
-            expect(canvas.getByText(args.subtitle)).toBeInTheDocument();
-            expect(listItem?.querySelector('.listItem__customContent')).toBeInTheDocument();
             await waitFor(() => {
+                expect(canvas.getByText(args.title || '')).toBeInTheDocument();
+                expect(canvas.getByText(args.subtitle || '')).toBeInTheDocument();
+                console.log('listItem', listItem);
+                expect(listItem?.querySelector('.listItem__customContent')).toBeInTheDocument();
                 expect(listItem?.querySelector('img')).toHaveAttribute('src', '/test-assets/galaxy.jpg');
             });
         });
@@ -280,12 +283,12 @@ export const CompactView = {
             </list-manager>
         `;
     },
-    play: async ({ canvasElement, step, args }) => {
-        const { canvas } = await playSetup(canvasElement);
+    play: async ({ canvasElement, step, args, canvas }) => {
+        await playSetup(canvasElement);
         await step('Renders the list item with the expected compact view', async () => {
             await waitFor(() => {
-                expect(canvas.getByText(args.title)).toBeInTheDocument();
-                expect(canvas.getByText(args.subtitle)).toBeInTheDocument();
+                expect(canvas.getByText(args.title || '')).toBeInTheDocument();
+                expect(canvas.getByText(args.subtitle || '')).toBeInTheDocument();
                 expect(canvasElement?.querySelector('.listItem--list-compact')).toBeInTheDocument();
             });
         });
@@ -298,12 +301,12 @@ export const GridView = {
     args: {
         view: 'grid'
     },
-    play: async ({ canvasElement, step, args }) => {
-        const { canvas } = await playSetup(canvasElement);
+    play: async ({ canvasElement, step, args, canvas }) => {
+        await playSetup(canvasElement);
         await step('Renders the list item with the expected grid view', async () => {
             await waitFor(() => {
-                expect(canvas.getByText(args.title)).toBeInTheDocument();
-                expect(canvas.getByText(args.subtitle)).toBeInTheDocument();
+                expect(canvas.getByText(args.title || '')).toBeInTheDocument();
+                expect(canvas.getByText(args.subtitle || '')).toBeInTheDocument();
                 expect(canvasElement?.querySelector('.listItem--grid')).toBeInTheDocument();
             });
         });
@@ -316,12 +319,11 @@ export const GridCompactView = {
     args: {
         view: 'grid-compact'
     },
-    play: async ({ canvasElement, step, args }) => {
-        const { canvas } = await playSetup(canvasElement);
+    play: async ({ canvasElement, step, args, canvas }) => {
         await step('Renders the list item with the expected grid compact view', async () => {
             await waitFor(() => {
-                expect(canvas.getByText(args.title)).toBeInTheDocument();
-                expect(canvas.getByText(args.subtitle)).toBeInTheDocument();
+                expect(canvas.getByText(args.title || '')).toBeInTheDocument();
+                expect(canvas.getByText(args.subtitle || '')).toBeInTheDocument();
                 expect(canvasElement?.querySelector('.listItem--grid-compact')).toBeInTheDocument();
             });
         });

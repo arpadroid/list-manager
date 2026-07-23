@@ -16,4 +16,5 @@ export type ListManagerConfigType = ListConfigType & {
     sortOptions?: FieldOptionConfigType[];
     url?: string;
     viewOptions?: NavLinkConfigType[];
+    controlsComponent?: string;
 };
