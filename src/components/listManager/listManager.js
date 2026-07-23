@@ -84,7 +84,7 @@ class ListManager extends List {
         return this._config;
     }
 
-    instantiateResource(id = this.getId()) {
+    instantiateResource(id = this.getProp('id')) {
         return super.instantiateResource(id, {
             router: this.router
         });

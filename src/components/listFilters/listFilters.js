@@ -77,7 +77,7 @@ class ListFilters extends ArpaElement {
                         name="form"
                         tag="arpa-form"
                         variant="compact"
-                        id="${this.list?.getId()}-filters-form"
+                        id="${this.list?.getProp('id')}-filters-form"
                         has-submit="false"
                         class="listFilters__form"
                     >

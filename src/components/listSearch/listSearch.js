@@ -91,7 +91,7 @@ class ListSearch extends ArpaElement {
     getTemplateVars() {
         return {
             id: this.id,
-            formId: `${this.list?.getId()}-list-search-form`
+            formId: `${this.list?.getProp('id')}-list-search-form`
         };
     }
 
