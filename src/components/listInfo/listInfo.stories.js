@@ -5,7 +5,7 @@
  * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
  */
 
-import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
+import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
 import { userEvent, fireEvent, waitFor, expect } from 'storybook/test';
 import { renderSimple, playSetup } from '../listManager/stories/listManager.stories.util.js';
 

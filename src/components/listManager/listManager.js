@@ -281,7 +281,7 @@ class ListManager extends List {
         view === 'grid-compact' && this.classList.add('listView--grid');
         this.getViewFilter()?.setValue(view);
         const itemNodes = /** @type {ListManagerItem[]} */ (this.getItemNodes() || []);
-        itemNodes.forEach(item => item.setView(view));
+        itemNodes.forEach(item => item?.setView?.(view));
     }
 
     getViewFilter() {

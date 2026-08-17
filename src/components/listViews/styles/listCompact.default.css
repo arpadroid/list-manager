@@ -8,10 +8,6 @@
         padding: 0;
     }
 
-    arpa-image {
-        --image-size: 0.5rem;
-    }
-
     .listItem {
         padding-left: 4px;
     }
@@ -36,7 +32,7 @@
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
 
     .listItem__titleWrapper {
@@ -45,8 +41,11 @@
         white-space: nowrap;
     }
 
-    .listItem__image {
+    arpa-image.listItem__image {
         --listItem-imgSize: 1.5rem;
+
+        max-width: 2rem;
+        max-height: 2rem;
     }
 
     .listItem__checkboxContainer,
@@ -55,6 +54,7 @@
     }
 
     .listItem__checkboxContainer {
+        align-self: center;
         width: 1rem;
         margin-left: 0.25rem;
     }
@@ -65,5 +65,15 @@
 
     .listItem__tags .tag {
         flex-direction: row-reverse;
+    }
+
+    .listItem__nav {
+        align-self: center;
+    }
+
+    .listItem__rhs {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
     }
 }

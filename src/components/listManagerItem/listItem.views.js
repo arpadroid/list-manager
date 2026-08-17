@@ -15,12 +15,13 @@ export const ListCompactView = {
     label: 'List Compact',
     className: 'listItem--list-compact',
     template: html`
-        <arpa-node {wrapperAttr()}>
-            {checkbox}{icon}{image}
+        <arpa-node name="main" {wrapperAttr()}>
+            {checkboxContainer}{icon}{image}
             <div class="listItem__contentWrapper">{titleWrapper} {subtitle} {content}</div>
             {iconRight}
         </arpa-node>
-        <div class="listItem__rhs" zone="rhs">{tags}{nav}</div>
+
+        {tags}{nav}
     `
 };
 

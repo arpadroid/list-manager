@@ -1,5 +1,6 @@
 /**
  * @typedef {import('../listManager.js').default} ListManager
+ * @typedef {import('@arpadroid/lists').List} List
  * @typedef {import('../listManager.types.js').ListManagerConfigType} ListManagerConfigType
  * @typedef {import('@storybook/web-components-vite').Meta<ListManagerConfigType>} Meta
  * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} Story
@@ -7,19 +8,58 @@
  * @typedef {import('@arpadroid/resources').ListResource} ListResource *
  */
 
-import { attrString } from '@arpadroid/tools';
-import { renderItemTemplate } from '@arpadroid/lists/stories/utils';
-import { playSetup } from './listManager.stories.util.js';
+import { attrString, formatDate, getInitials } from '@arpadroid/tools';
+import { defaultParams, testParams } from '@arpadroid/module/storybook/helper';
+import artists from '../../../mockData/artists.json';
 import { expect } from 'storybook/test';
+
+/**
+ * Initializes the list with the provided payload.
+ * @param {string} id
+ * @param {any[]} [payload]
+ */
+async function initializeList(id, payload = artists) {
+    const list = /** @type {List | null} */ (document.getElementById(id));
+    /** @type {ListResource | undefined} */
+    const resource = list?.listResource;
+    resource?.mapItem((/** @type {Record<string, any>} */ item) => {
+        const dob = formatDate(item.dateOfBirth, 'YYYY');
+        const dod = formatDate(item.dateOfDeath, 'YYYY');
+        const lived = `${dob} - ${dod}` || dob;
+        return {
+            ...item,
+            title: `${item.firstName} ${item.lastName}`,
+            date: lived
+        };
+    });
+    resource?.setItems(payload);
+}
+
+/**
+ * Sets up the test scenario.
+ * @param {HTMLElement} canvasElement
+ * @param {any[]} [items]
+ * @returns {Promise<{ listNode: ListManager | null, listItem: ListManagerItem | null, listResource: ListResource | undefined }>}
+ */
+async function playSetup(/** @type {HTMLElement} */ canvasElement, items) {
+    /** @type {ListManager | null} */
+    const listNode = canvasElement.querySelector('list-manager');
+    /** @type {ListManagerItem | null} */
+    const listItem = canvasElement.querySelector('list-manager-item');
+    const listResource = listNode?.listResource;
+    await listNode?.promise;
+    listNode?.id && (await initializeList(listNode?.id, items));
+    return { listNode, listItem, listResource };
+}
 
 const html = String.raw;
 /** @type {Meta} */
 const ListManagerStory = {
     title: 'List Manager/Lists',
-    tags: ['docs'],
     component: 'list-manager',
+    tags: ['docs'],
     parameters: {
-        layout: 'padded'
+        layout: 'flexColumn'
     },
     args: {
         id: 'list-manager',
@@ -31,50 +71,15 @@ const ListManagerStory = {
         controls: ['search', 'sort', 'views', 'multiselect', 'filters'],
         views: ['grid', 'list', 'list-compact', 'grid-compact']
     },
-    render: args => {
-        // delete args.text;
-        return html`
-            <list-manager ${attrString(args)} views="grid, list">
-                <list-manager-item title="Some title" title-link="/some-link" image="/some-image.jpg">
-                    A Demo list item.
-                </list-manager-item>
-            </list-manager>
-            <script>
-                // http://museovaquero.local/api/gallery/item/get-items?galleryList-search=&galleryList-sortBy=modified_date&galleryList-sortDir=desc&galleryList-state=&galleryList-page=2&galleryList-perPage=50&public=
-                customElements.whenDefined('list-manager').then(() => {
-                    /** @type {ListManager} */
-                    const list = document.getElementById('test-list');
-                });
-            </script>
-        `;
-    }
-};
-
-/** @type {Story} */
-export const ResourceDriven = {
-    parameters: {
-        layout: 'flexColumn'
-    },
-    args: {
-        // ...ListManagerStory.args,
-        id: 'list-manager',
-        title: 'List Component',
-        itemsPerPage: 10,
-        hasResource: true
-    },
-    play: async ({ canvasElement, canvas, step, args }) => {
+    play: async ({ canvasElement }) => {
         await playSetup(canvasElement);
-
-        await step('Renders the list manager with the expected title', async () => {
-            args.title && expect(canvas.getByText(args.title)).toBeInTheDocument();
-        });
     },
     render: args => {
         return html`
             <list-manager ${attrString(args)}>
                 <arpa-zone name="messages">
                     <info-message>
-                        The list component is an advanced list creation tool, which aims to simplify the process of
+                        The list-manager component is an advanced list creation tool, which aims to simplify the process of
                         creating and managing advanced UI lists with search and filtering functionality. It features
                         highly customizable list items via templates, multiple view modes, and seamless integration with
                         data resources.
@@ -96,9 +101,74 @@ export const ResourceDriven = {
                 </arpa-zone>
 
                 <arpa-zone name="list-filters"> </arpa-zone>
-                ${renderItemTemplate()}
+                <template
+                    template-type="list-item"
+                    template-mode="append"
+                    truncate-content="10"
+                    image="{portraitURL}"
+                    truncate-button
+                >
+                    <arpa-zone name="tags">
+                        <tag-item icon="calendar_month">{date}</tag-item>
+                        <tag-item icon="palette">{movement}</tag-item>
+                    </arpa-zone>
+                    <arpa-zone name="nav">
+                        <nav-link link="javascript:void(0)" icon-right="visibility">View</nav-link>
+                        <nav-link link="javascript:void(0)" icon-right="edit">Edit</nav-link>
+                    </arpa-zone>
+                    <arpa-zone name="content">{legacy}</arpa-zone>
+                </template>
             </list-manager>
         `;
+    }
+};
+
+/** @type {Story} */
+export const Default = {
+    parameters: defaultParams
+};
+
+/** @type {Story} */
+export const Static = {
+    args: {
+        // ...ListManagerStory.args,
+        id: 'list-manager',
+        title: 'List Component',
+        itemsPerPage: 10,
+        hasResource: true
+    },
+    play: async ({ canvasElement, canvas, step, args }) => {
+        await playSetup(canvasElement);
+
+        await step('Renders the list manager with the expected title', async () => {
+            args.title && expect(canvas.getByText(args.title)).toBeInTheDocument();
+        });
+    }
+};
+/** @type {Story} */
+export const ApiDriven = {
+    parameters: testParams,
+    args: {
+        id: 'api-driven-list',
+        controls: ['search', 'sort', 'views', 'multiselect', 'filters'],
+        views: ['grid', 'list', 'list-compact', 'grid-compact'],
+        url: 'api/gallery/item/get-items',
+        paramNamespace: 'galleryList-',
+        hasSelection: true,
+        itemsPerPage: 10
+    },
+    play: async ({ canvasElement }) => {
+        /** @type {ListManager | null} */
+        const list = canvasElement.querySelector('list-manager');
+        await list?.promise;
+
+        const resource = list?.listResource;
+        resource?.mapItem((/** @type {Record<string, any>} */ item) => {
+            item.author_initials = getInitials(item.author_name + ' ' + item.author_surname);
+            item.date = new Date(item.date)?.getFullYear() ?? '?';
+            return item;
+        });
+        await resource?.fetch()?.catch(() => {});
     }
 };
 

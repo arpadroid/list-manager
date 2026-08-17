@@ -6,7 +6,7 @@
  */
 
 import { attrString } from '@arpadroid/tools';
-import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
+import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
 import { userEvent, within, waitFor, expect } from 'storybook/test';
 import { playSetup, renderItemTemplate, renderSimple } from '../listManager/stories/listManager.stories.util.js';
 

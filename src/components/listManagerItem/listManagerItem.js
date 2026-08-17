@@ -109,7 +109,7 @@ class ListManagerItem extends ListItem {
     $renderTemplate() {
         return html`
             ${this.getViewTemplate()}
-            <arpa-zone name="rhs">
+            <arpa-zone name="rhs" prepend-content>
                 <arpa-node tag="icon-menu" name="nav" id="{id}-nav" can-render="hasNav()"></arpa-node>
             </arpa-zone>
         `;
@@ -165,6 +165,7 @@ class ListManagerItem extends ListItem {
         if (viewId === 'list') {
             return super.$renderTemplate();
         }
+
         const viewConfig = this.getViewConfig(viewId);
         const viewTemplate = this.list?.getViewTemplate(viewId);
         if (!viewConfig && !viewTemplate) {

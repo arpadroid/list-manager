@@ -3,7 +3,7 @@
  * @typedef {import('@storybook/web-components-vite').Meta} Meta
  * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
  */
-import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
+import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
 import { expect, waitFor, fireEvent } from 'storybook/test';
 import { playSetup, renderSimple } from '../listManager/stories/listManager.stories.util.js';
 

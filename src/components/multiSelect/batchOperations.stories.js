@@ -5,7 +5,7 @@
  * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
  */
 
-import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
+import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
 import { within, waitFor, userEvent, expect, fireEvent } from 'storybook/test';
 import { attrString } from '@arpadroid/tools';
 import { playSetup, renderItemTemplate } from '../listManager/stories/listManager.stories.util.js';
