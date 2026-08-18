@@ -95,16 +95,15 @@ export const Test = {
         });
 
         await step('Clicks on "Delete" and verifies the dialog.', async () => {
-            const actionsField = /** @type {SelectCombo} */ (selectActionButton.closest('select-combo'));
+            const actionsField = /** @type {SelectCombo | null} */ (selectActionButton.closest('select-combo'));
             const options = actionsField?.optionsNode;
             if (!options) {
                 throw new Error('Options not found.');
             }
             await new Promise(resolve => setTimeout(resolve, 40));
-            const button = within(options).getAllByText('Delete')[0].closest('button');
-            button?.click();
-
-            // await waitFor(() => expect(document.querySelector('delete-dialog')).toBeInTheDocument());
+            const button = await waitFor(() => within(options).getAllByText('Delete')[0].closest('button'));
+            button && await userEvent.click(button);
+            await waitFor(() => expect(document.querySelector('delete-dialog')).toBeInTheDocument());
         });
     }
 };
