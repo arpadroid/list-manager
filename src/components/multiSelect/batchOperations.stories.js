@@ -74,10 +74,9 @@ export const Test = {
         });
 
         await step('Checks an item checkbox and verifies the selected item count.', async () => {
-            await waitFor(() => expect(getItemCheckbox()).toBeInTheDocument());
             const checkbox = getItemCheckbox();
+            checkbox && (await userEvent.click(checkbox));
             expect(checkbox).toBeInTheDocument();
-            checkbox && fireEvent.click(checkbox);
             await waitFor(() => expect(form.getAllByText('1 items selected')).toHaveLength(1));
         });
 
@@ -102,7 +101,7 @@ export const Test = {
             }
             await new Promise(resolve => setTimeout(resolve, 40));
             const button = await waitFor(() => within(options).getAllByText('Delete')[0].closest('button'));
-            button && await userEvent.click(button);
+            button && (await userEvent.click(button));
             await waitFor(() => expect(document.querySelector('delete-dialog')).toBeInTheDocument());
         });
     }

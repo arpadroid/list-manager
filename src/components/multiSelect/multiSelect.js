@@ -6,6 +6,7 @@
  * @typedef {import('@arpadroid/navigation').IconMenu} IconMenu
  * @typedef {import('../listManager/listManager.js').default} ListManager
  * @typedef {import('@arpadroid/navigation').NavList} NavList
+ * @typedef {import('@arpadroid/messages').InfoMessage} InfoMessage
  */
 import { ArpaElement } from '@arpadroid/ui';
 import { attrString, defineCustomElement } from '@arpadroid/tools';
@@ -192,13 +193,9 @@ class MultiSelect extends ArpaElement {
     }
 
     async updateMessage() {
-        /** @type {ListResource | undefined} */
-        const resource = this.form?.messages?.listResource;
-        await this.form?.messages?.promise;
-        const msg = resource?.getItem('info-message');
-        if (typeof msg?.node?.setContent === 'function') {
-            msg.node.setContent(this.getTooltip());
-        }
+        const msgNode = /** @type {InfoMessage} */ (this.form?.querySelector('.listMultiSelect__infoMessage'));
+        const tooltip = this.getTooltip();
+        msgNode?.setContent(tooltip);
     }
 
     // #endregion

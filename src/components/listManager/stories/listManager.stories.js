@@ -5,7 +5,7 @@
  * @typedef {import('@storybook/web-components-vite').Meta<ListManagerConfigType>} Meta
  * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} Story
  * @typedef {import('../../listManagerItem/listManagerItem.js').default} ListManagerItem
- * @typedef {import('@arpadroid/resources').ListResource} ListResource *
+ * @typedef {import('@arpadroid/resources').ListResource} ListResource
  */
 
 import { attrString, formatDate, getInitials } from '@arpadroid/tools';
@@ -20,7 +20,6 @@ import { expect } from 'storybook/test';
  */
 async function initializeList(id, payload = artists) {
     const list = /** @type {List | null} */ (document.getElementById(id));
-    /** @type {ListResource | undefined} */
     const resource = list?.listResource;
     resource?.mapItem((/** @type {Record<string, any>} */ item) => {
         const dob = formatDate(item.dateOfBirth, 'YYYY');
@@ -69,7 +68,8 @@ const ListManagerStory = {
         hasInfo: true,
         hasResource: true,
         controls: ['search', 'sort', 'views', 'multiselect', 'filters'],
-        views: ['grid', 'list', 'list-compact', 'grid-compact']
+        views: ['grid', 'list', 'list-compact', 'grid-compact'],
+        itemsPerPage: 45,
     },
     play: async ({ canvasElement }) => {
         await playSetup(canvasElement);
@@ -77,10 +77,11 @@ const ListManagerStory = {
     render: args => {
         return html`
             <list-manager ${attrString(args)}>
+                
                 <arpa-zone name="messages">
                     <info-message>
-                        The list-manager component is an advanced list creation tool, which aims to simplify the process of
-                        creating and managing advanced UI lists with search and filtering functionality. It features
+                        The list-manager component is an advanced list creation tool, which aims to simplify the process
+                        of creating and managing advanced UI lists with search and filtering functionality. It features
                         highly customizable list items via templates, multiple view modes, and seamless integration with
                         data resources.
                     </info-message>
@@ -99,8 +100,8 @@ const ListManagerStory = {
                     <nav-link param-value="title" icon-right="sort_by_alpha"> Title </nav-link>
                     <nav-link param-value="date" icon-right="calendar_month" default> Date </nav-link>
                 </arpa-zone>
-
                 <arpa-zone name="list-filters"> </arpa-zone>
+                
                 <template
                     template-type="list-item"
                     template-mode="append"
@@ -125,13 +126,15 @@ const ListManagerStory = {
 
 /** @type {Story} */
 export const Default = {
-    parameters: defaultParams
+    parameters: defaultParams,
+    args: {
+        id: 'list-manager-default'
+    }
 };
 
 /** @type {Story} */
 export const Static = {
     args: {
-        // ...ListManagerStory.args,
         id: 'list-manager',
         title: 'List Component',
         itemsPerPage: 10,
@@ -145,6 +148,7 @@ export const Static = {
         });
     }
 };
+
 /** @type {Story} */
 export const ApiDriven = {
     parameters: testParams,

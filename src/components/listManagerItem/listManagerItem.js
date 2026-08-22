@@ -46,7 +46,10 @@ class ListManagerItem extends ListItem {
         /** @type {ListManagerItemConfigType} */
         const conf = {
             selectedClass: 'listManagerItem--selected',
-            blueprint: () => html`${ListItem.prototype.$renderTemplate.call(this)}`,
+            blueprint: () => html`
+                ${ListItem.prototype.$renderTemplate.call(this)}
+                <arpa-node tag="icon-menu" name="nav" id="{id}-nav" can-render="hasNav()"></arpa-node>
+            `,
             className: 'listItem',
             classNames: ['listManagerItem', () => this.getViewClass()],
             listSelector: 'list-manager',
@@ -77,8 +80,12 @@ class ListManagerItem extends ListItem {
     // #region Has
     //////////////////
 
-    hasNav() {
+    async hasNav() {
         return this.hasContent('nav') || this.zonesByName?.has('nav') || this._config?.nav;
+    }
+
+    async canRenderRhs() {
+        return Boolean((await super.canRenderRhs()) || this.hasContent('nav') || this.zonesByName?.has('nav'));
     }
 
     hasSelection() {
@@ -107,12 +114,7 @@ class ListManagerItem extends ListItem {
     }
 
     $renderTemplate() {
-        return html`
-            ${this.getViewTemplate()}
-            <arpa-zone name="rhs" prepend-content>
-                <arpa-node tag="icon-menu" name="nav" id="{id}-nav" can-render="hasNav()"></arpa-node>
-            </arpa-zone>
-        `;
+        return html` ${this.getViewTemplate()} `;
     }
 
     // #endregion Rendering
@@ -162,10 +164,6 @@ class ListManagerItem extends ListItem {
     }
 
     getViewTemplate(viewId = this.getView()) {
-        if (viewId === 'list') {
-            return super.$renderTemplate();
-        }
-
         const viewConfig = this.getViewConfig(viewId);
         const viewTemplate = this.list?.getViewTemplate(viewId);
         if (!viewConfig && !viewTemplate) {

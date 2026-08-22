@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Basic HTML Document</title>
+        <link rel="stylesheet" href="../dist/material-symbols/outlined.css" />
+        <link rel="stylesheet" href="../dist/themes/default/default.bundled.final.css" />
+    </head>
+    <body>
+        <list-manager
+            id="batch-operations"
+            title="Batch Operations"
+            items-per-page="10"
+            has-resource
+            controls="multiselect"
+        >
+            <arpa-zone name="batchOperations">
+                <select-option value="delete" icon="delete">
+                    Delete
+                    <delete-dialog title="Delete items">
+                        <arpa-zone name="content"> Are you sure you want to delete the selected items? </arpa-zone>
+                    </delete-dialog>
+                </select-option>
+            </arpa-zone>
+
+            <template
+                template-type="list-item"
+                template-mode="append"
+                truncate-content="10"
+                image="{portraitURL}"
+                truncate-button
+            >
+                <arpa-zone name="tags">
+                    <tag-item icon="calendar_month">{date}</tag-item>
+                    <tag-item icon="palette">{movement}</tag-item>
+                </arpa-zone>
+                <arpa-zone name="nav">
+                    <nav-link link="javascript:void(0)" icon-right="visibility">View</nav-link>
+                    <nav-link link="javascript:void(0)" icon-right="edit">Edit</nav-link>
+                </arpa-zone>
+                <arpa-zone name="content">{legacy}</arpa-zone>
+            </template>
+        </list-manager>
+        <script type="module" src="../dist/arpadroid-list-manager.js"></script>
+        <script type="module">
+            import { formatDate } from '../node_modules/@arpadroid/tools/dist/arpadroid-tools.js';
+            const artists = await fetch('../src/mockData/artists.json').then(res => res.json());
+
+            await customElements.whenDefined('list-manager');
+            await customElements.whenDefined('list-manager-item');
+            const list = document.querySelector('list-manager');
+            const listResource = list?.listResource;
+            listResource?.mapItem((/** @type {Record<string, any>} */ item) => {
+                const dob = formatDate(item.dateOfBirth, 'YYYY');
+                const dod = formatDate(item.dateOfDeath, 'YYYY');
+                console.log('portraitURL', item.portraitURL);
+                const url = item.portraitURL;
+                return {
+                    ...item,
+                    // portraitURL: `http://arpadroid.local/list-manager/dist${url}`,
+                    title: `${item.firstName} ${item.lastName}`,
+                    date: dob && dod ? `${dob} - ${dod}` : dob
+                };
+            });
+            listResource?.setItems(artists);
+            const listItem = document.querySelector('list-manager-item');
+            await listItem?.promise;
+        </script>
+    </body>
+</html>

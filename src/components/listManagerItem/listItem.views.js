@@ -7,7 +7,15 @@ const html = String.raw;
 export const ListView = {
     id: 'list',
     label: 'List',
-    className: 'listItem--list'
+    className: 'listItem--list',
+    template: html`
+        <arpa-node name="main" {wrapperAttr()}>
+            {icon}{image}
+            <div class="listItem__contentWrapper">{contentHeader}{content}{tags}</div>
+            {iconRight}
+        </arpa-node>
+        <arpa-node name="rhs" defer="canRenderRhs">{checkboxContainer}{nav}</arpa-node>
+    `
 };
 
 export const ListCompactView = {
@@ -20,8 +28,7 @@ export const ListCompactView = {
             <div class="listItem__contentWrapper">{titleWrapper} {subtitle} {content}</div>
             {iconRight}
         </arpa-node>
-
-        {tags}{nav}
+        <arpa-node name="rhs" defer="canRenderRhs">{tags}{nav}</arpa-node>
     `
 };
 
@@ -38,7 +45,7 @@ export const GridView = {
             </div>
             {iconRight}
         </arpa-node>
-        {rhs}
+        <arpa-node name="rhs" defer="canRenderRhs">{checkboxContainer}{nav}</arpa-node>
     `
 };
 
@@ -52,7 +59,7 @@ export const GridCompactView = {
             <div class="listItem__contentHeader">{titleWrapper}{subtitle}{image}{tags}{content}</div>
             {iconRight}
         </arpa-node>
-        {rhs}
+        <arpa-node name="rhs" defer="canRenderRhs">{checkboxContainer}{nav}</arpa-node>
     `
 };
 

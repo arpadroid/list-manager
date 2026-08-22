@@ -101,7 +101,8 @@ export const CustomView = {
         titleIcon: 'dashboard',
         view: 'custom-view',
         views: 'list,custom-view',
-        itemsPerPage: 2,
+        hasMessages: true,
+        itemsPerPage: 2
     },
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement);
@@ -162,7 +163,7 @@ export const CustomView = {
                         <div class="test-image-container">{image}</div>
                         <div class="listItem__customView__content">
                             <div class="listItem__customView__header">{titleWrapper}{subtitle}{nav}</div>
-                            <div class="listItem__customView__body">{content}</div>
+                            <arpa-node name="content" class="listItem__customView__body" is-content></arpa-node>
                             custom text
                         </div>
                     </arpa-node>
