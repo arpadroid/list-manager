@@ -109,14 +109,18 @@ class MultiSelect extends ArpaElement {
 
     async $initializeNodes() {
         await super.$initializeNodes();
+        /**
+         * @todo: Remove setTimeout.
+         */
+        await new Promise(resolve => setTimeout(resolve, 0));
         /** @type {IconMenu | null} */
         this.menu = this.querySelector('.listMultiSelect__nav');
         await this.menu?.promise;
         /** @type {NavList | null} */
         this.nav = this.menu?.navigation;
         await this.nav?.promise;
-        /** @type {FormComponent | null} */
-        this.form = this.nav?.querySelector('.listMultiSelect__form');
+        await new Promise(resolve => setTimeout(resolve, 0));
+        this.form = /** @type {FormComponent | null} */ (this.nav?.firstElementChild);
         this.messages = this.nav?.querySelector('arpa-messages');
         this._initializeActions();
         this._initializeToggle();

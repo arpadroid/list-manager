@@ -6,7 +6,7 @@
  */
 
 import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
-import { within, waitFor, userEvent, expect, fireEvent } from 'storybook/test';
+import { within, waitFor, userEvent, expect } from 'storybook/test';
 import { attrString } from '@arpadroid/tools';
 import { playSetup, renderItemTemplate } from '../listManager/stories/listManager.stories.util.js';
 
@@ -65,7 +65,6 @@ export const Test = {
         await step('Opens and renders Batch Operations panel.', async () => {
             const filtersMenu = canvas.getByRole('button', { name: /Batch Operations/i });
             await userEvent.click(filtersMenu);
-
             expect(form.getByText('Batch operations')).toBeInTheDocument();
             expect(form.getAllByText('No items selected')).toHaveLength(1);
 

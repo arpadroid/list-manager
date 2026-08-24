@@ -11,6 +11,7 @@
     "types": "./dist/@types/types.compiled.d.ts",
     "type": "module",
     "scripts": {
+        "demo": "open http://arpadroid.local/list-manager/demo/demo.html && npm run dev",
         "build": "arpadroid-build --minify",
         "clean": "arpadroid-clean",
         "dev": "arpadroid-build --watch --storybook",

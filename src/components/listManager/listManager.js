@@ -4,7 +4,6 @@
  * @typedef {import('@arpadroid/services').Router} Router
  * @typedef {import('@arpadroid/forms').FieldOptionConfigType} FieldOptionConfigType
  * @typedef {import('../listSort/listSort.js').default} ListSort
- *
  */
 
 import { List } from '@arpadroid/lists';

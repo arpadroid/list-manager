@@ -3,26 +3,61 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Basic HTML Document</title>
+        <title>List Manager Demo</title>
         <link rel="stylesheet" href="../dist/material-symbols/outlined.css" />
         <link rel="stylesheet" href="../dist/themes/default/default.bundled.final.css" />
+        <script type="importmap">
+            {
+                "imports": {
+                    "@arpadroid/context": "../node_modules/@arpadroid/context/dist/arpadroid-context.js",
+                    "@arpadroid/tools": "../node_modules/@arpadroid/tools/dist/arpadroid-tools.js",
+                    "@arpadroid/services": "../node_modules/@arpadroid/services/dist/arpadroid-services.js"
+                }
+            }
+        </script>
+        <script type="module">
+            import { Router, APIService } from '@arpadroid/services';
+            import { setService } from '@arpadroid/context';
+            setService('router', new Router());
+            setService('apiService', APIService);
+        </script>
+        <script type="module" src="../dist/arpadroid-list-manager.js"></script>
     </head>
     <body>
         <list-manager
-            id="batch-operations"
-            title="Batch Operations"
-            items-per-page="10"
+            id="list-manager"
+            title="List Component"
+            has-messages
+            has-items-transition
+            has-info
             has-resource
-            controls="multiselect"
+            controls="search,sort,views,multiselect,filters"
+            views="grid,list,list-compact,grid-compact"
+            items-per-page="200"
         >
+            <arpa-zone name="messages">
+                <info-message>
+                    The list-manager component is an advanced list creation tool, which aims to simplify the process of
+                    creating and managing advanced UI lists with search and filtering functionality. It features highly
+                    customizable list items via templates, multiple view modes, and seamless integration with data
+                    resources.
+                </info-message>
+            </arpa-zone>
             <arpa-zone name="batchOperations">
                 <select-option value="delete" icon="delete">
                     Delete
-                    <delete-dialog title="Delete items">
+                    <delete-dialog>
+                        <arpa-zone name="header"> Delete items </arpa-zone>
                         <arpa-zone name="content"> Are you sure you want to delete the selected items? </arpa-zone>
                     </delete-dialog>
                 </select-option>
             </arpa-zone>
+
+            <arpa-zone name="sort-options">
+                <nav-link param-value="title" icon-right="sort_by_alpha"> Title </nav-link>
+                <nav-link param-value="date" icon-right="calendar_month" default> Date </nav-link>
+            </arpa-zone>
+            <arpa-zone name="list-filters"> </arpa-zone>
 
             <template
                 template-type="list-item"
@@ -42,19 +77,17 @@
                 <arpa-zone name="content">{legacy}</arpa-zone>
             </template>
         </list-manager>
-        <script type="module" src="../dist/arpadroid-list-manager.js"></script>
-        <script type="module">
-            import { formatDate } from '../node_modules/@arpadroid/tools/dist/arpadroid-tools.js';
-            const artists = await fetch('../src/mockData/artists.json').then(res => res.json());
 
-            await customElements.whenDefined('list-manager');
-            await customElements.whenDefined('list-manager-item');
+        <script type="module">
+            import { formatDate } from '@arpadroid/tools';
+
+            const artists = await fetch('../src/mockData/artists.json').then(res => res.json());
             const list = document.querySelector('list-manager');
             const listResource = list?.listResource;
+
             listResource?.mapItem((/** @type {Record<string, any>} */ item) => {
                 const dob = formatDate(item.dateOfBirth, 'YYYY');
                 const dod = formatDate(item.dateOfDeath, 'YYYY');
-                console.log('portraitURL', item.portraitURL);
                 const url = item.portraitURL;
                 return {
                     ...item,
@@ -63,9 +96,8 @@
                     date: dob && dod ? `${dob} - ${dod}` : dob
                 };
             });
+
             listResource?.setItems(artists);
-            const listItem = document.querySelector('list-manager-item');
-            await listItem?.promise;
         </script>
     </body>
 </html>

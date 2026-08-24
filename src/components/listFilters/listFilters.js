@@ -11,6 +11,7 @@
  * @typedef {import('./listFilters.types').ListFiltersConfigType} ListFiltersConfigType
  * @typedef {import('./listFilters.types').ListFiltersSubmitPayloadType} ListFiltersSubmitPayloadType
  * @typedef {import('@arpadroid/forms').FormSubmitType} FormSubmitType
+ * @typedef {import('@arpadroid/navigation').NavList} NavList
  */
 import { mergeObjects, attrString, $map, editURL, defineCustomElement } from '@arpadroid/tools';
 import { ArpaElement } from '@arpadroid/ui';
@@ -120,15 +121,17 @@ class ListFilters extends ArpaElement {
         /** @type {IconMenu | null} */
         this.menuNode = this.querySelector('icon-menu');
         await this.menuNode?.promise;
-        await this.menuNode?.navigation?.promise;
-        this.comboNode = this.menuNode?.navigation?.itemsNode;
+        /** @type {NavList | null} */
+        this.comboNode = this.menuNode?.navigation;
+        await this.comboNode?.promise;
         this.comboNode?.setAttribute('zone', 'list-filters');
         return true;
     }
 
     async _initializeForm() {
-        await customElements.whenDefined('arpa-form');
-        this.form = /** @type {FormComponent | undefined} */ (this?.comboNode?.querySelector('arpa-form'));
+        /** @todo Remove setTimeout. */
+        await new Promise(resolve => setTimeout(resolve, 0));
+        this.form = /** @type {FormComponent | undefined} */ (this?.comboNode?.nodes?.form);
         await this.form?.promise;
         this.form?.onSubmit(this.onSubmit);
         this.pageField = /** @type {NumberField} */ (this.form?.getField('page'));
