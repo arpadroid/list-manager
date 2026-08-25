@@ -47,14 +47,6 @@ class ListSearch extends ArpaElement {
         return true;
     }
 
-    /**
-     * Returns a promise that must be resolved before the component is ready.
-     * @returns {Promise<any>}
-     */
-    async onReady() {
-        return await customElements.whenDefined('arpa-form');
-    }
-
     // #endregion
 
     ////////////////////

@@ -58,6 +58,7 @@ const ListManagerStory = {
     component: 'list-manager',
     tags: ['docs'],
     parameters: {
+        highlight: { disable: true },
         layout: 'flexColumn'
     },
     args: {
@@ -69,7 +70,7 @@ const ListManagerStory = {
         hasResource: true,
         controls: ['search', 'sort', 'views', 'multiselect', 'filters'],
         views: ['grid', 'list', 'list-compact', 'grid-compact'],
-        itemsPerPage: 45,
+        itemsPerPage: 200
     },
     play: async ({ canvasElement }) => {
         await playSetup(canvasElement);
@@ -77,7 +78,6 @@ const ListManagerStory = {
     render: args => {
         return html`
             <list-manager ${attrString(args)}>
-                
                 <arpa-zone name="messages">
                     <info-message>
                         The list-manager component is an advanced list creation tool, which aims to simplify the process
@@ -101,7 +101,7 @@ const ListManagerStory = {
                     <nav-link param-value="date" icon-right="calendar_month" default> Date </nav-link>
                 </arpa-zone>
                 <arpa-zone name="list-filters"> </arpa-zone>
-                
+
                 <template
                     template-type="list-item"
                     template-mode="append"

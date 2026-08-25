@@ -65,11 +65,12 @@ export const Test = {
         await step('Opens and renders Batch Operations panel.', async () => {
             const filtersMenu = canvas.getByRole('button', { name: /Batch Operations/i });
             await userEvent.click(filtersMenu);
-            expect(form.getByText('Batch operations')).toBeInTheDocument();
-            expect(form.getAllByText('No items selected')).toHaveLength(1);
-
-            expect(form.getByText('Select all')).toBeInTheDocument();
-            expect(form.getByText('Show selected only')).toBeInTheDocument();
+            await waitFor(() => {
+                expect(form.getByText('Batch operations')).toBeInTheDocument();
+                expect(form.getAllByText('No items selected')).toHaveLength(1);
+                expect(form.getByText('Select all')).toBeInTheDocument();
+                expect(form.getByText('Show selected only')).toBeInTheDocument();
+            });
         });
 
         await step('Checks an item checkbox and verifies the selected item count.', async () => {
