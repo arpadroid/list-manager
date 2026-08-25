@@ -75,6 +75,7 @@ export const Test = {
 
         await step('Checks an item checkbox and verifies the selected item count.', async () => {
             const checkbox = getItemCheckbox();
+            await new Promise(resolve => setTimeout(resolve, 40));
             checkbox && (await userEvent.click(checkbox));
             expect(checkbox).toBeInTheDocument();
             await waitFor(() => expect(form.getAllByText('1 items selected')).toHaveLength(1));
