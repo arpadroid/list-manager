@@ -24,8 +24,12 @@ export async function playSetup(canvasElement, options) {
     const canvas = within(canvasElement);
     /** @type {ListManager | null} */
     const listNode = canvasElement.querySelector('list-manager');
+    
+    await listNode?.promise;
+    listNode?.id && initList && (await initializeList(listNode?.id, items));
     /** @type {ListManagerItem | null} */
     const listItem = canvasElement.querySelector('list-manager-item');
+    await listItem?.promise;
 
     const listResource = listNode?.listResource;
     if (typeof preRenderCallback === 'function') {
@@ -35,10 +39,6 @@ export async function playSetup(canvasElement, options) {
         }
     }
 
-    await listNode?.promise;
-    listNode?.id && initList && (await initializeList(listNode?.id, items));
-    await listItem?.promise;
-    // await new Promise(resolve => setTimeout(resolve, 50));
     return { canvas, listNode, listItem, listResource };
 }
 

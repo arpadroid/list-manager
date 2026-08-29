@@ -123,16 +123,17 @@ class ListFilters extends ArpaElement {
         await this.menuNode?.promise;
         /** @type {NavList | null} */
         this.comboNode = this.menuNode?.navigation;
-        await this.comboNode?.promise;
         this.comboNode?.setAttribute('zone', 'list-filters');
+        await this.comboNode?.promise;
+        await new Promise(resolve => setTimeout(resolve, 0));
         return true;
     }
 
     async _initializeForm() {
         /** @todo Remove setTimeout. */
-        await new Promise(resolve => setTimeout(resolve, 0));
         this.form = /** @type {FormComponent | undefined} */ (this?.comboNode?.nodes?.form);
         await this.form?.promise;
+        await new Promise(resolve => setTimeout(resolve, 0));
         this.form?.onSubmit(this.onSubmit);
         this.pageField = /** @type {NumberField} */ (this.form?.getField('page'));
         this.perPageField = /** @type {SelectCombo} */ (this.form?.getField('perPage'));

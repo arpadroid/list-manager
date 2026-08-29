@@ -58,7 +58,6 @@ const ListManagerStory = {
     component: 'list-manager',
     tags: ['docs'],
     parameters: {
-        highlight: { disable: true },
         layout: 'flexColumn'
     },
     args: {
@@ -128,7 +127,8 @@ const ListManagerStory = {
 export const Default = {
     parameters: defaultParams,
     args: {
-        id: 'list-manager-default'
+        id: 'list-manager',
+        itemsPerPage: 10
     }
 };
 

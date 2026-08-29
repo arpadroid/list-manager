@@ -5,10 +5,10 @@
  * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} StoryObj
  */
 import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
-import { within, waitFor, expect, fireEvent, userEvent } from 'storybook/test';
+import { within, waitFor, expect, userEvent } from 'storybook/test';
 import { attrString } from '@arpadroid/tools';
 import { playSetup, renderItemTemplate } from '../listManager/stories/listManager.stories.util.js';
-import artists from '../../mockData/artists.json';
+import artists from '../../mockData/artists.json' with { type: 'json' };
 
 const html = String.raw;
 
@@ -103,10 +103,12 @@ export const Test = {
         });
 
         await step('Opens the sort menu and verifies "title" sort is selected.', async () => {
-            await fireEvent.click(sortByButton);
-            const sortByCombo = sortByMenu.navigation;
-            expect(sortByCombo.querySelector('a[aria-current="page"]')).toHaveTextContent('Title');
-            expect(sortByCombo).toBeVisible();
+            await userEvent.click(sortByButton);
+            await waitFor(() => {
+                const sortByCombo = sortByMenu.navigation;
+                expect(sortByCombo.querySelector('a[aria-current="page"]')).toHaveTextContent('Title');
+                expect(sortByCombo).toBeVisible();
+            });
         });
 
         await step('Verifies items are sorted by title descending by default.', async () => {

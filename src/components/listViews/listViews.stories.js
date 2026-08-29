@@ -8,7 +8,7 @@
 import { attrString } from '@arpadroid/tools';
 import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
 import { userEvent, within, waitFor, expect } from 'storybook/test';
-import { playSetup, renderItemTemplate, renderSimple } from '../listManager/stories/listManager.stories.util.js';
+import { playSetup, renderSimple } from '../listManager/stories/listManager.stories.util.js';
 
 const html = String.raw;
 
@@ -95,7 +95,6 @@ export const Test = {
 /** @type {StoryObj} */
 export const CustomView = {
     args: {
-        ...Default.args,
         id: 'custom-view',
         title: 'Custom View',
         titleIcon: 'dashboard',
@@ -106,9 +105,11 @@ export const CustomView = {
     },
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement);
+        await new Promise(resolve => requestAnimationFrame(resolve));
         const { listNode, canvas } = setup;
         await step('Renders the custom view', async () => {
             await listNode?.setView('custom-view');
+            await listNode?.promise;
             expect(listNode).toHaveClass('listView--custom-view');
             expect(canvas.getByRole('heading', { name: /Custom View/i })).toBeInTheDocument();
             await waitFor(() => {
@@ -130,9 +131,9 @@ export const CustomView = {
                 throw new Error('Views menu not found');
             }
             const viewsButton = canvas.getByRole('button', { name: /Views/i });
-            userEvent.click(viewsButton);
-            const customView = within(viewsMenu).getByText('Custom View').closest('button');
+            await userEvent.click(viewsButton);
             await waitFor(() => {
+                const customView = within(viewsMenu).getByText('Custom View').closest('button');
                 expect(customView).toHaveAttribute('aria-current', 'location');
             });
             expect(listNode).toHaveClass('listView--custom-view');
@@ -168,8 +169,23 @@ export const CustomView = {
                         </div>
                     </arpa-node>
                 </template>
-
-                ${renderItemTemplate({ elementTruncateContent: 180, elementTitleIcon: 'dashboard' })}
+                <template
+                    template-type="list-item"
+                    template-mode="append"
+                    truncate-content="10"
+                    image="{portraitURL}"
+                    truncate-button
+                >
+                    <arpa-zone name="tags">
+                        <tag-item icon="calendar_month">{date}</tag-item>
+                        <tag-item icon="palette">{movement}</tag-item>
+                    </arpa-zone>
+                    <arpa-zone name="nav">
+                        <nav-link link="javascript:void(0)" icon-right="visibility">View</nav-link>
+                        <nav-link link="javascript:void(0)" icon-right="edit">Edit</nav-link>
+                    </arpa-zone>
+                    <arpa-zone name="content">{legacy}</arpa-zone>
+                </template>
             </list-manager>
 
             <!-- Custom View Styles -->
