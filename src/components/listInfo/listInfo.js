@@ -72,13 +72,14 @@ class ListInfo extends ArpaElement {
         return this.getProp('has-prev-next');
     }
 
-    render() {
-        if (!this.listResource) return;
+    async render() {
+        if (!this.listResource) return false;
         this.innerHTML = this.renderInfoText() + this.renderButtons();
         this.handleRefresh();
         this.handlePreviousPage();
         this.handleNextPage();
         this.textNode = this.querySelector('.listInfo__text');
+        return true;
     }
 
     renderInfoText() {

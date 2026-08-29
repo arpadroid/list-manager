@@ -127,8 +127,7 @@ const ListManagerStory = {
 export const Default = {
     parameters: defaultParams,
     args: {
-        id: 'list-manager',
-        itemsPerPage: 10
+        id: 'list-manager'
     }
 };
 
