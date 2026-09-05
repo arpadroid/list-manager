@@ -69,6 +69,7 @@ class ListFilters extends ArpaElement {
         return html`<icon-menu
             icon="{icon}"
             tooltip="{getLabel()}"
+            menu-position="bottom-right"
             button-aria="{getLabel()}"
             nav-class="listFilters__nav"
         >

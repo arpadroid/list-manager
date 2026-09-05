@@ -4,7 +4,7 @@
  * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
  */
 import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
-import { expect, waitFor, fireEvent } from 'storybook/test';
+import { expect, waitFor, fireEvent, userEvent } from 'storybook/test';
 import { playSetup, renderSimple } from '../listManager/stories/listManager.stories.util.js';
 
 /** @type {Meta} */
@@ -31,44 +31,44 @@ export const Test = {
     args: {
         id: 'test-search',
         title: 'List Search Test',
-        searchPlaceholder: 'List Search Test'
+        searchPlaceholder: 'List Search Test',
+        value: ''
     },
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement);
-        await customElements.whenDefined('field-input');
         const { canvas } = setup;
         const input = await waitFor(() => canvas.getByRole('searchbox'));
         const field = input.closest('search-field');
         await field.promise;
         const form = input.closest('arpa-form');
         form?._config && (form._config.debounce = false);
-        await customElements.whenDefined('field-input');
         input.value = '';
-        await fireEvent.submit(form);
 
         await step('Renders the search', async () => {
             expect(input).toHaveAttribute('placeholder', 'List Search Test');
         });
 
         await step('Searches for "Leon" and expects "Leonardo Da Vinci\'s" item to be highlighted', async () => {
-            field.setValue('Leon', true);
-            await fireEvent.input(input);
+            await userEvent.clear(input);
+            await userEvent.type(input, 'Leon', { delay: 50 });
             await waitFor(() => {
                 const searchMatch = canvasElement.querySelector('mark');
                 expect(searchMatch).toHaveTextContent('Leon');
                 expect(searchMatch?.parentNode).toHaveTextContent('Leonardo da Vinci');
             });
+            await userEvent.clear(input);
         });
 
         await step('Searches and submits query for "Mitch" expecting two results.', async () => {
-            field.setValue('Mich', true);
-            await fireEvent.input(input);
+            await userEvent.clear(input);
+            await userEvent.type(input, 'Mich', { delay: 10 });
             await waitFor(() => {
                 document.querySelectorAll('mark')?.forEach(element => {
                     expect(element).toHaveTextContent('Mich');
                     expect(element?.parentNode).toHaveTextContent('Michelangelo Buonarroti');
                 });
             });
+            await new Promise(resolve => setTimeout(resolve, 10));
             await fireEvent.submit(form);
             await waitFor(() => {
                 const marks = canvasElement.querySelectorAll('mark');

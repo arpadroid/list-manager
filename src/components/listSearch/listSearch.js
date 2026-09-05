@@ -94,12 +94,14 @@ class ListSearch extends ArpaElement {
         this.form?.onSubmit(this._onSubmit);
         this.searchField = /** @type {SearchField | null} */ (this.form?.getField('search'));
         await this.searchField?.promise;
-        await this.initializeSearch();
+        // this.initializeSearch();
         this.listSort = this.querySelector('list-sort');
         return true;
     }
 
-    async initializeSearch() {
+    async $onDomReady() {
+        /** @todo Remove setTimeout hack. */
+        await new Promise(resolve => setTimeout(resolve, 0));
         if (!this.searchFilter) {
             return true;
         }
@@ -110,7 +112,7 @@ class ListSearch extends ArpaElement {
                 // onSearch: this._onSearch,
                 debounceDelay: this.getProp('debounce-search'),
                 hideNonMatches: false,
-                getNodes: () => Array.from(this.list?.itemsNode?.querySelectorAll('.listItem') || [])
+                getNodes: () => Array.from(this.list?.itemsNode?.querySelectorAll('list-manager-item') || [])
             });
         }
         this.searchField?.setValue(this.searchFilter.getValue());

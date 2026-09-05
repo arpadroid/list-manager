@@ -73,6 +73,7 @@ class MultiSelect extends ArpaElement {
         const menuProps = this.getProperties('icon');
         const formId = this.list?.id + '-multiSelectForm';
         return html`<icon-menu
+            menu-position="bottom-right"
             class="listMultiSelect__nav"
             nav-class="listMultiSelect__combo"
             tooltip="${this.i18nText('txtBatchOperations')}"

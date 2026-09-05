@@ -144,7 +144,7 @@ export const Zones = {
             </list-manager>
         `;
     },
-    play: async ({ canvasElement, step, canvas }) => {
+    play: async ({ canvasElement,  step, canvas }) => {
         await playSetup(canvasElement);
         await step('Renders the list item with the expected zones', async () => {
             await new Promise(resolve => setTimeout(resolve, 100)); // Wait for truncation to apply

@@ -18,7 +18,7 @@ import { expect } from 'storybook/test';
  * @param {string} id
  * @param {any[]} [payload]
  */
-async function initializeList(id, payload = artists) {
+export async function initializeList(id, payload = artists) {
     const list = /** @type {List | null} */ (document.getElementById(id));
     const resource = list?.listResource;
     resource?.mapItem((/** @type {Record<string, any>} */ item) => {
@@ -58,8 +58,9 @@ const ListManagerStory = {
     component: 'list-manager',
     tags: ['docs'],
     parameters: {
-        layout: 'flexColumn'
+        layout: 'flexColumn',
     },
+    excludeStories: ['initializeList'],
     args: {
         id: 'list-manager',
         title: '',
@@ -134,7 +135,7 @@ export const Default = {
 /** @type {Story} */
 export const Static = {
     args: {
-        id: 'list-manager',
+        id: 'list-manager-static',
         title: 'List Component',
         itemsPerPage: 10,
         hasResource: true
