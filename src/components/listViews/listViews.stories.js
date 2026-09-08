@@ -47,6 +47,7 @@ export const Test = {
 
         /** @type {IconMenu | null} */
         const iconMenu = canvasElement.querySelector('list-views icon-menu');
+        await iconMenu?.onRendered();
         const viewsMenu = /** @type {HTMLElement | null} */ (iconMenu?.navigation);
         if (!viewsMenu) {
             throw new Error('Views menu not found');

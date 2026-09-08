@@ -121,11 +121,11 @@ class ListFilters extends ArpaElement {
     async _initializeIconMenu() {
         /** @type {IconMenu | null} */
         this.menuNode = this.querySelector('icon-menu');
-        await this.menuNode?.promise;
+        await this.menuNode?.onRendered();
         /** @type {NavList | null} */
         this.comboNode = this.menuNode?.navigation;
         this.comboNode?.setAttribute('zone', 'list-filters');
-        await this.comboNode?.promise;
+        await this.comboNode?.onRendered();
         await new Promise(resolve => setTimeout(resolve, 0));
         return true;
     }
@@ -133,6 +133,7 @@ class ListFilters extends ArpaElement {
     async _initializeForm() {
         /** @todo Remove setTimeout. */
         this.form = /** @type {FormComponent | undefined} */ (this?.comboNode?.nodes?.form);
+        await this.form?.onRendered();
         await this.form?.promise;
         await new Promise(resolve => setTimeout(resolve, 0));
         this.form?.onSubmit(this.onSubmit);

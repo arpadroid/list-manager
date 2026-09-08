@@ -100,8 +100,14 @@ export const Default = {
 /** @type {Story} */
 export const Test = {
     parameters: testParams,
-
-    play: async ({ step, args, canvas }) => {
+    render: args => {
+        return html`<list-manager id="list-item-test" controls=" ">
+            <list-manager-item ${$attr(args)}>${ghostlyCrashContent}</list-manager-item>
+        </list-manager>`;
+    },
+    play: async ({ step, args, canvas, canvasElement }) => {
+        const item = /** @type {ListManagerItem} */ (canvasElement.querySelector('list-manager-item'));
+        await item.onRendered();
         await step('Renders the list item with the expected content', async () => {
             await waitFor(() => {
                 expect(canvas.getByText(args.title || '')).toBeInTheDocument();
@@ -144,7 +150,7 @@ export const Zones = {
             </list-manager>
         `;
     },
-    play: async ({ canvasElement,  step, canvas }) => {
+    play: async ({ canvasElement, step, canvas }) => {
         await playSetup(canvasElement);
         await step('Renders the list item with the expected zones', async () => {
             await new Promise(resolve => setTimeout(resolve, 100)); // Wait for truncation to apply

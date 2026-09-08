@@ -38,6 +38,7 @@ export const Test = {
         const { canvas, listNode } = setup;
         const filtersBtn = await waitFor(() => canvas.getByRole('button', { name: /Filters/i }));
         const filtersNode = filtersBtn.closest('icon-menu');
+        await filtersNode.onRendered();
         const filtersCombo = filtersNode.navigation;
         const combo = within(filtersCombo);
         /** @type {FormComponent | null} */

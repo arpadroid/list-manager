@@ -113,13 +113,13 @@ class MultiSelect extends ArpaElement {
         /**
          * @todo: Remove setTimeout.
          */
-        await new Promise(resolve => setTimeout(resolve, 0));
         /** @type {IconMenu | null} */
         this.menu = this.querySelector('.listMultiSelect__nav');
-        await this.menu?.promise;
+        // await new Promise(resolve => setTimeout(resolve, 0));
+        await this.menu?.onRendered();
         /** @type {NavList | null} */
         this.nav = this.menu?.navigation;
-        await this.nav?.promise;
+        await this.nav?.onRendered();
         await new Promise(resolve => setTimeout(resolve, 0));
         this.form = /** @type {FormComponent | null} */ (this.nav?.firstElementChild);
         this.messages = this.nav?.querySelector('arpa-messages');
@@ -147,11 +147,13 @@ class MultiSelect extends ArpaElement {
      * @returns {Promise<void>}
      */
     async _initializeActions() {
-        await this.form?.promise;
+        await this.form?.onRendered();
         const actionsField = /** @type {SelectCombo} */ (this.form?.getField('actions'));
         /** @type {SelectCombo | undefined} */
         this.actionsField = actionsField;
-        await actionsField?.promise;
+        await actionsField?.onRendered();
+        console.log('actionsField', actionsField);
+        console.log('actionsField?.optionsNode', actionsField?.optionsNode);
         actionsField?.optionsNode?.setAttribute('zone', 'batchOperations');
         actionsField?.on(
             'change',

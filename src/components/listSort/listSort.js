@@ -36,6 +36,7 @@ class ListSort extends ArpaElement {
         this.bind('update', '_onRouteChange', '_onSortBySelected', '_isItemSelected');
         this.i18nKey = 'list-manager.listSort';
         return {
+            className: 'listSort',
             iconAsc: 'keyboard_double_arrow_up',
             iconDesc: 'keyboard_double_arrow_down',
             iconSort: 'sort',
@@ -116,11 +117,17 @@ class ListSort extends ArpaElement {
 
     $renderTemplate() {
         const sortDir = this.listResource?.getSortDirection() === 'asc' ? 'desc' : 'asc';
-
         return html`
-            <icon-menu icon="sort_by_alpha" tooltip="${this.i18nText('lblSortBy')}" zone="sort-options">
+            <arpa-node
+                name="sortByMenu"
+                tag="icon-menu"
+                icon="sort_by_alpha"
+                tooltip="${this.i18nText('lblSortBy')}"
+                zone-name="sort-options"
+                menu-position="bottom-right"
+            >
                 <arpa-zone name="nav"> ${this.renderSortLinks()} </arpa-zone>
-            </icon-menu>
+            </arpa-node>
             <arpa-node
                 tag="nav-link"
                 name="sortLink"
@@ -138,10 +145,11 @@ class ListSort extends ArpaElement {
     }
 
     renderSortLinks(sortOptions = this.list?.getSortOptions() || []) {
-        return mapHTML(sortOptions, payload => {
-            const { value = '', icon = '', label = '' } = payload;
-            return html`<nav-link link="${value}" icon-left="${icon}" label="${label}"></nav-link>`;
-        });
+        return mapHTML(
+            sortOptions,
+            ({ value = '', icon = '', label = '' }) =>
+                html`<nav-link link="${value}" icon-left="${icon}" label="${label}"></nav-link>`
+        );
     }
 
     async $initializeNodes() {
@@ -151,15 +159,10 @@ class ListSort extends ArpaElement {
     }
 
     async _initializeNav() {
-        await customElements.whenDefined('nav-list');
         await this.promise;
         /** @type {IconMenu | null} */
         this.sortByMenu = this.querySelector('icon-menu');
-        if (!this.sortByMenu) {
-            console.warn('No nav node found');
-            return;
-        }
-        await this.sortByMenu.promise;
+        await this.sortByMenu?.onRendered();
         /** @type {NavList | null} */
         this.sortNav = this.sortByMenu?.navigation;
         if (!this.sortNav) {

@@ -25,11 +25,11 @@ export async function playSetup(canvasElement, options) {
     /** @type {ListManager | null} */
     const listNode = canvasElement.querySelector('list-manager');
     
-    await listNode?.promise;
+    await listNode?.onRendered();
     listNode?.id && initList && (await initializeList(listNode?.id, items));
     /** @type {ListManagerItem | null} */
     const listItem = canvasElement.querySelector('list-manager-item');
-    await listItem?.promise;
+    await listItem?.onRendered();
 
     const listResource = listNode?.listResource;
     if (typeof preRenderCallback === 'function') {

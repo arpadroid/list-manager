@@ -130,6 +130,7 @@ class ListViews extends ArpaElement {
             tag="icon-menu"
             tooltip="{label}"
             icon="{icon}"
+            menu-position="bottom-right"
             is-content
         >
             ${$map(this.getOptions(), payload => this.$renderItem(payload))}
@@ -160,6 +161,7 @@ class ListViews extends ArpaElement {
         await super.$initializeNodes();
         this.iconMenu = /** @type {IconMenu | null} */ (this.nodes.iconMenu);
         this.iconMenu && (await this.iconMenu?.promise);
+        await this.iconMenu?.onRendered();
         this.navigation = /** @type {NavList | null} */ (this.iconMenu?.navigation);
         this.initializeView(this.list?.getView());
         return true;
