@@ -152,8 +152,6 @@ class MultiSelect extends ArpaElement {
         /** @type {SelectCombo | undefined} */
         this.actionsField = actionsField;
         await actionsField?.onRendered();
-        console.log('actionsField', actionsField);
-        console.log('actionsField?.optionsNode', actionsField?.optionsNode);
         actionsField?.optionsNode?.setAttribute('zone', 'batchOperations');
         actionsField?.on(
             'change',
