@@ -105,7 +105,7 @@ const ListManagerStory = {
                 <template
                     template-type="list-item"
                     template-mode="append"
-                    truncate-content="10"
+                    truncate-content="100"
                     image="{portraitURL}"
                     truncate-button
                 >

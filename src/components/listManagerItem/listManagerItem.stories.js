@@ -108,6 +108,7 @@ export const Test = {
     play: async ({ step, args, canvas, canvasElement }) => {
         const item = /** @type {ListManagerItem} */ (canvasElement.querySelector('list-manager-item'));
         await item.onRendered();
+        await item.onNodesReady();
         await step('Renders the list item with the expected content', async () => {
             await waitFor(() => {
                 expect(canvas.getByText(args.title || '')).toBeInTheDocument();
