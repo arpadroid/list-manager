@@ -82,7 +82,7 @@ export const Test = {
             const checkbox = await waitFor(() => listItem.querySelector('input[type="checkbox"]'));
             expect(checkbox).toBeInTheDocument();
             checkbox && (await userEvent.click(checkbox));
-            // await waitFor(() => expect(canvas.getByText('1 items selected')).toBeInTheDocument());
+            await waitFor(() => expect(canvas.getByText('1 items selected')).toBeInTheDocument());
         });
 
         await step('Clicks on Select all and verifies the selected item count.', async () => {
@@ -108,9 +108,9 @@ export const Test = {
                 throw new Error('Options not found.');
             }
             /** @todo Fix this flaky test. */
-            // const button = await waitFor(() => options.querySelector('button'));
+            const button = await waitFor(() => within(options).getByRole('button'));
 
-            // button && (await userEvent.click(button));
+            button && (await userEvent.click(button));
             // await waitFor(() => {
             //     expect(canvas.getByText('Delete items')).toBeInTheDocument();
             // });

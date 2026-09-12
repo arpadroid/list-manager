@@ -70,7 +70,7 @@ const ListManagerStory = {
         hasResource: true,
         controls: ['search', 'sort', 'views', 'multiselect', 'filters'],
         views: ['grid', 'list', 'list-compact', 'grid-compact'],
-        itemsPerPage: 200
+        itemsPerPage: 10
     },
     play: async ({ canvasElement }) => {
         await playSetup(canvasElement);
@@ -137,7 +137,6 @@ export const Static = {
     args: {
         id: 'list-manager-static',
         title: 'List Component',
-        itemsPerPage: 10,
         hasResource: true
     },
     play: async ({ canvasElement, canvas, step, args }) => {

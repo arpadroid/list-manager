@@ -99,7 +99,7 @@ class ListSearch extends ArpaElement {
         return true;
     }
 
-    async $onDomReady() {
+    async $onComplete() {
         /** @todo Remove setTimeout hack. */
         await new Promise(resolve => setTimeout(resolve, 0));
         if (!this.searchFilter) {

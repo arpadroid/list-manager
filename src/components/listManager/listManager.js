@@ -176,7 +176,7 @@ class ListManager extends List {
     /**
      * Returns the control element given its name.
      * @param {string} control
-     * @returns {HTMLElement | undefined | null}
+     * @returns {import('@arpadroid/ui').ArpaElementContentNodeType | undefined | null}
      */
     getControl(control) {
         return this.controls?.getControl(control);
@@ -197,10 +197,10 @@ class ListManager extends List {
     /////////////////
 
     /**
-     * @todo - Fix / finish this function. For starters FieldOptionConfigType is wrong.
      * Sets the sort options for the list.
      * @param {FieldOptionConfigType[]} options
      * @param {string} defaultValue
+     * @todo Fix finish this function. For starters FieldOptionConfigType is wrong.
      */
     async setSortOptions(options, defaultValue) {
         this._config.sortOptions = options;

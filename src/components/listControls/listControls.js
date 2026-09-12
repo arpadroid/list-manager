@@ -3,9 +3,10 @@
  * @typedef {import('../listManager/listManager').default} ListManager
  * @typedef {import('../listSearch/listSearch').default} ListSearch
  * @typedef {import('../listViews/listViews').default} ListViews
+ * @typedef {import('@arpadroid/ui').ArpaNode} ArpaNode
  */
 import { ArpaElement } from '@arpadroid/ui';
-import { attrString, ucFirst, camelToDashed, defineCustomElement, $map } from '@arpadroid/tools';
+import { mergeObjects, attrString, ucFirst, camelToDashed, defineCustomElement, $map } from '@arpadroid/tools';
 
 const html = String.raw;
 class ListControls extends ArpaElement {
@@ -36,10 +37,10 @@ class ListControls extends ArpaElement {
      * @returns {ListControlsConfigType}
      */
     getDefaultConfig() {
-        return {
-            className: 'listControls',
-            controls: this.list?.getControls()
+        const config = {
+            className: 'listControls'
         };
+        return mergeObjects(super.getDefaultConfig(), config);
     }
 
     /**
@@ -62,14 +63,25 @@ class ListControls extends ArpaElement {
     /**
      * Returns the control element given its name.
      * @param {string} control
-     * @returns {HTMLElement | null}
+     * @returns {import('@arpadroid/ui').ArpaElementContentNodeType | null}
      */
     getControl(control) {
-        return this.querySelector(`gallery-${camelToDashed(control)}`);
+        return this.nodes?.[control] || this.querySelector(`gallery-${camelToDashed(control)}`);
+    }
+
+    /**
+     * Determines whether the control should be rendered.
+     * @param {{ name: string , arpaNode: ArpaNode}} param
+     * @returns {Promise<boolean>}
+     */
+    async shouldRenderControl({ name }) {
+        const totalItems = this.listResource?.getTotalItems() || 0;
+        return !['play', 'previous', 'next', 'input'].includes(name) || totalItems > 1;
     }
 
     $renderTemplate() {
-        return $map(this.getControls(), control => {
+        const controls = this.list?.getControls() || this.getArrayProp('controls');
+        const content = $map(controls || [], control => {
             const fnName = /** @type {keyof ListControls} */ (`render${ucFirst(control)}`);
             /** @type {(() => string) | unknown} */
             const fn = this[fnName];
@@ -77,8 +89,9 @@ class ListControls extends ArpaElement {
                 return fn.call(this);
             }
             const tagName = `gallery-${camelToDashed(control)}`;
-            return html`<${tagName}></${tagName}>`;
+            return html`<arpa-node name="${control}" tag="${tagName}" defer="shouldRenderControl"> </arpa-node>`;
         });
+        return content;
     }
 
     /**

@@ -106,10 +106,13 @@ export const Test = {
         </list-manager>`;
     },
     play: async ({ step, args, canvas, canvasElement }) => {
-        const item = /** @type {ListManagerItem} */ (canvasElement.querySelector('list-manager-item'));
-        await item.onRendered();
-        await item.onNodesReady();
         await step('Renders the list item with the expected content', async () => {
+            await waitFor(() => {
+                expect(canvasElement.querySelector('list-manager-item')).toBeInTheDocument();
+            });
+            const item = /** @type {ListManagerItem} */ (canvasElement.querySelector('list-manager-item'));
+            await item.onRendered();
+            await item.onNodesReady();
             await waitFor(() => {
                 expect(canvas.getByText(args.title || '')).toBeInTheDocument();
                 expect(canvas.getByText(args.subtitle || '')).toBeInTheDocument();
