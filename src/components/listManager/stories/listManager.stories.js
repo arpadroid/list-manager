@@ -58,7 +58,7 @@ const ListManagerStory = {
     component: 'list-manager',
     tags: ['docs'],
     parameters: {
-        layout: 'flexColumn',
+        layout: 'flexColumn'
     },
     excludeStories: ['initializeList'],
     args: {
@@ -145,6 +145,16 @@ export const Static = {
         await step('Renders the list manager with the expected title', async () => {
             args.title && expect(canvas.getByText(args.title)).toBeInTheDocument();
         });
+    }
+};
+
+/** @type {Story} */
+export const ThreeHundredItems = {
+    name: '300',
+    parameters: defaultParams,
+    args: {
+        id: 'list-manager-300',
+        itemsPerPage: 300
     }
 };
 
