@@ -20,8 +20,7 @@ const Default = {
         title: 'List Info',
         controls: 'search',
         hasInfo: true,
-        itemsPerPage: 5,
-        hasPager: 'false'
+        itemsPerPage: 5
     },
     render: renderSimple
 };
@@ -82,8 +81,6 @@ export const Test = {
         });
 
         await step('Searches for "Leon" and expects 1 result to be produced with appropriate message.', async () => {
-            const prevBtn = canvas.getByText(/Previous page/i).closest('button');
-            const nextBtn = canvas.getByText(/Next page/i).closest('button');
 
             const input = canvas.getByRole('searchbox');
             const form = input.closest('arpa-form');
@@ -95,8 +92,8 @@ export const Test = {
                 const listInfo = canvasElement.querySelector(listInfoClass);
                 expect(listInfo).toHaveTextContent('Found 1 search results for Leon');
             });
-            expect(prevBtn).toBeDisabled();
-            expect(nextBtn).toBeDisabled();
+            expect(canvas.queryByText(/Previous page/i)).not.toBeInTheDocument();
+            expect(canvas.queryByText(/Next page/i)).not.toBeInTheDocument();
         });
     }
 };

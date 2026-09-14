@@ -1,13 +1,11 @@
 /**
  * @typedef {import('@arpadroid/resources').ListResource} ListResource
  * @typedef {import('@arpadroid/resources').ListFilter} ListFilter
- * @typedef {import('@arpadroid/forms').FormComponent} FormComponent
- * @typedef {import('@arpadroid/forms').Field} Field
  * @typedef {import('./listInfo.types').ListInfoConfigType} ListInfoConfigType
  */
 import { ArpaElement } from '@arpadroid/ui';
 import ListManager from '../listManager/listManager.js';
-import { mergeObjects, bind, renderNode, defineCustomElement } from '@arpadroid/tools';
+import { mergeObjects, defineCustomElement } from '@arpadroid/tools';
 const html = String.raw;
 class ListInfo extends ArpaElement {
     /** @type {ListInfoConfigType} */
@@ -19,7 +17,6 @@ class ListInfo extends ArpaElement {
      */
     getDefaultConfig() {
         this.i18nKey = 'list-manager';
-        bind(this, 'reRender', 'updateText');
         /** @type {ListInfoConfigType} */
         const conf = {
             className: 'listInfo',
@@ -35,153 +32,115 @@ class ListInfo extends ArpaElement {
         this.list = ListManager.getList(this);
         /** @type {ListResource} */
         this.listResource = this.list?.listResource;
-        this.listResource?.on('items', this.updateText);
+        this.listResource?.on('items', () => this.reRender());
         /** @type {ListFilter} */
         this.searchFilter = this.listResource?.getSearchFilter();
         return true;
     }
 
-    updateText() {
-        this.textNode = this.querySelector('.listInfo__text');
-        const infoText = this.renderInfoText();
-        if (!infoText) return;
-        const newNode = renderNode(infoText);
-        if (newNode) {
-            if (this.textNode) {
-                this.textNode.parentNode?.replaceChild(newNode, this.textNode);
-            } else {
-                this.prepend(newNode);
-            }
-        }
-        this.textNode = newNode;
-        const buttons = this.querySelectorAll('.listInfo__next, .listInfo__previous');
-        buttons.forEach(button => {
-            if ((this.listResource?.getTotalPages() || 0) <= 1) {
-                button.setAttribute('disabled', 'disabled');
-            } else {
-                button.removeAttribute('disabled');
-            }
-        });
-    }
-
-    hasRefresh() {
-        return this.getProp('has-refresh');
-    }
-
     hasPrevNext() {
-        return this.getProp('has-prev-next');
-    }
-
-    async render() {
-        if (!this.listResource) return false;
-        this.innerHTML = this.renderInfoText() + this.renderButtons();
-        this.handleRefresh();
-        this.handlePreviousPage();
-        this.handleNextPage();
-        this.textNode = this.querySelector('.listInfo__text');
+        if (!this.getProp('has-prev-next')) return false;
+        if ((this.listResource?.getTotalPages() || 0) <= 1) return false;
         return true;
     }
 
-    renderInfoText() {
-        const hasSearchResults = this.listResource?.hasResults();
-        const query = /** @type {string} */ (this.searchFilter?.getValue() || '');
-        if (this.listResource) {
-            if (query?.length) {
-                return !hasSearchResults ? this.renderNoResults() : this.renderSearchResults();
-            }
-            return this.renderResults();
-        }
-        return '';
+    getQuery() {
+        return String(this.searchFilter?.getValue() || '');
     }
 
-    handlePreviousPage() {
-        this.previousBtn = this.querySelector('.listInfo__previous');
-        this.previousBtn?.addEventListener('click', () => {
-            this.listResource?.previousPage();
-        });
+    hasSearchResults() {
+        return this.listResource?.hasResults() || false;
     }
 
-    handleNextPage() {
-        this.nextBtn = this.querySelector('.listInfo__next');
-        this.nextBtn?.addEventListener('click', () => this.listResource?.nextPage());
-    }
-
-    handleRefresh() {
-        this.refreshBtn = this.querySelector('.listInfo__refresh');
-        this.refreshBtn?.addEventListener('click', () => this.listResource?.refresh());
-    }
-
-    renderButtons() {
-        return html`<div class="listInfo__buttons">${this.renderRefresh()}${this.renderPrevNext()}</div>`;
-    }
-
-    renderRefresh() {
-        if (!this.hasRefresh()) return '';
-        return html`<icon-button class="listInfo__refresh" icon="refresh">
-            <arpa-zone name="tooltip">${this.i18n('txtRefresh')}</arpa-zone>
-        </icon-button>`;
-    }
-
-    renderPrevNext() {
-        if (!this.hasPrevNext()) return '';
-        return html`
-            <icon-button class="listInfo__previous" icon="skip_previous">
-                <arpa-zone name="tooltip">${this.i18n('txtPrevPage')}</arpa-zone>
-            </icon-button>
-            <icon-button class="listInfo__next" icon="skip_next">
-                <arpa-zone name="tooltip">${this.i18n('txtNextPage')}</arpa-zone>
-            </icon-button>
-        `;
-    }
-
-    /**
-     * Render the results text.
-     * @param {number[]} range
-     * @param {number} total
-     * @returns {string}
-     */
-    renderResults(range = this.listResource?.getItemRange() ?? [], total = this.listResource?.getTotalItems()) {
+    canRenderAllResultsText() {
         const { showResultsText } = this.list?.getConfig() ?? {};
-        const [fistItem, lastItem] = range;
-        if (!showResultsText || !range[0] || !range[1]) return '';
-        return html`
-            <i18n-text key="${this.i18nKey}.txtAllResults" class="listInfo__text">
-                <i18n-replace name="resultCount"><strong>${total}</strong></i18n-replace>
-                <i18n-replace name="pageCount"><strong>${fistItem} - ${lastItem}</strong></i18n-replace>
-            </i18n-text>
-        `;
+        const range = this.listResource?.getItemRange() ?? [];
+        return !this.getQuery() && showResultsText && range[0] && range[1];
     }
 
-    /**
-     * Renders the search results text.
-     * @param {number} resultTotal
-     * @param {string} query
-     * @returns {string}
-     */
-    renderSearchResults(
-        resultTotal = this.listResource?.getTotalItems(),
-        query = String(this.searchFilter?.getValue() || '')
-    ) {
+    async $preRender() {
+        await this.list?.promise;
+        return true;
+    }
+
+    $renderTemplate() {
+        const resultTotal = this.listResource?.getTotalItems();
+        const [firstItem, lastItem] = this.listResource?.getItemRange() ?? [];
         return html`
-            <i18n-text key="${this.i18nKey}.txtSearchResults" class="listInfo__text">
+            <arpa-node
+                name="noResultsText"
+                tag="i18n-text"
+                key="${this.i18nKey}.txtNoResults"
+                class="listInfo__text"
+                can-render="getQuery() && !hasSearchResults()"
+            >
+                <i18n-replace name="result"><strong>{getQuery()}</strong></i18n-replace>
+            </arpa-node>
+
+            <arpa-node
+                name="resultsText"
+                tag="i18n-text"
+                key="${this.i18nKey}.txtSearchResults"
+                class="listInfo__text"
+                can-render="getQuery() && hasSearchResults()"
+            >
                 <i18n-replace name="resultCount"><strong>${resultTotal}</strong></i18n-replace>
-                <i18n-replace name="result"><strong>${query}</strong></i18n-replace>
-            </i18n-text>
+                <i18n-replace name="result"><strong>{getQuery()}</strong></i18n-replace>
+            </arpa-node>
+
+            <arpa-node
+                name="allResultsText"
+                tag="i18n-text"
+                key="${this.i18nKey}.txtAllResults"
+                class="listInfo__text"
+                can-render="canRenderAllResultsText()"
+            >
+                <i18n-replace name="resultCount"><strong>${resultTotal}</strong></i18n-replace>
+                <i18n-replace name="pageCount"><strong>${firstItem} - ${lastItem}</strong></i18n-replace>
+            </arpa-node>
+
+            <div class="listInfo__buttons">
+                <arpa-node
+                    name="refreshButton"
+                    tag="icon-button"
+                    class="listInfo__refresh"
+                    icon="refresh"
+                    can-render="hasRefresh"
+                    on-click="{handleRefresh}"
+                >
+                    <arpa-zone name="tooltip">${this.i18n('txtRefresh')}</arpa-zone>
+                </arpa-node>
+
+                <arpa-node
+                    name="previousButton"
+                    tag="icon-button"
+                    class="listInfo__previous"
+                    icon="skip_previous"
+                    can-render="hasPrevNext()"
+                    on-click="{handlePreviousPage}"
+                >
+                    <arpa-zone name="tooltip">${this.i18n('txtPrevPage')}</arpa-zone>
+                </arpa-node>
+
+                <arpa-node
+                    name="nextButton"
+                    tag="icon-button"
+                    class="listInfo__next"
+                    icon="skip_next"
+                    can-render="hasPrevNext()"
+                    on-click="{handleNextPage}"
+                >
+                    <arpa-zone name="tooltip">${this.i18n('txtNextPage')}</arpa-zone>
+                </arpa-node>
+            </div>
         `;
     }
 
-    /**
-     * Renders the no results text.
-     * @param {string} query
-     * @returns {string}
-     */
-    renderNoResults(query = String(this.searchFilter?.getValue() || '')) {
-        return html`
-            <i18n-text key="${this.i18nKey}.txtNoResults" class="listInfo__text">
-                <i18n-replace name="result"><strong>${query}</strong></i18n-replace>
-            </i18n-text>
-        `;
-    }
+    handlePreviousPage = () => this.listResource?.previousPage();
+
+    handleNextPage = () => this.listResource?.nextPage();
+
+    handleRefresh = () => this.listResource?.refresh();
 }
 
 defineCustomElement('list-info', ListInfo);

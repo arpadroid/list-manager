@@ -21,7 +21,7 @@ const Default = {
         hasResource: true,
         id: 'list-sort',
         controls: ['sort'],
-        title: 'List Sort'
+        title: 'List Sort',
     },
     render: args => {
         return html`<list-manager ${attrString(args)}>
@@ -32,7 +32,7 @@ const Default = {
             <template
                 template-type="list-item"
                 template-mode="append"
-                truncate-content="10"
+                truncate-content="50"
                 image="{portraitURL}"
                 truncate-button
             >

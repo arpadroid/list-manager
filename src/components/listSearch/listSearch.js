@@ -69,14 +69,14 @@ class ListSearch extends ArpaElement {
 
     $renderTemplate() {
         return html`
-            <arpa-form id="{formId}" variant="mini">
+            <arpa-node name="form" tag="arpa-form" id="{formId}" variant="mini">
                 <search-field
                     id="search"
                     has-mini-search="{hasMiniSearch}"
                     placeholder="{getSearchPlaceholder()}"
                     value="${this.searchFilter?.getValue()}"
                 ></search-field>
-            </arpa-form>
+            </arpa-node>
         `;
     }
 
@@ -88,20 +88,18 @@ class ListSearch extends ArpaElement {
     }
 
     async $initializeNodes() {
+        await super.$initializeNodes();
         /** @type {FormComponent | null} */
-        await customElements.whenDefined('arpa-form');
-        this.form = /** @type {FormComponent | null} */ (this.querySelector('arpa-form'));
+        this.form = /** @type {FormComponent | null} */ (this.nodes.form);
+        await this.waitForNodes();
         this.form?.onSubmit(this._onSubmit);
         this.searchField = /** @type {SearchField | null} */ (this.form?.getField('search'));
         await this.searchField?.promise;
-        // this.initializeSearch();
         this.listSort = this.querySelector('list-sort');
         return true;
     }
 
     async $onComplete() {
-        /** @todo Remove setTimeout hack. */
-        await new Promise(resolve => setTimeout(resolve, 0));
         if (!this.searchFilter) {
             return true;
         }
@@ -109,7 +107,6 @@ class ListSearch extends ArpaElement {
             this.search = new SearchTool(this.searchField?.input, {
                 container: this.list?.itemsNode,
                 searchSelector: this.getProp('search-selector'),
-                // onSearch: this._onSearch,
                 debounceDelay: this.getProp('debounce-search'),
                 hideNonMatches: false,
                 getNodes: () => Array.from(this.list?.itemsNode?.querySelectorAll('list-manager-item') || [])

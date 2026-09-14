@@ -87,6 +87,7 @@ class MultiSelect extends ArpaElement {
                             ${this.getTooltip()}
                         </info-message>
                     </arpa-zone>
+
                     <checkbox-field id="toggleAll" value="select-all" icon="select_all">
                         <arpa-zone name="checkbox-label"> ${this.i18n('txtSelectAll')} </arpa-zone>
                     </checkbox-field>

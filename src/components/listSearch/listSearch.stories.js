@@ -77,7 +77,7 @@ export const Test = {
                 expect(marks[0]?.parentNode).toHaveTextContent('Michelangelo Buonarroti');
                 expect(marks[1]).toHaveTextContent('Mich');
                 expect(marks[1]?.parentNode).toHaveTextContent('Jean-Michel Basquiat');
-                expect(canvasElement.querySelector('list-info')).toHaveTextContent('Found 2 search results for Mich.');
+                expect(canvasElement.querySelector('.listInfo__resultsText')).toHaveTextContent('Found 2 search results for Mich.');
             });
         });
     }
