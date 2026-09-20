@@ -58,8 +58,8 @@ class ListManagerItem extends ListItem {
         return mergeObjects(super.getDefaultConfig(), conf);
     }
 
-    $initializeProperties() {
-        super.$initializeProperties();
+    async $initializeProperties() {
+        await super.$initializeProperties();
         this.grabList();
 
         /** @type {ListFilter} */

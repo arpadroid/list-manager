@@ -46,7 +46,7 @@ class ListSort extends ArpaElement {
         };
     }
 
-    $initializeProperties() {
+    async $initializeProperties() {
         /** @type {ListManager | null} */
         this.list = ListManager.getList(this);
         /** @type {Router} */
@@ -159,9 +159,8 @@ class ListSort extends ArpaElement {
     }
 
     async _initializeNav() {
+        this.sortByMenu = /** @type {IconMenu | null} */ (this.nodes.sortByMenu);
         await this.promise;
-        /** @type {IconMenu | null} */
-        this.sortByMenu = this.querySelector('icon-menu');
         await this.sortByMenu?.onRendered();
         /** @type {NavList | null} */
         this.sortNav = this.sortByMenu?.navigation;

@@ -33,8 +33,8 @@ class ListFilters extends ArpaElement {
         return mergeObjects(super.getDefaultConfig(), conf);
     }
 
-    $initializeProperties() {
-        super.$initializeProperties();
+    async $initializeProperties() {
+        await super.$initializeProperties();
         /** @type {ListManager | null} */
         this.list = this.closest('.arpaList, .gallery');
         /** @type {Router} */

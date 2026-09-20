@@ -26,8 +26,8 @@ class ListInfo extends ArpaElement {
         return mergeObjects(super.getDefaultConfig(), conf);
     }
 
-    $initializeProperties() {
-        super.$initializeProperties();
+    async $initializeProperties() {
+        await super.$initializeProperties();
         /** @type {ListManager | null} */
         this.list = ListManager.getList(this);
         /** @type {ListResource} */

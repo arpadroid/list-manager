@@ -32,8 +32,8 @@ class MultiSelect extends ArpaElement {
         });
     }
 
-    $initializeProperties() {
-        super.$initializeProperties();
+    async $initializeProperties() {
+        await super.$initializeProperties();
         this.resource?.on('selection_change', () => this.update());
         return true;
     }
@@ -99,6 +99,7 @@ class MultiSelect extends ArpaElement {
                         placeholder="${this.getText('txtSelectAction')}"
                         icon="layers"
                         option-component="batch-operation"
+                        options-zone="batchOperations"
                     ></select-combo>
                 </arpa-form>
             </arpa-zone>
@@ -111,18 +112,14 @@ class MultiSelect extends ArpaElement {
 
     async $initializeNodes() {
         await super.$initializeNodes();
-        /**
-         * @todo: Remove setTimeout.
-         */
         /** @type {IconMenu | null} */
         this.menu = this.querySelector('.listMultiSelect__nav');
-        // await new Promise(resolve => setTimeout(resolve, 0));
         await this.menu?.onRendered();
         /** @type {NavList | null} */
         this.nav = this.menu?.navigation;
         await this.nav?.onRendered();
-        await new Promise(resolve => setTimeout(resolve, 0));
         this.form = /** @type {FormComponent | null} */ (this.nav?.firstElementChild);
+        await this.form?.onRendered();
         this.messages = this.nav?.querySelector('arpa-messages');
         this._initializeActions();
         this._initializeToggle();
@@ -148,7 +145,6 @@ class MultiSelect extends ArpaElement {
      * @returns {Promise<void>}
      */
     async _initializeActions() {
-        await this.form?.onRendered();
         const actionsField = /** @type {SelectCombo} */ (this.form?.getField('actions'));
         /** @type {SelectCombo | undefined} */
         this.actionsField = actionsField;

@@ -134,6 +134,7 @@ export const Default = {
 
 /** @type {Story} */
 export const Static = {
+    parameters: testParams,
     args: {
         id: 'list-manager-static',
         title: 'List Component',
@@ -151,7 +152,7 @@ export const Static = {
 /** @type {Story} */
 export const ThreeHundredItems = {
     name: '300',
-    parameters: defaultParams,
+    parameters: testParams,
     args: {
         id: 'list-manager-300',
         itemsPerPage: 300

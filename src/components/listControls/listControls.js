@@ -23,12 +23,12 @@ class ListControls extends ArpaElement {
 
     /**
      * Initializes the properties.
-     * @returns {boolean}
+     * @returns {Promise<boolean>}
      */
-    $initializeProperties() {
+    async $initializeProperties() {
         this.list = this.getList();
         this.listResource = this.list?.listResource;
-        super.$initializeProperties();
+        await super.$initializeProperties();
         return true;
     }
 

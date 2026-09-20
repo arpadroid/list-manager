@@ -34,7 +34,7 @@ class ListSearch extends ArpaElement {
         };
     }
 
-    $initializeProperties() {
+    async $initializeProperties() {
         /** @type {ListManager | null} */
         this.list = this.closest('.arpaList');
         /** @type {Router} */

@@ -146,8 +146,8 @@ export const Zones = {
                         Why Earth’s shifting continents single it out from every other rock in the cosmos.
                     </arpa-zone>
                     <arpa-zone name="nav">
-                        <nav-link href="#test-link" icon="planet"> Learn more about Earth</nav-link>
-                        <nav-link href="#test-link" icon="arrow_forward"> Learn more about Plate Tectonics</nav-link>
+                        <nav-link link="#test-link" icon="planet">Earth</nav-link>
+                        <nav-link link="#test-link" icon="arrow_forward">Plate Tectonics</nav-link>
                     </arpa-zone>
                     ${recyclingPlanetContent}
                 </list-manager-item>
@@ -192,7 +192,7 @@ const templateItems = html`
             <tag-item icon="book_2">knowledge</tag-item>
         </arpa-zone>
         <arpa-zone name="nav">
-            <nav-link href="#test-link" icon="arrow_forward">Learn more</nav-link>
+            <nav-link link="#test-link" icon="arrow_forward">Learn more</nav-link>
         </arpa-zone>
     </list-manager-item>
 
@@ -210,8 +210,8 @@ const templateItems = html`
             <tag-item icon="book_2">knowledge</tag-item>
         </arpa-zone>
         <arpa-zone name="nav">
-            <nav-link href="#test-link" icon="arrow_forward">Learn more about Earth</nav-link>
-            <nav-link href="#test-link" icon="arrow_forward">Learn more about Plate Tectonics</nav-link>
+            <nav-link link="#test-link" icon="arrow_forward">Learn more about Earth</nav-link>
+            <nav-link link="#test-link" icon="arrow_forward">Learn more about Plate Tectonics</nav-link>
         </arpa-zone>
         ${recyclingPlanetContent}
     </list-manager-item>
