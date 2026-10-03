@@ -64,12 +64,14 @@ export const Test = {
         });
 
         await step('Renders the filters panel with the pagination controls', async () => {
-            const pagination = combo.getByText(/Pagination/i);
-            expect(pagination).toBeInTheDocument();
-            const perPageInput = combo.getByLabelText(/Per page/i);
-            const pageInput = combo.getByLabelText('Page');
-            expect(perPageInput).toBeInTheDocument();
-            expect(pageInput).toBeInTheDocument();
+            await waitFor(() => {
+                const pagination = combo.getByText(/Pagination/i);
+                expect(pagination).toBeInTheDocument();
+                const perPageInput = combo.getByLabelText(/Per page/i);
+                const pageInput = combo.getByLabelText('Page');
+                expect(perPageInput).toBeInTheDocument();
+                expect(pageInput).toBeInTheDocument();
+            });
         });
 
         await step('Changes the page, submits the form and verifies the page change', async () => {
