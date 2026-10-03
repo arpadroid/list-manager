@@ -88,8 +88,9 @@ class ListSort extends ArpaElement {
     // #region LIFECYCLE
     ////////////////////////////
 
-    $onConnected() {
+    async $onConnected() {
         this.router?.on('route_changed', this._onRouteChange);
+        return true;
     }
 
     _onRouteChange() {

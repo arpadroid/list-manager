@@ -2,11 +2,13 @@
  * @typedef {import('@arpadroid/forms').FormComponent} FormComponent
  * @typedef {import('@arpadroid/forms').NumberField} NumberField
  * @typedef {import('@arpadroid/forms').SelectCombo} SelectCombo
- * @typedef {import('@storybook/web-components-vite').Meta} Meta
- * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
+ * @typedef {import('../listManager/listManager.types.js').ListManagerConfigType} ListManagerConfigType
+ * @typedef {import('@storybook/web-components-vite').Meta<ListManagerConfigType>} Meta
+ * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} Story
  */
 import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
-import { within, userEvent, expect, waitFor, fireEvent } from 'storybook/test';
+import { within, userEvent, expect, waitFor } from 'storybook/test';
+import { testParams } from '@arpadroid/module/storybook/helper';
 import { playSetup, renderSimple } from '../listManager/stories/listManager.stories.util.js';
 
 /** @type {Meta} */
@@ -17,18 +19,19 @@ const Default = {
     args: {
         ...ListStory.args,
         id: 'list-filters',
-        controls: 'filters',
+        controls: ['filters'],
         title: 'List Filters',
         itemsPerPage: 5
     },
     render: renderSimple
 };
 
-/** @type {StoryObj} */
+/** @type {Story} */
 export const Render = Default;
 
-/** @type {StoryObj} */
+/** @type {Story} */
 export const Test = {
+    parameters: testParams,
     args: {
         ...Default.args,
         id: 'test-filters'
@@ -73,10 +76,8 @@ export const Test = {
             const pageInput = combo.getByLabelText('Page');
             const pageField = /** @type {NumberField} */ (pageInput.closest('number-field'));
             pageField?.setValue(2);
-            if (!filtersForm) {
-                throw new Error('Filters form not found');
-            }
-            await fireEvent.submit(filtersForm);
+            await userEvent.click(pageInput);
+            await userEvent.keyboard('{Enter}');
             await waitFor(() => {
                 expect(setup.listResource?.getPage()).toEqual(2);
                 const currPage = canvas.getByLabelText('Current page');

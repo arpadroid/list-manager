@@ -13,7 +13,7 @@
  * @typedef {import('@arpadroid/forms').FormSubmitType} FormSubmitType
  * @typedef {import('@arpadroid/navigation').NavList} NavList
  */
-import { mergeObjects, attrString, $map, editURL, defineCustomElement } from '@arpadroid/tools';
+import { mergeObjects, $map, editURL, defineCustomElement } from '@arpadroid/tools';
 import { ArpaElement } from '@arpadroid/ui';
 
 const html = String.raw;
@@ -100,7 +100,7 @@ class ListFilters extends ArpaElement {
                                 icon=""
                                 id="page"
                                 label="Page"
-                                ${attrString({ min: 1, max: this.listResource?.getTotalPages() })}
+                                min="1"
                                 value="${this.pageFilter?.getValue() || ''}"
                                 variant="small"
                             ></number-field>
@@ -113,6 +113,7 @@ class ListFilters extends ArpaElement {
 
     async $initializeNodes() {
         await super.$initializeNodes();
+        await this.waitForArpaNodes();
         await this._initializeIconMenu();
         this._initializeForm();
         return true;
@@ -121,29 +122,22 @@ class ListFilters extends ArpaElement {
     async _initializeIconMenu() {
         /** @type {IconMenu | null} */
         this.menuNode = this.querySelector('icon-menu');
-        await this.menuNode?.onRendered();
+        await this.menuNode?.waitForArpaNodes();
+        await this.menuNode?.promise;
         /** @type {NavList | null} */
         this.comboNode = this.menuNode?.navigation;
         this.comboNode?.setAttribute('zone', 'list-filters');
-        await this.comboNode?.onRendered();
-        await new Promise(resolve => setTimeout(resolve, 0));
         return true;
     }
 
     async _initializeForm() {
-        /** @todo Remove setTimeout. */
-        this.form = /** @type {FormComponent | undefined} */ (this?.comboNode?.nodes?.form);
-        await this.form?.onRendered();
-        await this.form?.promise;
-        await new Promise(resolve => setTimeout(resolve, 0));
+        this.form = /** @type {FormComponent | undefined} */ (this.comboNode?.nodes.form);
         this.form?.onSubmit(this.onSubmit);
+        await this.form?.promise;
+        await this.form?.waitForArpaNodes();
         this.pageField = /** @type {NumberField} */ (this.form?.getField('page'));
         this.perPageField = /** @type {SelectCombo} */ (this.form?.getField('perPage'));
-        this.perPageField?.on(
-            'change',
-            (/** @type {unknown} */ value, /** @type {Field} */ field, /** @type {Event} */ event) =>
-                this.form?.submitForm(event)
-        );
+        this.perPageField?.on('change', (value, field, event) => this.form?.submitForm(event));
     }
 
     /**

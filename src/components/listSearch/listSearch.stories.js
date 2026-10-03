@@ -1,10 +1,12 @@
 /**
  * @typedef {import('../listManager/listManager.js').default} ListManager
- * @typedef {import('@storybook/web-components-vite').Meta} Meta
- * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
+ * @typedef {import('../listManager/listManager.types.js').ListManagerConfigType} ListManagerConfigType
+ * @typedef {import('@storybook/web-components-vite').Meta<ListManagerConfigType>} Meta
+ * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} Story
  */
 import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
-import { expect, waitFor, fireEvent, userEvent } from 'storybook/test';
+import { expect, waitFor, userEvent } from 'storybook/test';
+import { testParams } from '@arpadroid/module/storybook/helper';
 import { playSetup, renderSimple } from '../listManager/stories/listManager.stories.util.js';
 
 /** @type {Meta} */
@@ -13,26 +15,26 @@ const Default = {
     title: 'List Manager/Controls/Search',
     args: {
         ...ListStory.args,
-        controls: 'search',
+        controls: ['search'],
         id: 'list-search',
         title: null,
         hasInfo: true,
-        hasSelection: null,
+        hasSelection: false,
         searchPlaceholder: 'List Search'
     },
     render: renderSimple
 };
 
-/** @type {StoryObj} */
+/** @type {Story} */
 export const Render = Default;
 
-/** @type {StoryObj} */
+/** @type {Story} */
 export const Test = {
+    parameters: testParams,
     args: {
         id: 'test-search',
         title: 'List Search Test',
-        searchPlaceholder: 'List Search Test',
-        value: ''
+        searchPlaceholder: 'List Search Test'
     },
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement);
@@ -50,7 +52,7 @@ export const Test = {
 
         await step('Searches for "Leon" and expects "Leonardo Da Vinci\'s" item to be highlighted', async () => {
             await userEvent.clear(input);
-            await userEvent.type(input, 'Leon', { delay: 50 });
+            await userEvent.type(input, 'Leon');
             await waitFor(() => {
                 const searchMatch = canvasElement.querySelector('mark');
                 expect(searchMatch).toHaveTextContent('Leon');
@@ -61,15 +63,15 @@ export const Test = {
 
         await step('Searches and submits query for "Mitch" expecting two results.', async () => {
             await userEvent.clear(input);
-            await userEvent.type(input, 'Mich', { delay: 10 });
+            await userEvent.type(input, 'Mich');
             await waitFor(() => {
                 document.querySelectorAll('mark')?.forEach(element => {
                     expect(element).toHaveTextContent('Mich');
                     // expect(element?.parentNode).toHaveTextContent('Michelangelo Buonarroti', { exact: false });
                 });
             });
-            await new Promise(resolve => setTimeout(resolve, 10));
-            await fireEvent.submit(form);
+            input.focus();
+            await userEvent.keyboard('{Enter}');
             await waitFor(() => {
                 const marks = canvasElement.querySelectorAll('mark');
                 expect(marks).toHaveLength(2);
@@ -77,7 +79,9 @@ export const Test = {
                 expect(marks[0]?.parentNode).toHaveTextContent('Michelangelo Buonarroti');
                 expect(marks[1]).toHaveTextContent('Mich');
                 expect(marks[1]?.parentNode).toHaveTextContent('Jean-Michel Basquiat');
-                expect(canvasElement.querySelector('.listInfo__resultsText')).toHaveTextContent('Found 2 search results for Mich.');
+                expect(canvasElement.querySelector('.listInfo__resultsText')).toHaveTextContent(
+                    'Found 2 search results for Mich.'
+                );
             });
         });
     }

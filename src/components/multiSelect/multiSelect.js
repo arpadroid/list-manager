@@ -80,19 +80,22 @@ class MultiSelect extends ArpaElement {
             ${attrString(menuProps)}
         >
             <arpa-zone name="nav">
-                <arpa-form id="${formId}" class="listMultiSelect__form" variant="compact" has-submit="false">
-                    <arpa-zone name="form-title"> ${this.i18n('txtBatchOperations')} </arpa-zone>
-                    <arpa-zone name="messages">
-                        <info-message id="info-message" class="listMultiSelect__infoMessage">
-                            ${this.getTooltip()}
-                        </info-message>
-                    </arpa-zone>
+                <arpa-form
+                    id="${formId}"
+                    title="${this.i18nText('txtBatchOperations')}"
+                    class="listMultiSelect__form"
+                    variant="compact"
+                    has-submit="false"
+                >
+                    <info-message id="info-message" class="listMultiSelect__infoMessage">
+                        ${this.getTooltip()}
+                    </info-message>
 
                     <checkbox-field id="toggleAll" value="select-all" icon="select_all">
-                        <arpa-zone name="checkbox-label"> ${this.i18n('txtSelectAll')} </arpa-zone>
+                        ${this.i18n('txtSelectAll')}
                     </checkbox-field>
                     <checkbox-field id="selectFilter" icon="filter_alt">
-                        <arpa-zone name="checkbox-label"> ${this.i18n('txtShowSelectedOnly')} </arpa-zone>
+                        ${this.i18n('txtShowSelectedOnly')}
                     </checkbox-field>
                     <select-combo
                         id="actions"
@@ -150,19 +153,6 @@ class MultiSelect extends ArpaElement {
         this.actionsField = actionsField;
         await actionsField?.onRendered();
         actionsField?.optionsNode?.setAttribute('zone', 'batchOperations');
-        actionsField?.on(
-            'change',
-            async (/** @type {unknown} */ value, /** @type {Field} */ field, /** @type {Event} */ event) => {
-                const option = actionsField.getSelectedOption();
-                await option?.promise;
-                const action = option?.getAction();
-                if (typeof action === 'function') {
-                    action(this.resource?.getSelectedItems(), this.renderItemList());
-                }
-                // this.actionsField.removeSelectedOption();
-                event.stopImmediatePropagation();
-            }
-        );
     }
 
     // #endregion

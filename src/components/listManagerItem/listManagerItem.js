@@ -123,9 +123,9 @@ class ListManagerItem extends ListItem {
     // #region Lifecycle
     ////////////////////////
 
-    $onConnected() {
+    async $onConnected() {
         this.viewsFilter && this._initializeView();
-        super.$onConnected();
+        return super.$onConnected();
     }
 
     async $initializeNodes() {

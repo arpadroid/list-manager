@@ -126,13 +126,14 @@ class ListControls extends ArpaElement {
         return html`<list-filters></list-filters>`;
     }
 
-    $onConnected() {
-        super.$onConnected();
+    async $onConnected() {
+        await super.$onConnected();
         /** @type {ListSearch | null} */
         this.search = this.querySelector('list-search');
         /** @type {ListViews | null} */
         this.views = this.querySelector('list-views');
         this.multiSelect = this.querySelector('list-multi-select');
+        return true;
     }
 }
 
