@@ -236,7 +236,7 @@ export const CustomView = {
                         margin-left: 0;
 
                         .iconButton {
-                            --icon-button-size: 1.5rem;
+                            --size: 1.5rem;
                         }
                     }
                 }

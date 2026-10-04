@@ -50,7 +50,7 @@
 
     .listItem__checkboxContainer,
     .iconButton {
-        --icon-button-size: 25px;
+        --size: 25px;
     }
 
     .listItem__checkboxContainer {

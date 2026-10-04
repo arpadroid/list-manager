@@ -190,25 +190,21 @@
      * Navigation
      */
 
+    .iconButton {
+        --size: 24px;
+    }
+
     .listItem__nav {
         .iconButton__button {
             background-color: var(--overlay);
             border-radius: 4px;
             box-shadow: rgb(99 99 99 / 10%) 0 2px 8px 0;
             transition: opacity 0.2s ease-in-out;
-
-            --icon-button-size: 24px;
-            --icon-button-height: 24px;
         }
 
         .selectCombo {
             margin-right: 0;
         }
-    }
-
-    .listItem__checkboxContainer,
-    .iconButton {
-        --icon-button-size: 24px;
     }
 
     /**

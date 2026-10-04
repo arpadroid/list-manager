@@ -75,6 +75,10 @@ export const Test = {
         });
 
         await step('Changes the page, submits the form and verifies the page change', async () => {
+            await waitFor(() => {
+                expect(combo.getByLabelText('Page')).toBeInTheDocument();
+                expect(combo.getByLabelText('Page').closest('number-field')).not.toBeNull();
+            });
             const pageInput = combo.getByLabelText('Page');
             const pageField = /** @type {NumberField} */ (pageInput.closest('number-field'));
             pageField?.setValue(2);
