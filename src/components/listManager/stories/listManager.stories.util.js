@@ -24,8 +24,12 @@ export async function playSetup(canvasElement, options) {
     const canvas = within(canvasElement);
     /** @type {ListManager | null} */
     const listNode = canvasElement.querySelector('list-manager');
+    
+    await listNode?.onRendered();
+    listNode?.id && initList && (await initializeList(listNode?.id, items));
     /** @type {ListManagerItem | null} */
     const listItem = canvasElement.querySelector('list-manager-item');
+    await listItem?.onRendered();
 
     const listResource = listNode?.listResource;
     if (typeof preRenderCallback === 'function') {
@@ -35,10 +39,6 @@ export async function playSetup(canvasElement, options) {
         }
     }
 
-    await listNode?.promise;
-    listNode?.id && initList && (await initializeList(listNode?.id, items));
-    await listItem?.promise;
-    await new Promise(resolve => setTimeout(resolve, 50));
     return { canvas, listNode, listItem, listResource };
 }
 
@@ -48,25 +48,26 @@ export async function playSetup(canvasElement, options) {
  * @returns {string}
  */
 export function renderItemTemplate(attr = {}) {
-    return html` <!-- List Item Template -->
+    return html`
         <template
             template-type="list-item"
             template-mode="append"
-            truncate-content="10"
+            truncate-content="50"
             image="{portraitURL}"
             truncate-button
             ${attrString(attr)}
         >
-            <zone name="tags">
-                <tag-item label="{date}" icon="calendar_month"></tag-item>
-                <tag-item label="{movement}" icon="palette"></tag-item>
-            </zone>
-            <zone name="nav">
+            <arpa-zone name="tags">
+                <tag-item icon="calendar_month">{date}</tag-item>
+                <tag-item icon="palette">{movement}</tag-item>
+            </arpa-zone>
+            <arpa-zone name="nav">
                 <nav-link link="javascript:void(0)" icon-right="visibility">View</nav-link>
                 <nav-link link="javascript:void(0)" icon-right="edit">Edit</nav-link>
-            </zone>
-            <zone name="content">{legacy}</zone>
-        </template>`;
+            </arpa-zone>
+            <arpa-zone name="content">{legacy}</arpa-zone>
+        </template>
+    `;
 }
 
 /**

@@ -8,6 +8,7 @@ export type ListManagerConfigType = ListConfigType & {
     actions?: FieldOptionConfigType[];
     hasMiniSearch?: boolean;
     hasSelection?: boolean;
+    searchPlaceholder?: string;
     itemComponent?: typeof ListManagerItem;
     router?: Router;
     sortByParam?: string;
@@ -16,4 +17,5 @@ export type ListManagerConfigType = ListConfigType & {
     sortOptions?: FieldOptionConfigType[];
     url?: string;
     viewOptions?: NavLinkConfigType[];
+    controlsComponent?: string;
 };

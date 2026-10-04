@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 /**
  * @typedef {import('@arpadroid/resources').ListResource} ListResource
  * @typedef {import('@arpadroid/resources').ListFilter} ListFilter
@@ -12,26 +11,30 @@
  * @typedef {import('./listFilters.types').ListFiltersConfigType} ListFiltersConfigType
  * @typedef {import('./listFilters.types').ListFiltersSubmitPayloadType} ListFiltersSubmitPayloadType
  * @typedef {import('@arpadroid/forms').FormSubmitType} FormSubmitType
+ * @typedef {import('@arpadroid/navigation').NavList} NavList
  */
-import { mergeObjects, attrString, mapHTML, editURL, defineCustomElement } from '@arpadroid/tools';
+import { mergeObjects, $map, editURL, defineCustomElement } from '@arpadroid/tools';
 import { ArpaElement } from '@arpadroid/ui';
 
 const html = String.raw;
 class ListFilters extends ArpaElement {
     /** @type {ListFiltersConfigType} */
     _config = this._config;
-    // #region INITIALIZATION
+
     getDefaultConfig() {
         this.bind('onSubmit');
-        return mergeObjects(super.getDefaultConfig(), {
+        /** @type {ListFiltersConfigType} */
+        const conf = {
+            className: 'listFilters',
             icon: 'filter_alt',
             perPageOptions: [5, 10, 25, 50, 100, 200],
             btnLabel: 'Filters'
-        });
+        };
+        return mergeObjects(super.getDefaultConfig(), conf);
     }
 
-    $initializeProperties() {
-        super.$initializeProperties();
+    async $initializeProperties() {
+        await super.$initializeProperties();
         /** @type {ListManager | null} */
         this.list = this.closest('.arpaList, .gallery');
         /** @type {Router} */
@@ -46,91 +49,95 @@ class ListFilters extends ArpaElement {
         return true;
     }
 
-    getPerPage() {
-        this.list?.getArrayProp('per-page-options') || this.getArrayProp('per-page-options');
+    getPerPageOptions() {
+        return this.list?.getProp('perPageOptions') || this.getProp('perPageOptions');
     }
 
-    async render() {
-        const label = this.getProp('btn-label') || this.getProp('label');
-        const props = {
-            ...this.getProperties('icon'),
-            label,
-            buttonAria: label
-        };
-        this.innerHTML = html`<icon-menu ${attrString(props)} nav-class="listFilters__nav">
-            <div class="listFilters__content">${this.renderForm()}</div>
-            <arpa-zone name="tooltip"> ${label} </arpa-zone>
+    getLabel() {
+        return this.getProp('btnLabel') || this.getProp('label') || 'Filters';
+    }
+
+    getPage() {
+        return this.pageFilter?.getValue() || this.getProp('page') || 1;
+    }
+
+    getSelectedPerPage() {
+        return this.perPageFilter?.getValue() || this.getProp('perPage') || 5;
+    }
+
+    $renderTemplate() {
+        return html`<icon-menu
+            icon="{icon}"
+            tooltip="{getLabel()}"
+            menu-position="bottom-right"
+            button-aria="{getLabel()}"
+            nav-class="listFilters__nav"
+        >
+            <arpa-zone name="nav">
+                <div class="listFilters__content">
+                    <arpa-node
+                        name="form"
+                        tag="arpa-form"
+                        variant="compact"
+                        id="${this.list?.getProp('id')}-filters-form"
+                        has-submit="false"
+                        class="listFilters__form"
+                    >
+                        <group-field
+                            class="listFilters__pagination"
+                            icon="auto_stories"
+                            id="pagination-filters"
+                            label="Pagination"
+                            open
+                        >
+                            <select-combo id="perPage" label="Per page" value="{getSelectedPerPage()}" variant="small">
+                                ${$map(
+                                    this.getPerPageOptions(),
+                                    value => html`<select-option label="${value}" value="${value}"></select-option>`
+                                )}
+                            </select-combo>
+                            <number-field
+                                icon=""
+                                id="page"
+                                label="Page"
+                                min="1"
+                                value="${this.pageFilter?.getValue() || ''}"
+                                variant="small"
+                            ></number-field>
+                        </group-field>
+                    </arpa-node>
+                </div>
+            </arpa-zone>
         </icon-menu>`;
-        /** @type {IconMenu | null} */
-        this.menuNode = this.querySelector('icon-menu');
-        this._hasRendered = true;
+    }
+
+    async $initializeNodes() {
+        await super.$initializeNodes();
+        await this.waitForArpaNodes();
+        await this._initializeIconMenu();
         this._initializeForm();
-        this._initializeIconMenu();
+        return true;
     }
 
     async _initializeIconMenu() {
-        await customElements.whenDefined('icon-menu');
+        /** @type {IconMenu | null} */
+        this.menuNode = this.querySelector('icon-menu');
+        await this.menuNode?.waitForArpaNodes();
         await this.menuNode?.promise;
-        const itemsNode = /** @type {HTMLElement | null} */ (this.menuNode?.navigation?.itemsNode);
-        itemsNode?.setAttribute('zone', 'list-filters');
+        /** @type {NavList | null} */
+        this.comboNode = this.menuNode?.navigation;
+        this.comboNode?.setAttribute('zone', 'list-filters');
+        return true;
     }
 
     async _initializeForm() {
-        /** @type {FormComponent | null} */
-        this.form = this.querySelector('.listFilters__form');
-        await this.form?.promise;
+        this.form = /** @type {FormComponent | undefined} */ (this.comboNode?.nodes.form);
         this.form?.onSubmit(this.onSubmit);
-        await customElements.whenDefined('arpa-form');
+        await this.form?.promise;
+        await this.form?.waitForArpaNodes();
         this.pageField = /** @type {NumberField} */ (this.form?.getField('page'));
         this.perPageField = /** @type {SelectCombo} */ (this.form?.getField('perPage'));
-        this.perPageField?.on(
-            'change',
-            (/** @type {unknown} */ value, /** @type {Field} */ field, /** @type {Event} */ event) =>
-                this.form?.submitForm(event)
-        );
-    }
-
-    /**
-     * Renders the form for the list filters.
-     * @param {ListFilter} [pageFilter]
-     * @param {ListFilter} [perPageFilter]
-     * @returns {string} The form HTML.
-     */
-    renderForm(pageFilter = this.pageFilter, perPageFilter = this.perPageFilter) {
-        const opt = this.getArrayProp('per-page-options');
-        /** @type {number[]} */
-        const perPageOptions = Array.isArray(opt) ? opt : [];
-        const page = pageFilter?.getValue();
-        const perPage = perPageFilter?.getValue();
-        const perPageOptionsHTML = /** @type {any} */ (mapHTML)(perPageOptions, (/** @type {number}*/ value) => {
-            return html`<select-option label="${value}" value="${value}"></select-option>`;
-        });
-        return html`<arpa-form
-            variant="compact"
-            id="${this.list?.getId()}-filters-form"
-            has-submit="false"
-            class="listFilters__form"
-        >
-            <group-field
-                class="listFilters__pagination"
-                icon="auto_stories"
-                id="pagination-filters"
-                label="Pagination"
-                open
-            >
-                <select-combo id="perPage" label="Per page" value="${perPage || ''}" variant="small">
-                    ${perPageOptionsHTML}
-                </select-combo>
-                <number-field
-                    icon=""
-                    id="page"
-                    label="Page"
-                    ${attrString({ min: 1, max: this.listResource?.getTotalPages() })}
-                    value="${page}"
-                    variant="small"
-                ></number-field>
-            </group-field>
-        </arpa-form>`;
+        this.perPageField?.on('change', (value, field, event) => this.form?.submitForm(event));
     }
 
     /**

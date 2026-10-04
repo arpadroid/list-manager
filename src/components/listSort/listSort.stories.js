@@ -4,11 +4,11 @@
  * @typedef {import('@storybook/web-components-vite').Meta<ListManagerConfigType>} Meta
  * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} StoryObj
  */
-import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
-import { within, waitFor, expect, fireEvent, userEvent } from 'storybook/test';
+import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
+import { within, waitFor, expect, userEvent } from 'storybook/test';
 import { attrString } from '@arpadroid/tools';
-import { playSetup, renderItemTemplate } from '../listManager/stories/listManager.stories.util.js';
-import artists from '../../mockData/artists.json';
+import { playSetup } from '../listManager/stories/listManager.stories.util.js';
+import artists from '../../mockData/artists.json' with { type: 'json' };
 
 const html = String.raw;
 
@@ -22,17 +22,22 @@ const Default = {
         id: 'list-sort',
         controls: ['sort'],
         title: 'List Sort',
-        // hasInfo: false,
-        hasMessages: false,
-        itemsPerPage: 10
     },
     render: args => {
         return html`<list-manager ${attrString(args)}>
-            <zone name="sort-options">
+            <arpa-zone name="sort-options">
                 <nav-link param-value="title" icon-right="sort_by_alpha" default> Title </nav-link>
                 <nav-link param-value="date" icon-right="calendar_month"> Date </nav-link>
-            </zone>
-            ${renderItemTemplate()}
+            </arpa-zone>
+            <template
+                template-type="list-item"
+                template-mode="append"
+                truncate-content="50"
+                image="{portraitURL}"
+                truncate-button
+            >
+                <arpa-zone name="content">{legacy}</arpa-zone>
+            </template>
         </list-manager>`;
     },
     play: async ({ canvasElement }) => {
@@ -71,11 +76,12 @@ export const Test = {
             }
         });
         const { canvas } = setup;
-        const sortByButton = canvas.getByRole('button', { name: /Sort by/i });
-        const sortOrderButton = canvas.getByLabelText('Sort order');
+        const sortByButton = await waitFor(() => canvas.getByRole('button', { name: /Sort by/i }));
 
         const sortByMenu = sortByButton.closest('icon-menu');
-        await sortByMenu.promise;
+        await sortByMenu.onRendered();
+        const sortOrderButton = canvas.getByLabelText('Sort order');
+
         const sortByCombo = sortByMenu.navigation;
         sortByCombo && (await sortByCombo.promise);
         /** @type {ReturnType<typeof within>} */
@@ -102,10 +108,12 @@ export const Test = {
         });
 
         await step('Opens the sort menu and verifies "title" sort is selected.', async () => {
-            await fireEvent.click(sortByButton);
-            const sortByCombo = sortByMenu.navigation;
-            expect(sortByCombo.querySelector('a[aria-current="page"]')).toHaveTextContent('Title');
-            expect(sortByCombo).toBeVisible();
+            await userEvent.click(sortByButton);
+            await waitFor(() => {
+                const sortByCombo = sortByMenu.navigation;
+                expect(sortByCombo.querySelector('a[aria-current="page"]')).toHaveTextContent('Title');
+                expect(sortByCombo).toBeVisible();
+            });
         });
 
         await step('Verifies items are sorted by title descending by default.', async () => {

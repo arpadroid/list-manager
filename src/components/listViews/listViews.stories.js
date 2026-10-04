@@ -6,9 +6,9 @@
  */
 
 import { attrString } from '@arpadroid/tools';
-import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
+import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
 import { userEvent, within, waitFor, expect } from 'storybook/test';
-import { playSetup, renderItemTemplate, renderSimple } from '../listManager/stories/listManager.stories.util.js';
+import { playSetup, renderSimple } from '../listManager/stories/listManager.stories.util.js';
 
 const html = String.raw;
 
@@ -22,8 +22,9 @@ const Default = {
         controls: 'views',
         id: 'list-views',
         title: 'List Views',
-        itemsPerPage: 40,
-        hasInfo: false
+        itemsPerPage: 10,
+        hasInfo: false,
+        views: 'list,grid'
     },
     render: renderSimple
 };
@@ -37,8 +38,7 @@ export const Test = {
         ...Default.args,
         id: 'test-views',
         title: 'List Views Test',
-        defaultView: 'list',
-        views: 'list,grid'
+        view: 'list'
     },
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement);
@@ -47,28 +47,30 @@ export const Test = {
 
         /** @type {IconMenu | null} */
         const iconMenu = canvasElement.querySelector('list-views icon-menu');
+        await iconMenu?.onRendered();
         const viewsMenu = /** @type {HTMLElement | null} */ (iconMenu?.navigation);
         if (!viewsMenu) {
             throw new Error('Views menu not found');
         }
         await step('Renders the menu with the expected views', async () => {
             expect(viewsMenu).toBeInTheDocument();
-
-            const listView = within(viewsMenu).getByText('List');
-            const gridView = within(viewsMenu).getByText('Grid');
-            expect(listView).toBeInTheDocument();
-            expect(gridView).toBeInTheDocument();
-            expect(viewsMenu?.querySelectorAll('nav-link')).toHaveLength(2);
+            await waitFor(() => {
+                const listView = within(viewsMenu).getByText('List');
+                const gridView = within(viewsMenu).getByText('Grid');
+                expect(listView).toBeInTheDocument();
+                expect(gridView).toBeInTheDocument();
+                expect(viewsMenu?.querySelectorAll('nav-link')).toHaveLength(2);
+            });
         });
 
         await step('Opens the Views menu and verifies the list item is selected', async () => {
             const viewsButton = canvas.getByRole('button', { name: /Views/i });
-            userEvent.click(viewsButton);
-            const listView = within(viewsMenu).getByText('List').closest('button');
+            await userEvent.click(viewsButton);
             await waitFor(() => {
+                const listView = within(viewsMenu).getByText('List').closest('button');
                 expect(listView).toHaveAttribute('aria-current', 'location');
+                expect(listNode).toHaveClass('listView--list');
             });
-            expect(listNode).toHaveClass('listView--list');
         });
 
         await step('Clicks on the Grid view and verifies the list item is selected', async () => {
@@ -94,22 +96,27 @@ export const Test = {
 /** @type {StoryObj} */
 export const CustomView = {
     args: {
-        ...Default.args,
         id: 'custom-view',
         title: 'Custom View',
         titleIcon: 'dashboard',
-        defaultView: 'custom-view',
-        views: 'list,custom-view'
+        view: 'custom-view',
+        views: 'list,custom-view',
+        hasMessages: true,
+        itemsPerPage: 2
     },
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement);
+        await new Promise(resolve => requestAnimationFrame(resolve));
         const { listNode, canvas } = setup;
         await step('Renders the custom view', async () => {
             await listNode?.setView('custom-view');
+            await listNode?.promise;
             expect(listNode).toHaveClass('listView--custom-view');
             expect(canvas.getByRole('heading', { name: /Custom View/i })).toBeInTheDocument();
-            const imageContainer = canvasElement.querySelector('.test-image-container img');
-            expect(imageContainer).toBeInTheDocument();
+            await waitFor(() => {
+                const imageContainer = canvasElement.querySelector('.test-image-container img');
+                expect(imageContainer).toBeInTheDocument();
+            });
             const customViewContent = canvasElement.querySelector('.listItem__customView__content');
             expect(customViewContent).toBeInTheDocument();
             const customViewHeader = canvasElement.querySelector('.listItem__customView__header');
@@ -125,9 +132,9 @@ export const CustomView = {
                 throw new Error('Views menu not found');
             }
             const viewsButton = canvas.getByRole('button', { name: /Views/i });
-            userEvent.click(viewsButton);
-            const customView = within(viewsMenu).getByText('Custom View').closest('button');
+            await userEvent.click(viewsButton);
             await waitFor(() => {
+                const customView = within(viewsMenu).getByText('Custom View').closest('button');
                 expect(customView).toHaveAttribute('aria-current', 'location');
             });
             expect(listNode).toHaveClass('listView--custom-view');
@@ -136,14 +143,14 @@ export const CustomView = {
     render(args) {
         return html`
             <list-manager ${attrString(args)}>
-                <zone name="messages">
+                <arpa-zone name="messages">
                     <info-message>
                         This example demonstrates how to create a custom view for the list component. The custom view is
                         defined as a template with the type "view" and an id of our choice e.g. "custom-view". The
                         template can be styled using CSS and can include any HTML elements or components.
                         <br />
                     </info-message>
-                </zone>
+                </arpa-zone>
 
                 <!-- Custom View Template -->
 
@@ -154,17 +161,32 @@ export const CustomView = {
                     icon="dashboard"
                     title-icon="dashboard"
                 >
-                    <div class="listItem__main">
+                    <arpa-node name="main">
                         <div class="test-image-container">{image}</div>
                         <div class="listItem__customView__content">
-                            <div class="listItem__customView__header">{titleContainer}{nav}</div>
-                            {tags} {children}
-                            <span>custom text</span>
+                            <div class="listItem__customView__header">{titleWrapper}{subtitle}{nav}</div>
+                            <arpa-node name="content" class="listItem__customView__body" is-content></arpa-node>
+                            custom text
                         </div>
-                    </div>
+                    </arpa-node>
                 </template>
-
-                ${renderItemTemplate({ elementTruncateContent: 180, elementTitleIcon: 'dashboard' })}
+                <template
+                    template-type="list-item"
+                    template-mode="append"
+                    truncate-content="10"
+                    image="{portraitURL}"
+                    truncate-button
+                >
+                    <arpa-zone name="tags">
+                        <tag-item icon="calendar_month">{date}</tag-item>
+                        <tag-item icon="palette">{movement}</tag-item>
+                    </arpa-zone>
+                    <arpa-zone name="nav">
+                        <nav-link link="javascript:void(0)" icon-right="visibility">View</nav-link>
+                        <nav-link link="javascript:void(0)" icon-right="edit">Edit</nav-link>
+                    </arpa-zone>
+                    <arpa-zone name="content">{legacy}</arpa-zone>
+                </template>
             </list-manager>
 
             <!-- Custom View Styles -->
@@ -214,7 +236,7 @@ export const CustomView = {
                         margin-left: 0;
 
                         .iconButton {
-                            --icon-button-size: 1.5rem;
+                            --size: 1.5rem;
                         }
                     }
                 }

@@ -3,9 +3,10 @@
  * @typedef {import('../listManager/listManager').default} ListManager
  * @typedef {import('../listSearch/listSearch').default} ListSearch
  * @typedef {import('../listViews/listViews').default} ListViews
+ * @typedef {import('@arpadroid/ui').ArpaNode} ArpaNode
  */
 import { ArpaElement } from '@arpadroid/ui';
-import { appendNodes, attrString, ucFirst, camelToDashed, defineCustomElement } from '@arpadroid/tools';
+import { mergeObjects, attrString, ucFirst, camelToDashed, defineCustomElement, $map } from '@arpadroid/tools';
 
 const html = String.raw;
 class ListControls extends ArpaElement {
@@ -22,12 +23,12 @@ class ListControls extends ArpaElement {
 
     /**
      * Initializes the properties.
-     * @returns {boolean}
+     * @returns {Promise<boolean>}
      */
-    $initializeProperties() {
+    async $initializeProperties() {
         this.list = this.getList();
         this.listResource = this.list?.listResource;
-        super.$initializeProperties();
+        await super.$initializeProperties();
         return true;
     }
 
@@ -36,10 +37,10 @@ class ListControls extends ArpaElement {
      * @returns {ListControlsConfigType}
      */
     getDefaultConfig() {
-        return {
-            className: 'listControls',
-            controls: this.list?.getControls()
+        const config = {
+            className: 'listControls'
         };
+        return mergeObjects(super.getDefaultConfig(), config);
     }
 
     /**
@@ -62,32 +63,35 @@ class ListControls extends ArpaElement {
     /**
      * Returns the control element given its name.
      * @param {string} control
-     * @returns {HTMLElement | null}
+     * @returns {import('@arpadroid/ui').ArpaElementContentNodeType | null}
      */
     getControl(control) {
-        return this.querySelector(`gallery-${camelToDashed(control)}`);
+        return this.nodes?.[control] || this.querySelector(`gallery-${camelToDashed(control)}`);
     }
 
-    render() {
-        const controls = this.getControls();
-        let content = '';
-        controls?.forEach(control => {
-            const fnName = /** @type {keyof ListControls} */ (`render${ucFirst(control)}`);
-            if (this.hasControl(control)) {
-                /** @type {(() => string) | unknown} */
-                const fn = this[fnName];
-                if (typeof fn === 'function') {
-                    content += fn.call(this);
-                } else {
-                    const tagName = `gallery-${camelToDashed(control)}`;
-                    content += html`<${tagName}></${tagName}>`;
-                }
-            }
-        });
+    /**
+     * Determines whether the control should be rendered.
+     * @param {{ name: string , arpaNode: ArpaNode}} param
+     * @returns {Promise<boolean>}
+     */
+    async shouldRenderControl({ name }) {
+        const totalItems = this.listResource?.getTotalItems() || 0;
+        return !['play', 'previous', 'next', 'input'].includes(name) || totalItems > 1;
+    }
 
-        if (controls?.length) {
-            this.innerHTML = content || '';
-        }
+    $renderTemplate() {
+        const controls = this.list?.getControls() || this.getArrayProp('controls');
+        const content = $map(controls || [], control => {
+            const fnName = /** @type {keyof ListControls} */ (`render${ucFirst(control)}`);
+            /** @type {(() => string) | unknown} */
+            const fn = this[fnName];
+            if (typeof fn === 'function') {
+                return fn.call(this);
+            }
+            const tagName = `gallery-${camelToDashed(control)}`;
+            return html`<arpa-node name="${control}" tag="${tagName}" defer="shouldRenderControl"> </arpa-node>`;
+        });
+        return content;
     }
 
     /**
@@ -122,14 +126,14 @@ class ListControls extends ArpaElement {
         return html`<list-filters></list-filters>`;
     }
 
-    $onConnected() {
-        super.$onConnected();
+    async $onConnected() {
+        await super.$onConnected();
         /** @type {ListSearch | null} */
         this.search = this.querySelector('list-search');
         /** @type {ListViews | null} */
         this.views = this.querySelector('list-views');
         this.multiSelect = this.querySelector('list-multi-select');
-        appendNodes(this, this._childNodes);
+        return true;
     }
 }
 

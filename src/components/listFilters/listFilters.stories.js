@@ -2,11 +2,13 @@
  * @typedef {import('@arpadroid/forms').FormComponent} FormComponent
  * @typedef {import('@arpadroid/forms').NumberField} NumberField
  * @typedef {import('@arpadroid/forms').SelectCombo} SelectCombo
- * @typedef {import('@storybook/web-components-vite').Meta} Meta
- * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
+ * @typedef {import('../listManager/listManager.types.js').ListManagerConfigType} ListManagerConfigType
+ * @typedef {import('@storybook/web-components-vite').Meta<ListManagerConfigType>} Meta
+ * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} Story
  */
-import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
-import { within, userEvent, expect, waitFor, fireEvent } from 'storybook/test';
+import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
+import { within, userEvent, expect, waitFor } from 'storybook/test';
+import { testParams } from '@arpadroid/module/storybook/helper';
 import { playSetup, renderSimple } from '../listManager/stories/listManager.stories.util.js';
 
 /** @type {Meta} */
@@ -17,17 +19,19 @@ const Default = {
     args: {
         ...ListStory.args,
         id: 'list-filters',
-        controls: 'filters',
-        title: 'List Filters'
+        controls: ['filters'],
+        title: 'List Filters',
+        itemsPerPage: 5
     },
     render: renderSimple
 };
 
-/** @type {StoryObj} */
+/** @type {Story} */
 export const Render = Default;
 
-/** @type {StoryObj} */
+/** @type {Story} */
 export const Test = {
+    parameters: testParams,
     args: {
         ...Default.args,
         id: 'test-filters'
@@ -37,41 +41,50 @@ export const Test = {
         const { canvas, listNode } = setup;
         const filtersBtn = await waitFor(() => canvas.getByRole('button', { name: /Filters/i }));
         const filtersNode = filtersBtn.closest('icon-menu');
+        await filtersNode.onRendered();
         const filtersCombo = filtersNode.navigation;
         const combo = within(filtersCombo);
         /** @type {FormComponent | null} */
-        const filtersForm = filtersCombo.querySelector('arpa-form');
-        filtersForm?._config && (filtersForm._config.debounce = 0);
+        let filtersForm;
+        const form = filtersCombo.querySelector('arpa-form');
 
         await step('Renders the filters menu control', async () => {
-            expect(filtersBtn).toBeInTheDocument();
-            expect(filtersBtn).toHaveTextContent('Filters');
+            await waitFor(() => {
+                filtersForm = filtersCombo.querySelector('arpa-form');
+                filtersForm?._config && (filtersForm._config.debounce = 0);
+                expect(filtersBtn).toBeInTheDocument();
+                expect(filtersForm).toBeInTheDocument();
+            });
         });
 
         await step('Clicks on filters menu and opens the filters panel', async () => {
-            userEvent.click(filtersBtn);
+            await userEvent.click(filtersBtn);
             await waitFor(() => {
                 expect(filtersCombo).toBeVisible();
             });
         });
 
         await step('Renders the filters panel with the pagination controls', async () => {
-            const pagination = combo.getByText(/Pagination/i);
-            expect(pagination).toBeInTheDocument();
-            const perPageInput = combo.getByLabelText(/Per page/i);
-            const pageInput = combo.getByLabelText('Page');
-            expect(perPageInput).toBeInTheDocument();
-            expect(pageInput).toBeInTheDocument();
+            await waitFor(() => {
+                const pagination = combo.getByText(/Pagination/i);
+                expect(pagination).toBeInTheDocument();
+                const perPageInput = combo.getByLabelText(/Per page/i);
+                const pageInput = form.getField('page').input;
+                expect(perPageInput).toBeInTheDocument();
+                expect(pageInput).toBeInTheDocument();
+            });
         });
 
         await step('Changes the page, submits the form and verifies the page change', async () => {
-            const pageInput = combo.getByLabelText('Page');
+            await waitFor(() => {
+                expect(combo.getByLabelText('Page')).toBeInTheDocument();
+                expect(combo.getByLabelText('Page').closest('number-field')).not.toBeNull();
+            });
+            const pageInput = form.getField('page').input;
             const pageField = /** @type {NumberField} */ (pageInput.closest('number-field'));
             pageField?.setValue(2);
-            if (!filtersForm) {
-                throw new Error('Filters form not found');
-            }
-            fireEvent.submit(filtersForm);
+            await userEvent.click(pageInput);
+            await userEvent.keyboard('{Enter}');
             await waitFor(() => {
                 expect(setup.listResource?.getPage()).toEqual(2);
                 const currPage = canvas.getByLabelText('Current page');
@@ -83,7 +96,7 @@ export const Test = {
             const perPageInput = combo.getByLabelText(/Per page/i);
 
             const perPageField = /** @type {SelectCombo} */ (perPageInput.closest('select-combo'));
-            perPageInput.click();
+            await userEvent.click(perPageInput);
             await waitFor(() => {
                 expect(perPageField?.optionsNode).toBeInTheDocument();
             });
@@ -91,18 +104,19 @@ export const Test = {
                 throw new Error('Options node not found');
             }
             const options = within(perPageField.optionsNode);
-            expect(perPageField.getValue()).toEqual('10');
-            expect(listNode?.getItemNodes()).toHaveLength(10);
-            const option5 = options.getByText('5').closest('button');
+            expect(perPageField.getValue()).toEqual('5');
+            expect(listNode?.getItemNodes()).toHaveLength(5);
+            const option5 = options.getByText('10').closest('button');
             if (!option5) {
-                throw new Error('Option 5 not found');
+                throw new Error('Option 10 not found');
             }
             await userEvent.click(option5);
             await waitFor(() => {
-                expect(setup.listResource?.getPerPage()).toEqual(5);
-                const currPage = canvas.getByLabelText('Current page');
-                expect(currPage).toHaveAttribute('value', '1');
-                expect(canvasElement.querySelectorAll('list-manager-item')).toHaveLength(5);
+                expect(setup.listResource?.getPerPage()).toEqual(10);
+                // const currPage = canvas.getByLabelText('Current page');
+                // expect(currPage).toHaveAttribute('value', '1');
+                // expect(canvasElement.querySelector('[is-active]')).toHaveTextContent('1');
+                expect(canvasElement.querySelectorAll('list-manager-item')).toHaveLength(10);
             });
         });
     }

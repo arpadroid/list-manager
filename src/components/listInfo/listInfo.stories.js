@@ -1,12 +1,14 @@
 /**
  * @typedef {import('../listManager/listManager.js').default} ListManager
+ * @typedef {import('../listManager/listManager.types.js').ListManagerConfigType} ListManagerConfigType
  * @typedef {import('@arpadroid/navigation').IconMenu} IconMenu
- * @typedef {import('@storybook/web-components-vite').Meta} Meta
- * @typedef {import('@storybook/web-components-vite').StoryObj} StoryObj
+ * @typedef {import('@storybook/web-components-vite').Meta<ListManagerConfigType>} Meta
+ * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} Story
  */
 
-import { ResourceDriven as ListStory } from '../listManager/stories/listManager.stories.js';
-import { userEvent, fireEvent, waitFor, expect } from 'storybook/test';
+import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
+import { userEvent, waitFor, expect } from 'storybook/test';
+import { testParams } from '@arpadroid/module/storybook/helper';
 import { renderSimple, playSetup } from '../listManager/stories/listManager.stories.util.js';
 
 /** @type {Meta} */
@@ -18,19 +20,19 @@ const Default = {
         ...ListStory.args,
         id: 'list-info',
         title: 'List Info',
-        controls: 'search',
+        controls: ['search'],
         hasInfo: true,
-        itemsPerPage: 5,
-        hasPager: 'false'
+        itemsPerPage: 5
     },
     render: renderSimple
 };
 
-/** @type {StoryObj} */
+/** @type {Story} */
 export const Render = Default;
 
-/** @type {StoryObj} */
+/** @type {Story} */
 export const Test = {
+    parameters: testParams,
     args: {
         ...Default.args,
         id: 'test-list-info',
@@ -39,22 +41,27 @@ export const Test = {
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement);
         const { canvas, listNode } = setup;
-        const prevBtn = canvas.getByText(/Previous page/i).closest('button');
-        const nextBtn = canvas.getByText(/Next page/i).closest('button');
-        const refreshBtn = canvas.getByText(/Refresh list/i).closest('button');
+
         const listInfoClass = '.listInfo__text';
         await step('Renders the list info', async () => {
-            expect(refreshBtn).toBeInTheDocument();
-            expect(prevBtn).toBeInTheDocument();
-            expect(nextBtn).toBeInTheDocument();
-            const listInfo = canvasElement.querySelector(listInfoClass);
-            expect(listInfo).toHaveTextContent(
-                `Showing 1 - 5 out of ${listNode?.listResource?.getTotalItems()} results`
-            );
+            await waitFor(() => {
+                const prevBtn = canvas.getByText(/Previous page/i).closest('button');
+                const nextBtn = canvas.getByText(/Next page/i).closest('button');
+                const refreshBtn = canvas.getByText(/Refresh list/i).closest('button');
+                expect(refreshBtn).toBeInTheDocument();
+                expect(prevBtn).toBeInTheDocument();
+                expect(nextBtn).toBeInTheDocument();
+                const listInfo = canvasElement.querySelector(listInfoClass);
+                expect(listInfo).toHaveTextContent(
+                    `Showing 1 - 5 out of ${listNode?.listResource?.getTotalItems()} results`
+                );
+            });
         });
 
         await step('Clicks on the next page button and verifies the list info', async () => {
-            userEvent.click(nextBtn);
+            const nextBtn = canvas.getByText(/Next page/i).closest('button');
+
+            await userEvent.click(nextBtn);
             await waitFor(() => {
                 const listInfo = canvasElement.querySelector(listInfoClass);
                 expect(listInfo).toHaveTextContent(
@@ -67,9 +74,9 @@ export const Test = {
             const input = canvas.getByRole('searchbox');
             const form = input.closest('arpa-form');
             form?._config && (form._config.debounce = false);
-            await customElements.whenDefined('field-input');
-            input.value = 'Some search term';
-            await fireEvent.submit(form);
+            await userEvent.clear(input);
+            await userEvent.type(input, 'Some search term');
+            await userEvent.keyboard('{Enter}');
             await waitFor(() => {
                 const listInfo = canvasElement.querySelector(listInfoClass);
                 expect(listInfo).toHaveTextContent('No results found for Some search term');
@@ -80,15 +87,15 @@ export const Test = {
             const input = canvas.getByRole('searchbox');
             const form = input.closest('arpa-form');
             form?._config && (form._config.debounce = false);
-            await customElements.whenDefined('field-input');
-            input.value = 'Leon';
-            await fireEvent.submit(form);
+            await userEvent.clear(input);
+            await userEvent.type(input, 'Leon');
+            await userEvent.keyboard('{Enter}');
             await waitFor(() => {
                 const listInfo = canvasElement.querySelector(listInfoClass);
                 expect(listInfo).toHaveTextContent('Found 1 search results for Leon');
             });
-            expect(prevBtn).toBeDisabled();
-            expect(nextBtn).toBeDisabled();
+            expect(canvas.queryByText(/Previous page/i)).not.toBeInTheDocument();
+            expect(canvas.queryByText(/Next page/i)).not.toBeInTheDocument();
         });
     }
 };

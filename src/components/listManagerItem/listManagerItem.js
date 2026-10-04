@@ -6,11 +6,11 @@
  * @typedef {import('./listManagerItem.types').ListItemViewConfigType} ListItemViewConfigType
  * @typedef {import('@arpadroid/resources').ListFilter} ListFilter
  */
-import { defineCustomElement, dashedToCamel } from '@arpadroid/tools';
+import { defineCustomElement, dashedToCamel, mergeObjects, attr } from '@arpadroid/tools';
 import { ListItem } from '@arpadroid/lists';
-import { mergeObjects } from '@arpadroid/tools';
 import ListItemViews from './listItem.views.js';
 
+const html = String.raw;
 class ListManagerItem extends ListItem {
     /////////////////////////////
     // #region Initialization
@@ -19,6 +19,24 @@ class ListManagerItem extends ListItem {
     list = this.list;
     /** @type {ListManagerItemConfigType} */
     _config = this._config;
+
+    static get observedAttributes() {
+        return ['view'];
+    }
+
+    /**
+     * Called when an observed attribute changes.
+     * @param {string} name
+     * @param {string | null} oldValue
+     * @param {string | null} newValue
+     */
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === 'view' && oldValue && newValue) {
+            oldValue?.length && this.classList.remove('listItem--' + oldValue);
+            this.classList.add('listItem--' + newValue);
+        }
+    }
+
     /**
      * Returns the default config for the component.
      * @returns {ListManagerItemConfigType}
@@ -28,15 +46,20 @@ class ListManagerItem extends ListItem {
         /** @type {ListManagerItemConfigType} */
         const conf = {
             selectedClass: 'listManagerItem--selected',
+            blueprint: () => html`
+                ${ListItem.prototype.$renderTemplate.call(this)}
+                <arpa-node tag="icon-menu" name="nav" id="{id}-nav" can-render="hasNav()"></arpa-node>
+            `,
             className: 'listItem',
-            classNames: ['listManagerItem'],
-            listSelector: 'list-manager'
+            classNames: ['listManagerItem', () => this.getViewClass()],
+            listSelector: 'list-manager',
+            view: 'list'
         };
         return mergeObjects(super.getDefaultConfig(), conf);
     }
 
-    $initializeProperties() {
-        super.$initializeProperties();
+    async $initializeProperties() {
+        await super.$initializeProperties();
         this.grabList();
 
         /** @type {ListFilter} */
@@ -57,14 +80,18 @@ class ListManagerItem extends ListItem {
     // #region Has
     //////////////////
 
-    hasNav() {
-        return Boolean(this._config.nav);
+    async hasNav() {
+        return this.hasContent('nav') || this.zonesByName?.has('nav') || this._config?.nav;
+    }
+
+    async canRenderRhs() {
+        return Boolean((await super.canRenderRhs()) || this.hasContent('nav') || this.zonesByName?.has('nav'));
     }
 
     hasSelection() {
         return (
             (typeof this.list?.hasControl === 'function' && this.list?.hasControl('multiselect')) ??
-            super.hasSelection()
+            this.listResource?.hasSelection()
         );
     }
 
@@ -87,7 +114,7 @@ class ListManagerItem extends ListItem {
     }
 
     $renderTemplate() {
-        return this.getViewTemplate();
+        return html` ${this.getViewTemplate()} `;
     }
 
     // #endregion Rendering
@@ -96,20 +123,15 @@ class ListManagerItem extends ListItem {
     // #region Lifecycle
     ////////////////////////
 
-    $onConnected() {
-        super.$onConnected();
+    async $onConnected() {
         this.viewsFilter && this._initializeView();
+        return super.$onConnected();
     }
 
     async $initializeNodes() {
         await super.$initializeNodes();
         this.initializeNav();
         return true;
-    }
-
-    $onComplete() {
-        super.$onComplete();
-        this.setViewClass();
     }
 
     // #endregion Lifecycle
@@ -130,15 +152,35 @@ class ListManagerItem extends ListItem {
     }
 
     getView() {
-        return (typeof this.list?.getView === 'function' && this.list?.getView()) || this.view || 'list';
+        return this.list?.getView() || this.getAttribute('view') || 'list';
+    }
+
+    /**
+     * Sets the view for the list item.
+     * @param {string} view
+     */
+    setView(view) {
+        this.setAttribute('view', view);
     }
 
     getViewTemplate(viewId = this.getView()) {
-        return this.getViewConfig(viewId)?.template || this.list?.getViewTemplate(viewId)?.innerHTML || '';
+        const viewConfig = this.getViewConfig(viewId);
+        const viewTemplate = this.list?.getViewTemplate(viewId);
+        if (!viewConfig && !viewTemplate) {
+            console.warn(`No view configuration or template found for view: ${viewId}`);
+        }
+        if (viewConfig?.template) return viewConfig.template;
+        if (viewTemplate?.innerHTML) {
+            const mainNode = viewTemplate.content.querySelector(':scope > arpa-node[name="main"]');
+            mainNode instanceof HTMLElement && attr(mainNode, this.getWrapperAttr());
+            return viewTemplate?.innerHTML;
+        }
+        return ListItemViews.list.template || super.$renderTemplate() || '';
     }
 
-    setViewClass(view = this.view) {
-        view && this.classList.add('listItem--' + view);
+    getViewClass(view = this.getView()) {
+        const viewConfig = this.getViewConfig(view);
+        return viewConfig?.className || 'listItem--' + view;
     }
 
     /**
@@ -148,19 +190,16 @@ class ListManagerItem extends ListItem {
     _initializeView() {
         const val = String(this.viewsFilter?.getValue() || 'list');
         /** @type {string} */
-        this.view = val;
+        this.setProp('view', val);
         this.viewsFilter?.on('value', this._onViewChange);
     }
 
     /**
      * Called when the view changes.
-     * @param {string} view
+     * @param {string} _view
      */
-    _onViewChange(view) {
-        if (this.view !== view) {
-            this.view = view;
-            this?.isConnected && this.reRender();
-        }
+    _onViewChange(_view) {
+        this.reRender();
     }
 
     // #endregion Views

@@ -5,6 +5,8 @@
  * @typedef {import('@arpadroid/resources').ListResource} ListResource
  * @typedef {import('@arpadroid/navigation').IconMenu} IconMenu
  * @typedef {import('../listManager/listManager.js').default} ListManager
+ * @typedef {import('@arpadroid/navigation').NavList} NavList
+ * @typedef {import('@arpadroid/messages').InfoMessage} InfoMessage
  */
 import { ArpaElement } from '@arpadroid/ui';
 import { attrString, defineCustomElement } from '@arpadroid/tools';
@@ -30,8 +32,8 @@ class MultiSelect extends ArpaElement {
         });
     }
 
-    $initializeProperties() {
-        super.$initializeProperties();
+    async $initializeProperties() {
+        await super.$initializeProperties();
         this.resource?.on('selection_change', () => this.update());
         return true;
     }
@@ -52,7 +54,7 @@ class MultiSelect extends ArpaElement {
 
     getTooltip() {
         const count = String(this?.resource?.getSelectedCount() || '');
-        return count ? this.i18n('txtItemsSelected', { count }) : this.i18n('txtNoItemsSelected');
+        return count ? this.i18nText('txtItemsSelected', { count }) : this.i18nText('txtNoItemsSelected');
     }
 
     getInfoNode() {
@@ -71,31 +73,39 @@ class MultiSelect extends ArpaElement {
         const menuProps = this.getProperties('icon');
         const formId = this.list?.id + '-multiSelectForm';
         return html`<icon-menu
+            menu-position="bottom-right"
             class="listMultiSelect__nav"
             nav-class="listMultiSelect__combo"
             tooltip="${this.i18nText('txtBatchOperations')}"
             ${attrString(menuProps)}
         >
-            <arpa-form id="${formId}" class="listMultiSelect__form" variant="compact" has-submit="false">
-                <zone name="form-title"> ${this.i18n('txtBatchOperations')} </zone>
-                <zone name="messages">
+            <arpa-zone name="nav">
+                <arpa-form
+                    id="${formId}"
+                    title="${this.i18nText('txtBatchOperations')}"
+                    class="listMultiSelect__form"
+                    variant="compact"
+                    has-submit="false"
+                >
                     <info-message id="info-message" class="listMultiSelect__infoMessage">
                         ${this.getTooltip()}
                     </info-message>
-                </zone>
-                <checkbox-field id="toggleAll" value="select-all" icon="select_all">
-                    <zone name="checkbox-label"> ${this.i18n('txtSelectAll')} </zone>
-                </checkbox-field>
-                <checkbox-field id="selectFilter" icon="filter_alt">
-                    <zone name="checkbox-label"> ${this.i18n('txtShowSelectedOnly')} </zone>
-                </checkbox-field>
-                <select-combo
-                    id="actions"
-                    placeholder="${this.getText('txtSelectAction')}"
-                    icon="layers"
-                    option-component="batch-operation"
-                ></select-combo>
-            </arpa-form>
+
+                    <checkbox-field id="toggleAll" value="select-all" icon="select_all">
+                        ${this.i18n('txtSelectAll')}
+                    </checkbox-field>
+                    <checkbox-field id="selectFilter" icon="filter_alt">
+                        ${this.i18n('txtShowSelectedOnly')}
+                    </checkbox-field>
+                    <select-combo
+                        id="actions"
+                        placeholder="${this.getText('txtSelectAction')}"
+                        icon="layers"
+                        option-component="batch-operation"
+                        options-zone="batchOperations"
+                    ></select-combo>
+                </arpa-form>
+            </arpa-zone>
         </icon-menu>`;
     }
 
@@ -105,11 +115,15 @@ class MultiSelect extends ArpaElement {
 
     async $initializeNodes() {
         await super.$initializeNodes();
-        /** @type {FormComponent | null} */
-        this.form = this.querySelector('.listMultiSelect__form');
-        this.messages = this.querySelector('arpa-messages');
         /** @type {IconMenu | null} */
         this.menu = this.querySelector('.listMultiSelect__nav');
+        await this.menu?.onRendered();
+        /** @type {NavList | null} */
+        this.nav = this.menu?.navigation;
+        await this.nav?.onRendered();
+        this.form = /** @type {FormComponent | null} */ (this.nav?.firstElementChild);
+        await this.form?.onRendered();
+        this.messages = this.nav?.querySelector('arpa-messages');
         this._initializeActions();
         this._initializeToggle();
         this._initializeSelectionFilter();
@@ -131,34 +145,22 @@ class MultiSelect extends ArpaElement {
 
     /**
      * Initializes the actions field.
-     * @param {SelectCombo} [actionsField]
      * @returns {Promise<void>}
      */
-    async _initializeActions(actionsField = /** @type {SelectCombo} */ (this.form?.getField('actions'))) {
+    async _initializeActions() {
+        const actionsField = /** @type {SelectCombo} */ (this.form?.getField('actions'));
         /** @type {SelectCombo | undefined} */
         this.actionsField = actionsField;
-        await actionsField?.promise;
-        actionsField?.optionsNode?.setAttribute('zone', 'batch-operations');
-        actionsField?.on(
-            'change',
-            async (/** @type {unknown} */ value, /** @type {Field} */ field, /** @type {Event} */ event) => {
-                const option = actionsField.getSelectedOption();
-                await option?.promise;
-                const action = option?.getAction();
-                if (typeof action === 'function') {
-                    action(this.resource?.getSelectedItems(), this.renderItemList());
-                }
-                // this.actionsField.removeSelectedOption();
-                event.stopImmediatePropagation();
-            }
-        );
+        await actionsField?.onRendered();
+        actionsField?.optionsNode?.setAttribute('zone', 'batchOperations');
     }
 
     // #endregion
 
     // #region UPDATE
 
-    update() {
+    async update() {
+        await this.promise;
         this.updateMenu();
         this.updateDisabledState();
         this.updateClassNames();
@@ -182,13 +184,10 @@ class MultiSelect extends ArpaElement {
         this.selectedFilterField?.[fn]();
     }
 
-    updateMessage() {
-        /** @type {ListResource | undefined} */
-        const resource = this.form?.messages?.listResource;
-        const msg = resource?.getItem('info-message');
-        if (typeof msg?.node?.setContent === 'function') {
-            msg.node.setContent(this.getTooltip());
-        }
+    async updateMessage() {
+        const msgNode = /** @type {InfoMessage} */ (this.form?.querySelector('.listMultiSelect__infoMessage'));
+        const tooltip = this.getTooltip();
+        msgNode?.setContent(tooltip);
     }
 
     // #endregion

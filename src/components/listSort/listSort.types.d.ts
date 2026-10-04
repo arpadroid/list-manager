@@ -6,4 +6,5 @@ export type ListSortConfigType = ArpaElementConfigType & {
     iconSort?: string;
     paramAsc?: string;
     paramDesc?: string;
+    sortDirection?: 'asc' | 'desc';
 };

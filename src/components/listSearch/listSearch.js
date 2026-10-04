@@ -11,8 +11,8 @@
  * @typedef {import('@arpadroid/services').Router} Router
  */
 
-import { editURL, attrString, SearchTool, defineCustomElement } from '@arpadroid/tools';
-import { ArpaElement, processTemplate } from '@arpadroid/ui';
+import { editURL, SearchTool, defineCustomElement } from '@arpadroid/tools';
+import { ArpaElement } from '@arpadroid/ui';
 
 const html = String.raw;
 class ListSearch extends ArpaElement {
@@ -34,7 +34,7 @@ class ListSearch extends ArpaElement {
         };
     }
 
-    $initializeProperties() {
+    async $initializeProperties() {
         /** @type {ListManager | null} */
         this.list = this.closest('.arpaList');
         /** @type {Router} */
@@ -44,44 +44,6 @@ class ListSearch extends ArpaElement {
         /** @type {ListFilter} searchFilter */
         this.searchFilter = this?.listResource?.getSearchFilter();
         this.urlParam = this.searchFilter?.getUrlName();
-        return true;
-    }
-
-    /**
-     * Returns a promise that must be resolved before the component is ready.
-     * @returns {Promise<any>}
-     */
-    async onReady() {
-        return await customElements.whenDefined('arpa-form');
-    }
-
-    async $initializeNodes() {
-        /** @type {FormComponent | null} */
-        this.form = /** @type {FormComponent | null} */ (this.querySelector('arpa-form'));
-        await customElements.whenDefined('arpa-form');
-        this.form?.onSubmit(this._onSubmit);
-        this.searchField = /** @type {SearchField | null} */ (this.form?.getField('search'));
-        await this.searchField?.promise;
-        await this.initializeSearch();
-        return true;
-    }
-
-    async initializeSearch() {
-        if (!this.searchFilter) {
-            return true;
-        }
-        if (this.searchField?.input instanceof HTMLInputElement) {
-            this.search = new SearchTool(this.searchField?.input, {
-                container: this.list?.itemsNode,
-                searchSelector: this.getProp('search-selector'),
-                // onSearch: this._onSearch,
-                debounceDelay: this.getProp('debounce-search'),
-                hideNonMatches: false,
-                getNodes: () => Array.from(this.list?.itemsNode?.querySelectorAll('.listItem') || [])
-            });
-        }
-        this.searchField?.setValue(this.searchFilter.getValue());
-        this.searchFilter.on('value', value => this.searchField?.setValue(value));
         return true;
     }
 
@@ -95,33 +57,64 @@ class ListSearch extends ArpaElement {
         return this.list?.querySelector('.list__filtersMenu');
     }
 
+    getSearchPlaceholder() {
+        return this.list?.getProp('search-placeholder') || this.getProp('placeholder') || 'Search';
+    }
+
     // #endregion
 
     ////////////////////
     // #region RENDERING
     ////////////////////
 
-    render() {
-        const searchAttr = attrString({
-            'has-mini-search': this.getProp('has-mini-search'),
-            placeholder: this.list?.getProp('search-placeholder'),
-            value: this.searchFilter?.getValue()
-        });
-        this.innerHTML = processTemplate(
-            html`<arpa-form id="{formId}" variant="mini">
-                <search-field id="search" ${searchAttr}></search-field>
-            </arpa-form>`,
-            this.getTemplateVars(),
-            this
-        );
-        this.listSort = this.querySelector('list-sort');
+    $renderTemplate() {
+        return html`
+            <arpa-node name="form" tag="arpa-form" id="{formId}" variant="mini">
+                <search-field
+                    id="search"
+                    has-mini-search="{hasMiniSearch}"
+                    placeholder="{getSearchPlaceholder()}"
+                    value="${this.searchFilter?.getValue()}"
+                ></search-field>
+            </arpa-node>
+        `;
     }
 
     getTemplateVars() {
         return {
             id: this.id,
-            formId: `${this.list?.getId()}-list-search-form`
+            formId: `${this.list?.getProp('id')}-list-search-form`
         };
+    }
+
+    async $initializeNodes() {
+        await super.$initializeNodes();
+        /** @type {FormComponent | null} */
+        this.form = /** @type {FormComponent | null} */ (this.nodes.form);
+        await this.waitForNodes();
+        this.form?.onSubmit(this._onSubmit);
+        this.searchField = /** @type {SearchField | null} */ (this.form?.getField('search'));
+        await this.searchField?.promise;
+        this.listSort = this.querySelector('list-sort');
+        return true;
+    }
+
+    async $onComplete() {
+        if (!this.searchFilter) {
+            return true;
+        }
+        if (this.searchField?.input instanceof HTMLInputElement) {
+            this.search = new SearchTool(this.searchField?.input, {
+                container: this.list?.itemsNode,
+                searchSelector: this.getProp('search-selector'),
+                debounceDelay: this.getProp('debounce-search'),
+                hideNonMatches: false,
+                getNodes: () => Array.from(this.list?.itemsNode?.querySelectorAll('list-manager-item') || [])
+            });
+        }
+        this.searchField?.setValue(this.searchFilter.getValue());
+        this.searchFilter.on('value', value => this.searchField?.setValue(value));
+        return true;
     }
 
     // #endregion

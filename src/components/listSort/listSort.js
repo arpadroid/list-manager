@@ -36,15 +36,17 @@ class ListSort extends ArpaElement {
         this.bind('update', '_onRouteChange', '_onSortBySelected', '_isItemSelected');
         this.i18nKey = 'list-manager.listSort';
         return {
+            className: 'listSort',
             iconAsc: 'keyboard_double_arrow_up',
             iconDesc: 'keyboard_double_arrow_down',
             iconSort: 'sort',
             paramAsc: 'asc',
-            paramDesc: 'desc'
+            paramDesc: 'desc',
+            sortDirection: 'asc'
         };
     }
 
-    $initializeProperties() {
+    async $initializeProperties() {
         /** @type {ListManager | null} */
         this.list = ListManager.getList(this);
         /** @type {Router} */
@@ -68,15 +70,15 @@ class ListSort extends ArpaElement {
     ////////////////////
 
     getSortDir() {
-        return this.listResource?.getSortDirection() || 'asc';
+        return this.listResource?.getSortDirection() || this.getProp('sortDirection') || 'asc';
     }
 
     getSortDirIcon(dir = this.getSortDir()) {
-        return dir === 'asc' ? this.getProp('icon-asc') : this.getProp('icon-desc');
+        return dir === 'asc' ? this.getProp('iconAsc') : this.getProp('iconDesc');
     }
 
     getSortDirTooltip(dir = this.getSortDir()) {
-        return this.i18n(dir === 'asc' ? 'lblSortAsc' : 'lblSortDesc');
+        return this.i18nText(dir === 'asc' ? 'lblSortAsc' : 'lblSortDesc');
     }
     ///////////////////////////////
     // #endregion ACCESSORS
@@ -86,29 +88,26 @@ class ListSort extends ArpaElement {
     // #region LIFECYCLE
     ////////////////////////////
 
-    $onConnected() {
+    async $onConnected() {
         this.router?.on('route_changed', this._onRouteChange);
+        return true;
     }
 
     _onRouteChange() {
         this._initializeNav();
-        // this.updateSortLink();
+        this.updateSortLink();
     }
 
-    async updateSortLink(sortDir = this.getSortDir(), sortLink = this.sortLink) {
-        await this.promise;
-        await sortLink?.promise;
-        /** @type {Icon | null | undefined} */
-        const iconNode = sortLink?.querySelector('arpa-icon');
-        await customElements.whenDefined('arpa-icon');
-        const icon = this.getSortDirIcon(sortDir);
-        iconNode?.setIcon(icon);
+    /**
+     * Updates the sort link based on the current sort direction.
+     * @param {string} sortDir - The current sort direction.
+     * @returns {Promise<void>}
+     */
+    async updateSortLink(sortDir = this.getSortDir()) {
+        const sortLink = /** @type {NavLink | null} */ (this.nodes.sortLink);
+        sortLink?.setProp('icon', this.getSortDirIcon(sortDir));
         sortLink?.setAttribute('param-value', sortDir === 'asc' ? 'desc' : 'asc');
-        /** @type {Tooltip | null | undefined} */
-        const tooltip = sortLink?.querySelector('arpa-tooltip');
-        const tooltipText = this.getSortDirTooltip(sortDir);
-        await tooltip?.promise;
-        tooltip?.setContent(tooltipText);
+        sortLink?.setProp('tooltip', this.getSortDirTooltip(sortDir));
     }
 
     // #endregion LIFECYCLE
@@ -117,51 +116,53 @@ class ListSort extends ArpaElement {
     // #region RENDERING
     //////////////////////////
 
-    render() {
+    $renderTemplate() {
         const sortDir = this.listResource?.getSortDirection() === 'asc' ? 'desc' : 'asc';
-
-        this.innerHTML = html`<icon-menu
-                class="sortMenu"
+        return html`
+            <arpa-node
+                name="sortByMenu"
+                tag="icon-menu"
                 icon="sort_by_alpha"
                 tooltip="${this.i18nText('lblSortBy')}"
-                zone="sort-options"
+                zone-name="sort-options"
+                menu-position="bottom-right"
             >
-                ${this.renderSortLinks()}
-            </icon-menu>
-            <nav-link
-                class="sortDirButton iconButton__button"
+                <arpa-zone name="nav"> ${this.renderSortLinks()} </arpa-zone>
+            </arpa-node>
+            <arpa-node
+                tag="nav-link"
+                name="sortLink"
+                class="sortDirButton iconButton__button tooltip__handler"
                 param-name="${this.list?.getParamName('sortDir')}"
                 param-value="${sortDir}"
                 param-clear="${this.list?.getParamName('page')}"
-                icon="${this.getSortDirIcon()}"
-                label="${this.i18nText('lblSortOrder')}"
+                icon="{getSortDirIcon()}"
+                label="{i18n:lblSortOrder}"
+                tooltip="{getSortDirTooltip()}"
                 use-router
             >
-                <zone name="tooltip-content">${this.getSortDirTooltip()}</zone>
-            </nav-link>`;
-
-        /** @type {NavLink | null} */
-        this.sortLink = this.querySelector('.sortDirButton');
-        this._initializeNav();
+            </arpa-node>
+        `;
     }
 
     renderSortLinks(sortOptions = this.list?.getSortOptions() || []) {
-        return mapHTML(sortOptions, payload => {
-            const { value = '', icon = '', label = '' } = payload;
-            return html`<nav-link link="${value}" icon-left="${icon}" label="${label}"></nav-link>`;
-        });
+        return mapHTML(
+            sortOptions,
+            ({ value = '', icon = '', label = '' }) =>
+                html`<nav-link link="${value}" icon-left="${icon}" label="${label}"></nav-link>`
+        );
+    }
+
+    async $initializeNodes() {
+        await super.$initializeNodes();
+        this._initializeNav();
+        return true;
     }
 
     async _initializeNav() {
-        await customElements.whenDefined('nav-list');
+        this.sortByMenu = /** @type {IconMenu | null} */ (this.nodes.sortByMenu);
         await this.promise;
-        /** @type {IconMenu | null} */
-        this.sortByMenu = this.querySelector('icon-menu');
-        if (!this.sortByMenu) {
-            console.warn('No nav node found');
-            return;
-        }
-        await this.sortByMenu.promise;
+        await this.sortByMenu?.onRendered();
         /** @type {NavList | null} */
         this.sortNav = this.sortByMenu?.navigation;
         if (!this.sortNav) {
