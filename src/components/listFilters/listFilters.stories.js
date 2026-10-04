@@ -46,6 +46,7 @@ export const Test = {
         const combo = within(filtersCombo);
         /** @type {FormComponent | null} */
         let filtersForm;
+        const form = filtersCombo.querySelector('arpa-form');
 
         await step('Renders the filters menu control', async () => {
             await waitFor(() => {
@@ -68,7 +69,7 @@ export const Test = {
                 const pagination = combo.getByText(/Pagination/i);
                 expect(pagination).toBeInTheDocument();
                 const perPageInput = combo.getByLabelText(/Per page/i);
-                const pageInput = combo.getByLabelText('Page');
+                const pageInput = form.getField('page').input;
                 expect(perPageInput).toBeInTheDocument();
                 expect(pageInput).toBeInTheDocument();
             });
@@ -79,7 +80,7 @@ export const Test = {
                 expect(combo.getByLabelText('Page')).toBeInTheDocument();
                 expect(combo.getByLabelText('Page').closest('number-field')).not.toBeNull();
             });
-            const pageInput = combo.getByLabelText('Page');
+            const pageInput = form.getField('page').input;
             const pageField = /** @type {NumberField} */ (pageInput.closest('number-field'));
             pageField?.setValue(2);
             await userEvent.click(pageInput);
