@@ -134,10 +134,14 @@ export const Default = {
 
 /** @type {Story} */
 export const Static = {
-    parameters: testParams,
+    parameters: {
+        ...testParams,
+        layout: 'flexColumn'
+    },
     args: {
         id: 'list-manager-static',
         title: 'List Component',
+        hasItemsTransition: true,
         hasResource: true
     },
     play: async ({ canvasElement, canvas, step, args }) => {

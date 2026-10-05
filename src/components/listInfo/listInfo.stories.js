@@ -16,6 +16,9 @@ const Default = {
     ...ListStory,
     title: 'List Manager/Controls/List Info',
     component: 'list-manager',
+    parameters: {
+        layout: 'flexColumn'
+    },
     args: {
         ...ListStory.args,
         id: 'list-info',

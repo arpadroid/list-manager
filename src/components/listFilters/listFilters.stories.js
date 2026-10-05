@@ -97,19 +97,17 @@ export const Test = {
 
         await step('Changes the per page, submits the form and verifies the per page change', async () => {
             const perPageInput = combo.getByLabelText(/Per page/i);
-
             const perPageField = /** @type {SelectCombo} */ (perPageInput.closest('select-combo'));
+            await perPageField.onRendered();
             await userEvent.click(perPageInput);
             await waitFor(() => {
                 expect(perPageField?.optionsNode).toBeInTheDocument();
             });
-            if (!(perPageField.optionsNode instanceof HTMLElement)) {
-                throw new Error('Options node not found');
-            }
-            const options = within(perPageField.optionsNode);
+
+            const options = perPageField.optionsNode && within(perPageField.optionsNode);
             expect(perPageField.getValue()).toEqual('5');
             expect(listNode?.getItemNodes()).toHaveLength(5);
-            const option5 = options.getByText('10').closest('button');
+            const option5 = options?.getByText('10').closest('button');
             if (!option5) {
                 throw new Error('Option 10 not found');
             }
