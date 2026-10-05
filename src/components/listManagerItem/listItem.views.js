@@ -28,7 +28,7 @@ export const ListCompactView = {
             <div class="listItem__contentWrapper">{titleWrapper} {subtitle} {content}</div>
             {iconRight}
         </arpa-node>
-        <arpa-node name="rhs" defer="canRenderRhs">{tags}{nav}</arpa-node>
+        <arpa-node name="rhs">{tags}{nav}</arpa-node>
     `
 };
 

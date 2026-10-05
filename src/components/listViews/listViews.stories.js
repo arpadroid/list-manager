@@ -24,7 +24,10 @@ const Default = {
         title: 'List Views',
         itemsPerPage: 10,
         hasInfo: false,
-        views: 'list,grid'
+        views: 'list,grid,list-compact,grid-compact'
+    },
+    parameters: {
+        layout: 'flexColumn'
     },
     render: renderSimple
 };
@@ -42,9 +45,8 @@ export const Test = {
     },
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement);
-        const { canvas, listNode } = setup;
-        await listNode?.setView('list');
-
+        const { canvas, listNode, listItem } = setup;
+        // listNode?.setView('grid');
         /** @type {IconMenu | null} */
         const iconMenu = canvasElement.querySelector('list-views icon-menu');
         await iconMenu?.onRendered();
@@ -52,14 +54,21 @@ export const Test = {
         if (!viewsMenu) {
             throw new Error('Views menu not found');
         }
+
+        await listNode?.setView('list');
+        await listNode?.promise;
         await step('Renders the menu with the expected views', async () => {
             expect(viewsMenu).toBeInTheDocument();
             await waitFor(() => {
                 const listView = within(viewsMenu).getByText('List');
                 const gridView = within(viewsMenu).getByText('Grid');
+                const listCompactView = within(viewsMenu).getByText('List Compact');
+                const gridCompactView = within(viewsMenu).getByText('Grid Compact');
                 expect(listView).toBeInTheDocument();
                 expect(gridView).toBeInTheDocument();
-                expect(viewsMenu?.querySelectorAll('nav-link')).toHaveLength(2);
+                expect(listCompactView).toBeInTheDocument();
+                expect(gridCompactView).toBeInTheDocument();
+                expect(viewsMenu?.querySelectorAll('nav-link')).toHaveLength(4);
             });
         });
 
@@ -80,6 +89,29 @@ export const Test = {
                 expect(gridView).toHaveAttribute('aria-current', 'location');
                 expect(listNode).toHaveClass('listView--grid');
             });
+        });
+
+        await step('Clicks on the Grid Compact view and verifies the list item is selected', async () => {
+            const gridCompactView = within(viewsMenu).getByText('Grid Compact').closest('button');
+            gridCompactView && userEvent.click(gridCompactView);
+            await waitFor(() => {
+                expect(gridCompactView).toHaveAttribute('aria-current', 'location');
+                expect(listNode).toHaveClass('listView--grid-compact');
+            });
+        });
+
+        await step('Clicks on the List Compact view and verifies the list item is selected', async () => {
+            const listCompactView = within(viewsMenu).getByText('List Compact').closest('button');
+            listCompactView && userEvent.click(listCompactView);
+            await waitFor(() => {
+                expect(listCompactView).toHaveAttribute('aria-current', 'location');
+                expect(listNode).toHaveClass('listView--list-compact');
+                expect(listNode).not.toHaveClass('listView--list');
+                expect(listNode).not.toHaveClass('listView--grid');
+                expect(listNode).not.toHaveClass('listView--grid-compact');
+            });
+
+            expect(listItem?.querySelector('tag-list')).toBeInTheDocument();
         });
 
         await step('Returns to the List view and verifies the list item is selected', async () => {
@@ -166,14 +198,14 @@ export const CustomView = {
                         <div class="listItem__customView__content">
                             <div class="listItem__customView__header">{titleWrapper}{subtitle}{nav}</div>
                             <arpa-node name="content" class="listItem__customView__body" is-content></arpa-node>
-                            custom text
+                            custom text {tags}
                         </div>
                     </arpa-node>
                 </template>
                 <template
                     template-type="list-item"
                     template-mode="append"
-                    truncate-content="10"
+                    truncate-content="90"
                     image="{portraitURL}"
                     truncate-button
                 >

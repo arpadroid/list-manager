@@ -16,6 +16,9 @@ const Default = {
     ...ListStory,
     component: 'list-manager',
     title: 'List Manager/Controls/Filters',
+    parameters: {
+        layout: 'flexColumn'
+    },
     args: {
         ...ListStory.args,
         id: 'list-filters',

@@ -22,13 +22,13 @@ export async function playSetup(canvasElement, options) {
     await customElements.whenDefined('list-manager-item');
     const { initList = true, preRenderCallback, items } = options || {};
     const canvas = within(canvasElement);
-    /** @type {ListManager | null} */
-    const listNode = canvasElement.querySelector('list-manager');
-    
+
+    const listNode = /** @type {ListManager} */ (canvasElement.querySelector('list-manager'));
+
     await listNode?.onRendered();
     listNode?.id && initList && (await initializeList(listNode?.id, items));
-    /** @type {ListManagerItem | null} */
-    const listItem = canvasElement.querySelector('list-manager-item');
+
+    const listItem = /** @type {ListManagerItem} */ (canvasElement.querySelector('list-manager-item'));
     await listItem?.onRendered();
 
     const listResource = listNode?.listResource;

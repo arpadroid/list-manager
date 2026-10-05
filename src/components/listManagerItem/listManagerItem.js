@@ -32,7 +32,8 @@ class ListManagerItem extends ListItem {
      */
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'view' && oldValue && newValue) {
-            oldValue?.length && this.classList.remove('listItem--' + oldValue);
+            const views = this.list.getViews().map(view => 'listItem--' + view);
+            this.classList.remove(...views);
             this.classList.add('listItem--' + newValue);
         }
     }

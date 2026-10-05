@@ -275,7 +275,8 @@ class ListManager extends List {
      */
     async setView(view) {
         await this.promise;
-        this.classList.forEach(cls => cls.startsWith('listView--') && this.classList.remove(cls));
+        const viewClasses = this.getViews().map(view => 'listView--' + view);
+        this.classList.remove(...viewClasses);
         this.classList.add('listView--' + view);
         view === 'grid-compact' && this.classList.add('listView--grid');
         this.getViewFilter()?.setValue(view);
@@ -287,6 +288,10 @@ class ListManager extends List {
         return this.listResource?.getViewFilter({
             defaultValue: this.getProp('view')
         });
+    }
+
+    getViews() {
+        return this.getArrayProp('views') || [];
     }
 
     getView() {
