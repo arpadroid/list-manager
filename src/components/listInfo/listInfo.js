@@ -106,6 +106,7 @@ class ListInfo extends ArpaElement {
                     class="listInfo__refresh"
                     icon="refresh"
                     can-render="hasRefresh"
+                    aria-label="${this.i18nText('txtRefresh')}"
                     on-click="{handleRefresh}"
                 >
                     <arpa-zone name="tooltip">${this.i18n('txtRefresh')}</arpa-zone>
@@ -117,6 +118,7 @@ class ListInfo extends ArpaElement {
                     class="listInfo__previous"
                     icon="skip_previous"
                     can-render="hasPrevNext()"
+                    aria-label="${this.i18nText('txtPrevPage')}"
                     on-click="{handlePreviousPage}"
                 >
                     <arpa-zone name="tooltip">${this.i18n('txtPrevPage')}</arpa-zone>
@@ -128,6 +130,7 @@ class ListInfo extends ArpaElement {
                     class="listInfo__next"
                     icon="skip_next"
                     can-render="hasPrevNext()"
+                    aria-label="${this.i18nText('txtNextPage')}"
                     on-click="{handleNextPage}"
                 >
                     <arpa-zone name="tooltip">${this.i18n('txtNextPage')}</arpa-zone>

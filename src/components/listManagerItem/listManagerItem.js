@@ -47,10 +47,6 @@ class ListManagerItem extends ListItem {
         /** @type {ListManagerItemConfigType} */
         const conf = {
             selectedClass: 'listManagerItem--selected',
-            blueprint: () => html`
-                ${ListItem.prototype.$renderTemplate.call(this)}
-                <arpa-node tag="icon-menu" name="nav" id="{id}-nav" can-render="hasNav()"></arpa-node>
-            `,
             className: 'listItem',
             classNames: ['listManagerItem', () => this.getViewClass()],
             listSelector: 'list-manager',
@@ -65,6 +61,8 @@ class ListManagerItem extends ListItem {
 
         /** @type {ListFilter} */
         this.viewsFilter = this.listResource?.filters?.views;
+        // Subscribe before the first render so view changes during rendering are not missed.
+        this.viewsFilter?.on('value', this._onViewChange, this._unsubscribes);
 
         const id = this.getId();
         if (typeof this.list?.hasControl === 'function' && this.list?.hasControl('multiselect')) {
@@ -114,7 +112,16 @@ class ListManagerItem extends ListItem {
         return (sizeName && imageSizes[sizeName]) || super._getImageDimensions(memoized);
     }
 
+    $renderBlueprint() {
+        return html`
+            ${ListItem.prototype.$renderTemplate.call(this)}
+            <arpa-node tag="icon-menu" name="nav" id="{id}-nav" can-render="hasNav()"></arpa-node>
+        `;
+    }
+
     $renderTemplate() {
+        /** @type {string} */
+        this._renderedView = this.getView();
         return html` ${this.getViewTemplate()} `;
     }
 
@@ -192,14 +199,17 @@ class ListManagerItem extends ListItem {
         const val = String(this.viewsFilter?.getValue() || 'list');
         /** @type {string} */
         this.setProp('view', val);
-        this.viewsFilter?.on('value', this._onViewChange);
+        // Reused nodes are unsubscribed when removed, so resubscribe and catch up on missed view changes.
+        this.viewsFilter?.on('value', this._onViewChange, this._unsubscribes);
+        this._hasRendered && this._renderedView !== this.getView() && this.reRender();
     }
 
     /**
      * Called when the view changes.
      * @param {string} _view
      */
-    _onViewChange(_view) {
+    async _onViewChange(_view) {
+        !this._hasRendered && (await this.promise);
         this.reRender();
     }
 

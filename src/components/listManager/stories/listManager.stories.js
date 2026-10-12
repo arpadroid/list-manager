@@ -6,12 +6,15 @@
  * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} Story
  * @typedef {import('../../listManagerItem/listManagerItem.js').default} ListManagerItem
  * @typedef {import('@arpadroid/resources').ListResource} ListResource
+ * @typedef {import('@arpadroid/lists').TagItem} TagItem
+ * @typedef {import('@arpadroid/navigation').IconMenu} IconMenu
+ * @typedef {import('@arpadroid/forms').SelectCombo} SelectCombo
  */
 
 import { attrString, formatDate, getInitials } from '@arpadroid/tools';
 import { defaultParams, testParams } from '@arpadroid/module/storybook/helper';
 import artists from '../../../mockData/artists.json';
-import { expect } from 'storybook/test';
+import { expect, waitFor, userEvent, within } from 'storybook/test';
 
 /**
  * Initializes the list with the provided payload.
@@ -31,7 +34,7 @@ export async function initializeList(id, payload = artists) {
             date: lived
         };
     });
-    resource?.setItems(payload);
+    await resource?.setItems(payload);
 }
 
 /**
@@ -47,6 +50,7 @@ async function playSetup(/** @type {HTMLElement} */ canvasElement, items) {
     const listItem = canvasElement.querySelector('list-manager-item');
     const listResource = listNode?.listResource;
     await listNode?.promise;
+    await listItem?.promise;
     listNode?.id && (await initializeList(listNode?.id, items));
     return { listNode, listItem, listResource };
 }
@@ -149,6 +153,142 @@ export const Static = {
 
         await step('Renders the list manager with the expected title', async () => {
             args.title && expect(canvas.getByText(args.title)).toBeInTheDocument();
+        });
+    }
+};
+
+/** @type {Story} */
+export const Test = {
+    parameters: {
+        ...testParams,
+        layout: 'flexColumn'
+    },
+    args: {
+        id: 'list-manager-test',
+        title: 'List Component',
+        hasItemsTransition: true,
+        hasResource: true
+    },
+    play: async ({ canvasElement, canvas, step }) => {
+        const DELAY = 30;
+        const { listNode } = await playSetup(canvasElement);
+
+        await step('Refreshes the list and goes to the next page.', async () => {
+            const refreshButton = await waitFor(() => canvas.getByRole('button', { name: /refresh list/i }));
+            await userEvent.click(refreshButton, { delay: DELAY });
+            const nexButton = await waitFor(() => canvas.getByRole('button', { name: /next page/i }));
+            expect(nexButton).toBeInTheDocument();
+
+            await userEvent.click(nexButton, { delay: DELAY });
+            const itemsContainer = /** @type {HTMLElement} */ (canvasElement.querySelector('.arpaList__bodyMain'));
+            expect(itemsContainer).toBeInTheDocument();
+            await waitFor(() => {
+                expect(itemsContainer.querySelectorAll('.arpaList__items')).toHaveLength(1);
+            });
+        });
+
+        await step(
+            'Refreshes the list again and does not render duplicated tag-item components within tag-list',
+            async () => {
+                await listNode?.setView('list');
+                await listNode?.promise;
+                const refreshButton = await waitFor(() => canvas.getByRole('button', { name: /refresh list/i }));
+                await userEvent.click(refreshButton, { delay: DELAY });
+
+                const viewsBtn = canvas.getByRole('button', { name: /views/i });
+
+                await userEvent.click(viewsBtn, { delay: DELAY });
+                await waitFor(() => {
+                    expect(canvasElement.querySelector('button[data-value="list-compact"]')).toBeInTheDocument();
+                });
+                const listCompactBtn = /** @type {HTMLElement} */ (
+                    canvasElement.querySelector('button[data-value="list-compact"]')
+                );
+                await userEvent.click(listCompactBtn);
+
+                await waitFor(() => {
+                    const listItem = /** @type {HTMLElement} */ (canvasElement.querySelector('list-manager-item'));
+                    const tagList = /** @type {HTMLElement} */ (listItem.querySelector('tag-list'));
+                    expect(tagList).toBeInTheDocument();
+                    expect(tagList?.children).toHaveLength(2);
+                    const tagItems = /** @type {TagItem[]} */ ([...tagList.querySelectorAll('tag-item')]);
+                    const uniqueTagItems = Array.from(new Set(tagItems.map(item => item.textContent)));
+                    expect(tagItems.length).toBe(uniqueTagItems.length);
+                });
+            }
+        );
+
+        await step('Selects per page and renders new items with zone content', async () => {
+            const filtersBtn = await waitFor(() => canvas.getByRole('button', { name: /filters/i }));
+            await userEvent.click(filtersBtn, { delay: DELAY });
+            const perPageBtn = await waitFor(() => canvas.getByLabelText('Per page'));
+            const perPageField = /** @type {SelectCombo} */ (perPageBtn.closest('select-combo'));
+            await perPageField?.promise;
+            await userEvent.click(perPageBtn, { delay: DELAY });
+            await waitFor(() => expect(perPageField?.optionsNode).toBeInTheDocument());
+            const perPageOption = perPageField.optionsNode?.querySelector('select-option[value="5"] button');
+            expect(perPageOption).toBeInTheDocument();
+            await userEvent.click(/** @type {HTMLElement} */ (perPageOption), { delay: DELAY });
+            await waitFor(() => {
+                expect(listNode?.listResource?.getPerPage()).toBe(5);
+                const itemsContainer = listNode?.querySelector('.arpaList__items:not(.arpaList--itemsOut)');
+                const items = itemsContainer?.querySelectorAll('list-manager-item');
+                expect(items).toHaveLength(5);
+                items?.forEach(item => {
+                    expect(item.querySelector('tag-list')?.children).toHaveLength(2);
+                    expect(item.querySelector('.listItem__main .listItem__checkboxContainer')).toBeInTheDocument();
+                });
+            });
+        });
+
+        await step('Selects 25 and verifies items', async () => {
+            const filtersBtn = /** @type {HTMLElement} */ (canvas.getByRole('button', { name: /filters/i }));
+            expect(filtersBtn).toBeInTheDocument();
+            await userEvent.click(filtersBtn, { delay: DELAY });
+            const menu = /** @type {IconMenu} */ (filtersBtn.closest('icon-menu'));
+            const nav = /** @type {HTMLElement} */ (menu?.nodes.nav);
+            const form = /** @type {HTMLFormElement} */ (nav.querySelector('form'));
+            const perPageBtn = within(form).getByLabelText('Per page');
+            const perPageField = /** @type {SelectCombo} */ (form.querySelector('select-combo'));
+            await perPageField.promise;
+            await perPageField?.promise;
+            await userEvent.click(perPageBtn, { delay: DELAY });
+            await waitFor(() => {
+                const options = perPageField.optionsNode;
+                expect(options?.querySelector('select-option[value="25"] button')).toBeDefined();
+            });
+
+            const perPageOption25 = /** @type {HTMLElement} */ (
+                perPageField.optionsNode?.querySelector('select-option[value="25"] button')
+            );
+            await userEvent.click(perPageOption25, { delay: DELAY });
+        });
+
+        await step('Switches to grid view and opens navigation expecting 2 items', async () => {
+            await waitFor(() => {
+                expect(canvasElement.querySelector('.listItem__nav button')).toBeInTheDocument();
+            });
+            const viewsBtn = /** @type {HTMLElement} */ (canvas.getByRole('button', { name: /views/i }));
+            await userEvent.click(viewsBtn, { delay: DELAY });
+            const viewMenu = /** @type {IconMenu} */ (viewsBtn.closest('icon-menu'));
+            const viewsNav = /** @type {HTMLElement} */ (viewMenu?.nodes.nav);
+
+            await waitFor(() => {
+                expect(viewsNav?.querySelector('button[data-value="grid"]')).toBeInTheDocument();
+            });
+
+            const gridViewBtn = /** @type {HTMLElement} */ (viewsNav.querySelector('button[data-value="grid"]'));
+            await userEvent.click(gridViewBtn, { delay: DELAY });
+            const listItem = /** @type {HTMLElement} */ (canvasElement.querySelector('list-manager-item'));
+            const navNode = /** @type {HTMLElement} */ (listItem.querySelector('.listItem__nav button'));
+            expect(navNode).toBeInTheDocument();
+            await userEvent.click(navNode, { delay: DELAY });
+            await waitFor(() => {
+                expect(document.querySelector('.inputCombo--active')).toBeInTheDocument();
+            });
+            const navList = document.querySelector('.inputCombo--active');
+            expect(navList).toBeInTheDocument();
+            expect(navList?.children).toHaveLength(2);
         });
     }
 };

@@ -83,6 +83,10 @@ export const Test = {
                 expect(combo.getByLabelText('Page')).toBeInTheDocument();
                 expect(combo.getByLabelText('Page').closest('number-field')).not.toBeNull();
             });
+            await waitFor(() => {
+                expect(form.getField('page')).toBeInTheDocument();
+                expect(form.getField('page').input).toBeInTheDocument();
+            });
             const pageInput = form.getField('page').input;
             const pageField = /** @type {NumberField} */ (pageInput.closest('number-field'));
             pageField?.setValue(2);
@@ -102,11 +106,11 @@ export const Test = {
             await userEvent.click(perPageInput);
             await waitFor(() => {
                 expect(perPageField?.optionsNode).toBeInTheDocument();
+                expect(perPageField.getValue()).toEqual('5');
+                expect(listNode?.getItemNodes()).toHaveLength(5);
             });
-
             const options = perPageField.optionsNode && within(perPageField.optionsNode);
-            expect(perPageField.getValue()).toEqual('5');
-            expect(listNode?.getItemNodes()).toHaveLength(5);
+
             const option5 = options?.getByText('10').closest('button');
             if (!option5) {
                 throw new Error('Option 10 not found');

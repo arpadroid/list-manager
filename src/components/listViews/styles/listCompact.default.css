@@ -8,12 +8,16 @@
         padding: 0;
     }
 
-    .listItem {
-        padding-left: 4px;
+    list-manager-item.listItem {
+        padding-left: 0.25rem;
+
+        .listItem__image {
+            align-self: center;
+        }
     }
 
     > .arpaList__body > .arpaList__bodyMain > .arpaList__items.arpaList__items {
-        gap: 2px;
+        gap: 0.125rem;
     }
 }
 
@@ -50,7 +54,7 @@
 
     .listItem__checkboxContainer,
     .iconButton {
-        --size: 25px;
+        --size: 1.75rem;
     }
 
     .listItem__checkboxContainer {
