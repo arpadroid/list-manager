@@ -8,6 +8,7 @@
 
 import { List } from '@arpadroid/lists';
 import { defineCustomElement } from '@arpadroid/tools';
+import { getArpaElementWithTag } from '@arpadroid/ui';
 import ListControls from '../listControls/listControls.js';
 import { ucFirst, mergeObjects, editURL } from '@arpadroid/tools';
 import { getService } from '@arpadroid/context';
@@ -62,8 +63,11 @@ class ListManager extends List {
                 can-render="hasControls()"
                 controls="${this.getArrayProp('controls')?.toString() || ''}"
             ></arpa-node>
-            <arpa-node name="info" tag="list-info" can-render="hasInfo"></arpa-node>
+
+            <arpa-node name="info" tag="list-info" can-render="hasInfo"> </arpa-node>
+
             <arpa-node name="messages" tag="arpa-messages" id="{id}-messages" can-render="hasMessages"></arpa-node>
+
             {body} {footer}
         `;
     }
@@ -134,11 +138,11 @@ class ListManager extends List {
 
     /**
      * Returns the parent list component from a given element.
-     * @param {Element} element
+     * @param {import('@arpadroid/ui').ArpaElement} element
      * @returns {ListManager | null}
      */
     static getList(element) {
-        return element.closest('list-manager');
+        return /** @type {ListManager | null} */ (getArpaElementWithTag(element, 'list-manager'));
     }
 
     getTemplateVars() {
@@ -275,6 +279,8 @@ class ListManager extends List {
      */
     async setView(view) {
         await this.promise;
+
+        this.resetScroll();
         const viewClasses = this.getViews().map(view => 'listView--' + view);
         this.classList.remove(...viewClasses);
         this.classList.add('listView--' + view);

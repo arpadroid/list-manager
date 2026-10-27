@@ -21,7 +21,7 @@ const Default = {
         hasResource: true,
         id: 'list-sort',
         controls: ['sort'],
-        title: 'List Sort',
+        title: 'List Sort'
     },
     render: args => {
         return html`<list-manager ${attrString(args)}>
@@ -58,7 +58,6 @@ export const Render = Default;
 /** @type {StoryObj} */
 export const Test = {
     args: {
-        ...Default.args,
         id: 'test-sorted'
     },
     play: async ({ canvasElement, step }) => {
@@ -70,7 +69,7 @@ export const Test = {
                 artists.find(item => item?.firstName === 'Phidias')
             ].filter(item => item !== undefined),
             preRenderCallback: async ({ listResource }) => {
-                await listResource?.clearFilters();
+                await listResource?.clearFilters(false, false);
                 await listResource?.setSort('title', 'desc');
                 return true;
             }
@@ -108,7 +107,7 @@ export const Test = {
         });
 
         await step('Opens the sort menu and verifies "title" sort is selected.', async () => {
-            await userEvent.click(sortByButton);
+            await userEvent.click(sortByButton, { delay: 30});
             await waitFor(() => {
                 const sortByCombo = sortByMenu.navigation;
                 expect(sortByCombo.querySelector('a[aria-current="page"]')).toHaveTextContent('Title');

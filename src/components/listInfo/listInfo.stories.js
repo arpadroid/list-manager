@@ -4,6 +4,7 @@
  * @typedef {import('@arpadroid/navigation').IconMenu} IconMenu
  * @typedef {import('@storybook/web-components-vite').Meta<ListManagerConfigType>} Meta
  * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} Story
+ * @typedef {import('@arpadroid/forms').FormComponent} FormComponent
  */
 
 import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
@@ -41,16 +42,16 @@ export const Test = {
         id: 'test-list-info',
         title: 'List Info Test'
     },
-    play: async ({ canvasElement, step }) => {
+    play: async ({ canvasElement, step, canvas }) => {
         const setup = await playSetup(canvasElement);
-        const { canvas, listNode } = setup;
+        const { listNode } = setup;
 
         const listInfoClass = '.listInfo__text';
         await step('Renders the list info', async () => {
             await waitFor(() => {
-                const prevBtn = canvas.getByText(/Previous page/i).closest('button');
-                const nextBtn = canvas.getByText(/Next page/i).closest('button');
-                const refreshBtn = canvas.getByText(/Refresh list/i).closest('button');
+                const prevBtn = canvas.getByLabelText(/Previous page/i);
+                const nextBtn = canvas.getByLabelText(/Next page/i);
+                const refreshBtn = canvas.getByLabelText(/Refresh list/i);
                 expect(refreshBtn).toBeInTheDocument();
                 expect(prevBtn).toBeInTheDocument();
                 expect(nextBtn).toBeInTheDocument();
@@ -62,9 +63,8 @@ export const Test = {
         });
 
         await step('Clicks on the next page button and verifies the list info', async () => {
-            const nextBtn = canvas.getByText(/Next page/i).closest('button');
-
-            await userEvent.click(nextBtn);
+            const nextBtn = canvas.getByLabelText(/Next page/i);
+            await userEvent.click(nextBtn, { delay: 50});
             await waitFor(() => {
                 const listInfo = canvasElement.querySelector(listInfoClass);
                 expect(listInfo).toHaveTextContent(
@@ -75,7 +75,7 @@ export const Test = {
 
         await step('Searches for non-existing term and shows no results message.', async () => {
             const input = canvas.getByRole('searchbox');
-            const form = input.closest('arpa-form');
+            const form = /** @type {FormComponent} */ (input.closest('arpa-form'));
             form?._config && (form._config.debounce = false);
             await userEvent.clear(input);
             await userEvent.type(input, 'Some search term');
@@ -88,7 +88,7 @@ export const Test = {
 
         await step('Searches for "Leon" and expects 1 result to be produced with appropriate message.', async () => {
             const input = canvas.getByRole('searchbox');
-            const form = input.closest('arpa-form');
+            const form = /** @type {FormComponent} */ (input.closest('arpa-form'));
             form?._config && (form._config.debounce = false);
             await userEvent.clear(input);
             await userEvent.type(input, 'Leon');

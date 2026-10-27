@@ -25,13 +25,9 @@ export async function playSetup(canvasElement, options) {
 
     const listNode = /** @type {ListManager} */ (canvasElement.querySelector('list-manager'));
 
-    await listNode?.onRendered();
-    listNode?.id && initList && (await initializeList(listNode?.id, items));
-
-    const listItem = /** @type {ListManagerItem} */ (canvasElement.querySelector('list-manager-item'));
-    await listItem?.onRendered();
-
     const listResource = listNode?.listResource;
+    const listItem = /** @type {ListManagerItem} */ (canvasElement.querySelector('list-manager-item'));
+
     if (typeof preRenderCallback === 'function') {
         const rv = preRenderCallback({ listResource, listNode, listItem });
         if (rv instanceof Promise) {
@@ -39,6 +35,8 @@ export async function playSetup(canvasElement, options) {
         }
     }
 
+    listNode.id && initList && (await initializeList(listNode?.id, items));
+    await listItem?.onRendered();
     return { canvas, listNode, listItem, listResource };
 }
 

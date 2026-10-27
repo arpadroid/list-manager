@@ -5,7 +5,7 @@
  * @typedef {import('../listViews/listViews').default} ListViews
  * @typedef {import('@arpadroid/ui').ArpaNode} ArpaNode
  */
-import { ArpaElement } from '@arpadroid/ui';
+import { ArpaElement, getArpaElementMatch } from '@arpadroid/ui';
 import { mergeObjects, attrString, ucFirst, camelToDashed, defineCustomElement, $map } from '@arpadroid/tools';
 
 const html = String.raw;
@@ -18,7 +18,12 @@ class ListControls extends ArpaElement {
      * @returns {ListManager | null}
      */
     getList() {
-        return this.closest('arpa-list, .arpaList');
+        return /** @type {ListManager | null} */ (
+            getArpaElementMatch(
+                this,
+                el => el.tagName.toLowerCase() === 'arpa-list' || el.classList.contains('arpaList')
+            )
+        );
     }
 
     /**

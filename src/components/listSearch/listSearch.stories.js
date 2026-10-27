@@ -1,5 +1,6 @@
 /**
  * @typedef {import('../listManager/listManager.js').default} ListManager
+ * @typedef {import('@arpadroid/forms').SearchField} SearchField
  * @typedef {import('../listManager/listManager.types.js').ListManagerConfigType} ListManagerConfigType
  * @typedef {import('@storybook/web-components-vite').Meta<ListManagerConfigType>} Meta
  * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} Story
@@ -36,13 +37,15 @@ export const Test = {
         title: 'List Search Test',
         searchPlaceholder: 'List Search Test'
     },
-    play: async ({ canvasElement, step }) => {
+    play: async ({ canvasElement, step, canvas }) => {
         const setup = await playSetup(canvasElement);
-        const { canvas } = setup;
-        const input = await waitFor(() => canvas.getByRole('searchbox'));
-        const field = input.closest('search-field');
+        const { listNode } = setup;
+        await listNode?.onRendered();
+        const input = /** @type {HTMLInputElement} */ (await waitFor(() => canvas.getByRole('searchbox')));
+
+        const field = /** @type {SearchField} */ (input.closest('search-field'));
         await field.promise;
-        const form = input.closest('arpa-form');
+        const form = /** @type {import('@arpadroid/forms').FormComponent} */ (input.closest('arpa-form'));
         form?._config && (form._config.debounce = false);
         input.value = '';
 
@@ -51,7 +54,6 @@ export const Test = {
         });
 
         await step('Searches for "Leon" and expects "Leonardo Da Vinci\'s" item to be highlighted', async () => {
-            await userEvent.clear(input);
             await userEvent.type(input, 'Leon');
             await waitFor(() => {
                 const searchMatch = canvasElement.querySelector('mark');
@@ -62,16 +64,17 @@ export const Test = {
         });
 
         await step('Searches and submits query for "Mitch" expecting two results.', async () => {
+            await new Promise(resolve => setTimeout(resolve, 200));
             await userEvent.clear(input);
-            await userEvent.type(input, 'Mich');
+            await userEvent.type(input, 'Mich', { delay: 10 });
             await waitFor(() => {
                 document.querySelectorAll('mark')?.forEach(element => {
                     expect(element).toHaveTextContent('Mich');
                     // expect(element?.parentNode).toHaveTextContent('Michelangelo Buonarroti', { exact: false });
                 });
             });
-            input.focus();
             await userEvent.keyboard('{Enter}');
+            input.focus();
             await waitFor(() => {
                 const marks = canvasElement.querySelectorAll('mark');
                 expect(marks).toHaveLength(2);

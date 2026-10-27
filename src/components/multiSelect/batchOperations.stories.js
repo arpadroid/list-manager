@@ -6,6 +6,7 @@
  * @typedef {import('@arpadroid/forms').Field} Field
  * @typedef {import('@storybook/web-components-vite').Meta<ListManagerConfigType>} Meta
  * @typedef {import('@storybook/web-components-vite').StoryObj<ListManagerConfigType>} Story
+ * @typedef {import('@arpadroid/navigation').IconMenu} IconMenu
  */
 
 import { Static as ListStory } from '../listManager/stories/listManager.stories.js';
@@ -56,18 +57,25 @@ export const Test = {
     },
     play: async ({ canvasElement, step, canvas }) => {
         await playSetup(canvasElement);
-        await waitFor(() => expect(canvasElement.querySelector('.listMultiSelect__form')).toBeInTheDocument());
-        const formNode = /** @type {HTMLFormElement} */ (canvasElement.querySelector('.listMultiSelect__form'));
-        const getForm = () => within(formNode);
-        const form = getForm();
+        await waitFor(() => {
+            expect(canvasElement.querySelector('.listMultiSelect__form')).toBeInTheDocument();
+        });
+
+        const button = canvas.getByRole('button', { name: /Batch Operations/i });
+        const iconMenu = /** @type {IconMenu} */ (button.closest('icon-menu'));
+        await iconMenu.onRendered();
+        const combo = /** @type {HTMLElement} */ (iconMenu.nodes.nav);
+        const formNode = /** @type {HTMLFormElement} */ (combo.querySelector('arpa-form'));
+        const form = within(formNode);
 
         const getItemCheckbox = () => canvasElement.querySelector('.listItem__checkbox');
 
         await step('Opens and renders Batch Operations panel.', async () => {
             const filtersMenu = canvas.getByRole('button', { name: /Batch Operations/i });
             await userEvent.click(filtersMenu);
+
             await waitFor(() => {
-                expect(form.getByText('Batch operations')).toBeInTheDocument();
+                expect(within(combo).getByText('Batch operations')).toBeInTheDocument();
                 expect(form.getAllByText('No items selected')).toHaveLength(1);
                 expect(form.getByText('Select all')).toBeInTheDocument();
                 expect(form.getByText('Show selected only')).toBeInTheDocument();
@@ -100,22 +108,16 @@ export const Test = {
         });
 
         await step('Clicks on "Delete" and verifies the dialog.', async () => {
-            const actionsField = /** @type {SelectCombo | null} */ (
-                form.getByText('Select an action').closest('select-combo')
+            const options = /** @type {HTMLElement} */ (
+                canvasElement.querySelector('.listMultiSelect__combo select-options')
             );
-            await actionsField?.promise;
-            const options = actionsField?.optionsNode;
-            if (!options) {
-                throw new Error('Options not found.');
-            }
-            /** @todo Fix this flaky tests. Also see commented out code above. */
-            // const button = await waitFor(() => within(options).getByRole('button'));
-
-            // await userEvent.click(button);
-            // await waitFor(() => {
-            //     expect(canvas.getByRole('dialog')).toBeInTheDocument();
-            //     expect(canvas.getByText('Delete items')).toBeInTheDocument();
-            // });
+            const button = /** @type {HTMLButtonElement} */ (options.querySelector('button'));
+            await userEvent.click(button, { delay: 50 });
+            await waitFor(() => {
+                const dialog = /** @type {HTMLElement} */ (document.querySelector('delete-dialog'));
+                expect(dialog).toBeInTheDocument();
+                expect(within(dialog).getByText('Delete items')).toBeInTheDocument();
+            });
         });
     }
 };

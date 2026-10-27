@@ -159,6 +159,7 @@ class ListViews extends ArpaElement {
 
     async $initializeNodes() {
         await super.$initializeNodes();
+        await this.waitForArpaNodes();
         this.iconMenu = /** @type {IconMenu | null} */ (this.nodes.iconMenu);
         this.iconMenu && (await this.iconMenu?.promise);
         await this.iconMenu?.onRendered();

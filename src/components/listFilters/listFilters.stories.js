@@ -91,7 +91,7 @@ export const Test = {
             const pageField = /** @type {NumberField} */ (pageInput.closest('number-field'));
             pageField?.setValue(2);
             await userEvent.click(pageInput);
-            await userEvent.keyboard('{Enter}');
+            await userEvent.keyboard('{Enter}', { delay: 20 });
             await waitFor(() => {
                 expect(setup.listResource?.getPage()).toEqual(2);
                 const currPage = canvas.getByLabelText('Current page');

@@ -12,7 +12,7 @@
  */
 
 import { editURL, SearchTool, defineCustomElement } from '@arpadroid/tools';
-import { ArpaElement } from '@arpadroid/ui';
+import { ArpaElement, getArpaElementMatch } from '@arpadroid/ui';
 
 const html = String.raw;
 class ListSearch extends ArpaElement {
@@ -35,8 +35,9 @@ class ListSearch extends ArpaElement {
     }
 
     async $initializeProperties() {
-        /** @type {ListManager | null} */
-        this.list = this.closest('.arpaList');
+        this.list = /** @type {ListManager | null} */ (
+            getArpaElementMatch(this, element => element.classList.contains('arpaList'))
+        );
         /** @type {Router} */
         this.router = this.list?.getRouter();
         /** @type {ListResource} */
@@ -144,7 +145,11 @@ class ListSearch extends ArpaElement {
             }
 
             this.list?.fetchPromise && (await this.list.fetchPromise);
-            setTimeout(() => this.search?.doSearch(), 10);
+            await this.list?.waitForNodes(this.list.nodes, { onRendered: true });
+            await this.list?.promise;
+            await this.list?.onRendered();
+            await new Promise(resolve => setTimeout(resolve, 100));
+            this.search?.doSearch();
         }
     }
 }

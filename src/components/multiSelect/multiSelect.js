@@ -8,7 +8,7 @@
  * @typedef {import('@arpadroid/navigation').NavList} NavList
  * @typedef {import('@arpadroid/messages').InfoMessage} InfoMessage
  */
-import { ArpaElement } from '@arpadroid/ui';
+import { ArpaElement, getArpaElementMatch } from '@arpadroid/ui';
 import { attrString, defineCustomElement } from '@arpadroid/tools';
 
 const html = String.raw;
@@ -16,9 +16,8 @@ class MultiSelect extends ArpaElement {
     // #region INITIALIZATION
 
     $preInitialize() {
-        this.i18nKey = 'list-manager.multiSelect';
-        /** @type {ListManager | null} */
-        this.list = this.closest('.arpaList');
+        this.i18nKey = 'list-manager.multiSelect';        
+        this.list = /** @type {ListManager | null} */ (getArpaElementMatch(this, el => el.classList.contains('arpaList')));
         /** @type {ListResource | undefined} */
         this.resource = this.list?.listResource;
     }
@@ -28,7 +27,9 @@ class MultiSelect extends ArpaElement {
             className: 'listMultiSelect',
             icon: 'check_box_outline_blank',
             actions: this.list?._config?.actions,
-            tooltip: this.getText('txtNoItemsSelected')
+            tooltip: this.getText('txtNoItemsSelected'),
+            title: this.getText('txtBatchOperations'),
+            txtSelectAction: this.getText('txtSelectAction')
         });
     }
 
@@ -76,13 +77,13 @@ class MultiSelect extends ArpaElement {
             menu-position="bottom-right"
             class="listMultiSelect__nav"
             nav-class="listMultiSelect__combo"
-            tooltip="${this.i18nText('txtBatchOperations')}"
+            tooltip="{title}"
             ${attrString(menuProps)}
         >
             <arpa-zone name="nav">
                 <arpa-form
                     id="${formId}"
-                    title="${this.i18nText('txtBatchOperations')}"
+                    title="{title}"
                     class="listMultiSelect__form"
                     variant="compact"
                     has-submit="false"
@@ -92,14 +93,14 @@ class MultiSelect extends ArpaElement {
                     </info-message>
 
                     <checkbox-field id="toggleAll" value="select-all" icon="select_all">
-                        ${this.i18n('txtSelectAll')}
+                        <i18n-text key="${this.i18nKey}.txtSelectAll"></i18n-text>
                     </checkbox-field>
                     <checkbox-field id="selectFilter" icon="filter_alt">
-                        ${this.i18n('txtShowSelectedOnly')}
+                        <i18n-text key="${this.i18nKey}.txtShowSelectedOnly"></i18n-text>
                     </checkbox-field>
                     <select-combo
                         id="actions"
-                        placeholder="${this.getText('txtSelectAction')}"
+                        placeholder="{txtSelectAction}"
                         icon="layers"
                         option-component="batch-operation"
                         options-zone="batchOperations"

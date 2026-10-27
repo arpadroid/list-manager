@@ -14,7 +14,7 @@
  * @typedef {import('@arpadroid/navigation').NavList} NavList
  */
 import { mergeObjects, $map, editURL, defineCustomElement } from '@arpadroid/tools';
-import { ArpaElement } from '@arpadroid/ui';
+import { ArpaElement, getArpaElementMatch } from '@arpadroid/ui';
 
 const html = String.raw;
 class ListFilters extends ArpaElement {
@@ -35,8 +35,10 @@ class ListFilters extends ArpaElement {
 
     async $initializeProperties() {
         await super.$initializeProperties();
-        /** @type {ListManager | null} */
-        this.list = this.closest('.arpaList, .gallery');
+
+        this.list = /** @type {ListManager | null} */ (
+            getArpaElementMatch(this, el => el.classList.contains('arpaList') || el.classList.contains('gallery'))
+        );
         /** @type {Router} */
         this.router = this.list?.getRouter();
         /** @type {ListResource} */
@@ -69,6 +71,7 @@ class ListFilters extends ArpaElement {
         return html`<icon-menu
             icon="{icon}"
             tooltip="{getLabel()}"
+            tooltip-position="bottom-right"
             menu-position="bottom-right"
             button-aria="{getLabel()}"
             nav-class="listFilters__nav"
@@ -113,7 +116,7 @@ class ListFilters extends ArpaElement {
 
     async $initializeNodes() {
         await super.$initializeNodes();
-        await this.waitForArpaNodes();
+        await this.waitForArpaNodes(this.arpaNodes, { waitForDeferred: true });
         await this._initializeIconMenu();
         this._initializeForm();
         return true;
@@ -123,7 +126,7 @@ class ListFilters extends ArpaElement {
         /** @type {IconMenu | null} */
         this.menuNode = this.querySelector('icon-menu');
         await this.menuNode?.waitForArpaNodes();
-        await this.menuNode?.promise;
+        await this.menuNode?.onRendered();
         /** @type {NavList | null} */
         this.comboNode = this.menuNode?.navigation;
         this.comboNode?.setAttribute('zone', 'list-filters');
@@ -135,6 +138,7 @@ class ListFilters extends ArpaElement {
         this.form?.onSubmit(this.onSubmit);
         await this.form?.promise;
         await this.form?.waitForArpaNodes();
+        await new Promise(resolve => setTimeout(resolve, 100));
         this.pageField = /** @type {NumberField} */ (this.form?.getField('page'));
         this.perPageField = /** @type {SelectCombo} */ (this.form?.getField('perPage'));
         this.perPageField?.on('change', (value, field, event) => this.form?.submitForm(event));

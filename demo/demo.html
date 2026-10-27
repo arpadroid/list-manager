@@ -11,13 +11,18 @@
                 "imports": {
                     "@arpadroid/context": "../node_modules/@arpadroid/context/dist/arpadroid-context.js",
                     "@arpadroid/tools": "../node_modules/@arpadroid/tools/dist/arpadroid-tools.js",
-                    "@arpadroid/services": "../node_modules/@arpadroid/services/dist/arpadroid-services.js"
+                    "@arpadroid/services": "../node_modules/@arpadroid/services/dist/arpadroid-services.js",
+                    "@arpadroid/i18n": "../node_modules/@arpadroid/i18n/dist/arpadroid-i18n.js"
                 }
             }
         </script>
+
         <script type="module">
             import { Router, APIService } from '@arpadroid/services';
             import { setService } from '@arpadroid/context';
+            import { I18n } from '@arpadroid/i18n';
+            const i18nInstance = I18n.getInstance();
+            i18nInstance.setPath('http://arpadroid.local/framework/dist/i18n');
             setService('router', new Router());
             setService('apiService', APIService);
         </script>
@@ -31,9 +36,9 @@
             has-items-transition
             has-info
             has-resource
-            controls="search,sort,views,multiselect,filters"
+            controls="search,sort,views,multiselect,filters,info"
             views="grid,list,list-compact,grid-compact"
-            items-per-page="200"
+            items-per-page="50"
         >
             <arpa-zone name="messages">
                 <info-message>
@@ -62,7 +67,7 @@
             <template
                 template-type="list-item"
                 template-mode="append"
-                truncate-content="10"
+                truncate-content="150"
                 image="{portraitURL}"
                 truncate-button
             >

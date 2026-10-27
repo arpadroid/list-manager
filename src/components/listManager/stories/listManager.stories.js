@@ -52,6 +52,8 @@ async function playSetup(/** @type {HTMLElement} */ canvasElement, items) {
     await listNode?.promise;
     await listItem?.promise;
     listNode?.id && (await initializeList(listNode?.id, items));
+    await listNode?.onRendered();
+    await listItem?.onRendered();
     return { listNode, listItem, listResource };
 }
 
@@ -150,7 +152,6 @@ export const Static = {
     },
     play: async ({ canvasElement, canvas, step, args }) => {
         await playSetup(canvasElement);
-
         await step('Renders the list manager with the expected title', async () => {
             args.title && expect(canvas.getByText(args.title)).toBeInTheDocument();
         });
@@ -172,10 +173,10 @@ export const Test = {
     play: async ({ canvasElement, canvas, step }) => {
         const DELAY = 30;
         const { listNode } = await playSetup(canvasElement);
-
+        await listNode?.onRendered();
         await step('Refreshes the list and goes to the next page.', async () => {
             const refreshButton = await waitFor(() => canvas.getByRole('button', { name: /refresh list/i }));
-            await userEvent.click(refreshButton, { delay: DELAY });
+            await userEvent.click(refreshButton);
             const nexButton = await waitFor(() => canvas.getByRole('button', { name: /next page/i }));
             expect(nexButton).toBeInTheDocument();
 
@@ -280,9 +281,12 @@ export const Test = {
             const gridViewBtn = /** @type {HTMLElement} */ (viewsNav.querySelector('button[data-value="grid"]'));
             await userEvent.click(gridViewBtn, { delay: DELAY });
             const listItem = /** @type {HTMLElement} */ (canvasElement.querySelector('list-manager-item'));
+            expect(listItem).toBeInTheDocument();
+            await waitFor(() => {
+                expect(listItem.querySelector('.listItem__nav button')).toBeInTheDocument();
+            });
             const navNode = /** @type {HTMLElement} */ (listItem.querySelector('.listItem__nav button'));
-            expect(navNode).toBeInTheDocument();
-            await userEvent.click(navNode, { delay: DELAY });
+            await userEvent.click(navNode, { delay: 100 });
             await waitFor(() => {
                 expect(document.querySelector('.inputCombo--active')).toBeInTheDocument();
             });

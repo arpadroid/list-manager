@@ -21,7 +21,8 @@ class ListInfo extends ArpaElement {
         const conf = {
             className: 'listInfo',
             hasPrevNext: true,
-            hasRefresh: true
+            hasRefresh: true,
+            fastRender: true
         };
         return mergeObjects(super.getDefaultConfig(), conf);
     }
@@ -106,11 +107,10 @@ class ListInfo extends ArpaElement {
                     class="listInfo__refresh"
                     icon="refresh"
                     can-render="hasRefresh"
-                    aria-label="${this.i18nText('txtRefresh')}"
+                    tooltip="${this.i18nText('txtRefresh')}"
+                    tooltip-position="bottom-right"
                     on-click="{handleRefresh}"
-                >
-                    <arpa-zone name="tooltip">${this.i18n('txtRefresh')}</arpa-zone>
-                </arpa-node>
+                ></arpa-node>
 
                 <arpa-node
                     name="previousButton"
@@ -118,11 +118,10 @@ class ListInfo extends ArpaElement {
                     class="listInfo__previous"
                     icon="skip_previous"
                     can-render="hasPrevNext()"
-                    aria-label="${this.i18nText('txtPrevPage')}"
+                    tooltip="${this.i18nText('txtPrevPage')}"
+                    tooltip-position="bottom-right"
                     on-click="{handlePreviousPage}"
-                >
-                    <arpa-zone name="tooltip">${this.i18n('txtPrevPage')}</arpa-zone>
-                </arpa-node>
+                ></arpa-node>
 
                 <arpa-node
                     name="nextButton"
@@ -130,11 +129,10 @@ class ListInfo extends ArpaElement {
                     class="listInfo__next"
                     icon="skip_next"
                     can-render="hasPrevNext()"
-                    aria-label="${this.i18nText('txtNextPage')}"
+                    tooltip="${this.i18nText('txtNextPage')}"
+                    tooltip-position="bottom-right"
                     on-click="{handleNextPage}"
-                >
-                    <arpa-zone name="tooltip">${this.i18n('txtNextPage')}</arpa-zone>
-                </arpa-node>
+                ></arpa-node>
             </div>
         `;
     }

@@ -61,8 +61,6 @@ class ListManagerItem extends ListItem {
 
         /** @type {ListFilter} */
         this.viewsFilter = this.listResource?.filters?.views;
-        // Subscribe before the first render so view changes during rendering are not missed.
-        this.viewsFilter?.on('value', this._onViewChange, this._unsubscribes);
 
         const id = this.getId();
         if (typeof this.list?.hasControl === 'function' && this.list?.hasControl('multiselect')) {

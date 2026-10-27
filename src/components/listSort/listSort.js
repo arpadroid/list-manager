@@ -104,6 +104,7 @@ class ListSort extends ArpaElement {
      * @returns {Promise<void>}
      */
     async updateSortLink(sortDir = this.getSortDir()) {
+        await this.onRendered();
         const sortLink = /** @type {NavLink | null} */ (this.nodes.sortLink);
         sortLink?.setProp('icon', this.getSortDirIcon(sortDir));
         sortLink?.setAttribute('param-value', sortDir === 'asc' ? 'desc' : 'asc');

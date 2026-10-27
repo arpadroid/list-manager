@@ -45,11 +45,10 @@ export const Test = {
     },
     play: async ({ canvasElement, step }) => {
         const setup = await playSetup(canvasElement);
-        const { canvas, listNode, listItem } = setup;
-        // listNode?.setView('grid');
+        const { canvas, listNode } = setup;
+        await listNode?.onRendered();
         /** @type {IconMenu | null} */
         const iconMenu = canvasElement.querySelector('list-views icon-menu');
-        await iconMenu?.onRendered();
         const viewsMenu = /** @type {HTMLElement | null} */ (iconMenu?.navigation);
         if (!viewsMenu) {
             throw new Error('Views menu not found');
@@ -109,9 +108,9 @@ export const Test = {
                 expect(listNode).not.toHaveClass('listView--list');
                 expect(listNode).not.toHaveClass('listView--grid');
                 expect(listNode).not.toHaveClass('listView--grid-compact');
+                expect(listNode?.querySelector('list-manager-item tag-list')).toBeInTheDocument();
             });
 
-            expect(listItem?.querySelector('tag-list')).toBeInTheDocument();
         });
 
         await step('Returns to the List view and verifies the list item is selected', async () => {
@@ -240,7 +239,7 @@ export const CustomView = {
 
                     .listItem__image {
                         float: right;
-                        margin: 0rem 0 1.5rem 1.5rem;
+                        margin: 0rem 0 0.5rem 2rem;
                     }
 
                     .listItem__main {
@@ -252,10 +251,18 @@ export const CustomView = {
                         width: 100%;
                     }
 
+                    .listItem__customView__body {
+                        margin-top: 1.2rem;
+                        text-align: justify;
+                    }
+
                     .listItem__customView__header {
                         display: flex;
                         align-items: center;
                         gap: 1rem;
+                        .listItem__titleWrapper {
+                            flex: 1;
+                        }
                     }
 
                     .iconMenu {
