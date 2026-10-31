@@ -308,6 +308,42 @@ export const ThreeHundredItems = {
 };
 
 /** @type {Story} */
+export const Minimal = {
+    parameters: testParams,
+    args: {
+        id: 'list-manager-1',
+        itemsPerPage: 1,
+        title: 'Minimal List',
+        controls: [' '],
+        hasInfo: false,
+        hasPager: 'false'
+    },
+    render: args => {
+        return html`
+            <list-manager ${attrString(args)}>
+                <template
+                    template-type="list-item"
+                    template-mode="append"
+                    truncate-content="100"
+                    image="{portraitURL}"
+                    truncate-button
+                >
+                    <arpa-zone name="tags">
+                        <tag-item icon="calendar_month">{date}</tag-item>
+                        <tag-item icon="palette">{movement}</tag-item>
+                    </arpa-zone>
+                    <arpa-zone name="nav">
+                        <nav-link link="javascript:void(0)" icon-right="visibility">View</nav-link>
+                        <nav-link link="javascript:void(0)" icon-right="edit">Edit</nav-link>
+                    </arpa-zone>
+                    <arpa-zone name="content">{legacy}</arpa-zone>
+                </template>
+            </list-manager>
+        `;
+    }
+};
+
+/** @type {Story} */
 export const ApiDriven = {
     parameters: testParams,
     args: {

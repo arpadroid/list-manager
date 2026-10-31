@@ -125,10 +125,11 @@ class ListViews extends ArpaElement {
 
     $renderTemplate() {
         return html`<arpa-node
-            can-render="hasViews()"
-            name="iconMenu"
             tag="icon-menu"
+            name="iconMenu"
+            can-render="hasViews()"
             tooltip="{label}"
+            tooltip-position="bottom-right"
             icon="{icon}"
             menu-position="bottom-right"
             is-content

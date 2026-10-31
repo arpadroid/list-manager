@@ -78,6 +78,7 @@ class MultiSelect extends ArpaElement {
             class="listMultiSelect__nav"
             nav-class="listMultiSelect__combo"
             tooltip="{title}"
+            tooltip-position="bottom-right"
             ${attrString(menuProps)}
         >
             <arpa-zone name="nav">
