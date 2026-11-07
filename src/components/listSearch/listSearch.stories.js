@@ -21,7 +21,8 @@ const Default = {
         title: null,
         hasInfo: true,
         hasSelection: false,
-        searchPlaceholder: 'List Search'
+        searchPlaceholder: 'List Search',
+        hasItemsTransition: true
     },
     render: renderSimple
 };
@@ -35,7 +36,8 @@ export const Test = {
     args: {
         id: 'test-search',
         title: 'List Search Test',
-        searchPlaceholder: 'List Search Test'
+        searchPlaceholder: 'List Search Test',
+        itemsPerPage: 5
     },
     play: async ({ canvasElement, step, canvas }) => {
         const setup = await playSetup(canvasElement);
@@ -54,7 +56,7 @@ export const Test = {
         });
 
         await step('Searches for "Leon" and expects "Leonardo Da Vinci\'s" item to be highlighted', async () => {
-            await userEvent.type(input, 'Leon');
+            await userEvent.type(input, 'Leon', { delay: 50 });
             await waitFor(() => {
                 const searchMatch = canvasElement.querySelector('mark');
                 expect(searchMatch).toHaveTextContent('Leon');

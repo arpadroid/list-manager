@@ -85,7 +85,7 @@ const ListManagerStory = {
         return html`
             <list-manager ${attrString(args)}>
                 <arpa-zone name="messages">
-                    <info-message>
+                    <info-message truncate-content="80">
                         The list-manager component is an advanced list creation tool, which aims to simplify the process
                         of creating and managing advanced UI lists with search and filtering functionality. It features
                         highly customizable list items via templates, multiple view modes, and seamless integration with

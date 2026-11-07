@@ -66,7 +66,7 @@ class ListManager extends List {
 
             <arpa-node name="info" tag="list-info" can-render="hasInfo"> </arpa-node>
 
-            <arpa-node name="messages" tag="arpa-messages" id="{id}-messages" can-render="hasMessages"></arpa-node>
+            <arpa-node name="messages" tag="arpa-messages" id="{id}-messages" can-render="hasMessages" defer="onRendered"></arpa-node>
 
             {body} {footer}
         `;

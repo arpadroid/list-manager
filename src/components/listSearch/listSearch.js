@@ -70,7 +70,7 @@ class ListSearch extends ArpaElement {
 
     $renderTemplate() {
         return html`
-            <arpa-node name="form" tag="arpa-form" id="{formId}" variant="mini">
+            <arpa-node name="form" tag="arpa-form" on-submit="{_onSubmit}" id="{formId}" variant="mini">
                 <search-field
                     id="search"
                     has-mini-search="{hasMiniSearch}"
@@ -92,9 +92,9 @@ class ListSearch extends ArpaElement {
         await super.$initializeNodes();
         /** @type {FormComponent | null} */
         this.form = /** @type {FormComponent | null} */ (this.nodes.form);
-        await this.waitForNodes();
-        this.form?.onSubmit(this._onSubmit);
-        this.searchField = /** @type {SearchField | null} */ (this.form?.getField('search'));
+        if (!this.form) return true;
+        await this.form?.onRendered?.();
+        this.searchField = /** @type {SearchField | null} */ (this.form?.getField?.('search'));
         await this.searchField?.promise;
         this.listSort = this.querySelector('list-sort');
         return true;
