@@ -90,7 +90,7 @@ export const Test = {
             const pageInput = form.getField('page').input;
             const pageField = /** @type {NumberField} */ (pageInput.closest('number-field'));
             pageField?.setValue(2);
-            await userEvent.click(pageInput);
+            await userEvent.click(pageInput, { delay: 20 });
             await userEvent.keyboard('{Enter}', { delay: 20 });
             await waitFor(() => {
                 expect(setup.listResource?.getPage()).toEqual(2);
@@ -100,6 +100,7 @@ export const Test = {
         });
 
         await step('Changes the per page, submits the form and verifies the per page change', async () => {
+            await new Promise(resolve => setTimeout(resolve, 100));
             const perPageInput = combo.getByLabelText(/Per page/i);
             const perPageField = /** @type {SelectCombo} */ (perPageInput.closest('select-combo'));
             await perPageField.onRendered();

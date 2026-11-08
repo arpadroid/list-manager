@@ -66,7 +66,6 @@ export const Test = {
         });
 
         await step('Searches and submits query for "Mitch" expecting two results.', async () => {
-            await new Promise(resolve => setTimeout(resolve, 200));
             await userEvent.clear(input);
             await userEvent.type(input, 'Mich', { delay: 10 });
             await waitFor(() => {

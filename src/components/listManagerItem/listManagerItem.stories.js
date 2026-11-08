@@ -22,7 +22,6 @@ async function playSetup(canvasElement) {
     await customElements.whenDefined('list-manager-item');
     const list = /** @type {ListManager | null} */ (canvasElement.querySelector('list-manager'));
     await list?.promise;
-    await new Promise(resolve => setTimeout(resolve, 0));
     /** @type {ListManagerItem | null} */
     const listItem = canvasElement.querySelector('list-manager-item');
     await listItem?.promise;
@@ -157,7 +156,7 @@ export const Zones = {
     play: async ({ canvasElement, step, canvas }) => {
         await playSetup(canvasElement);
         await step('Renders the list item with the expected zones', async () => {
-            await new Promise(resolve => setTimeout(resolve, 100)); // Wait for truncation to apply
+            await new Promise(resolve => setTimeout(resolve, 20)); // Wait for truncation to apply
             expect(canvas.getByText('The Recycling Planet')).toBeInTheDocument();
             expect(
                 canvas.getByText('Why Earth’s shifting continents single it out from every other rock in the cosmos.')

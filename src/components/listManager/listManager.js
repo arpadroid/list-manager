@@ -260,8 +260,8 @@ class ListManager extends List {
      * Handles the pager change event.
      * @param {import('@arpadroid/ui').PagerCallbackPayloadType} payload
      */
-    onPagerChange(payload) {
-        super.onPagerChange(payload);
+    async onPagerChange(payload) {
+        await super.onPagerChange(payload);
         const { page } = payload;
         const newURL = editURL(window.location.href, { [this.getParamName('page')]: String(page) });
         this.router?.go(newURL);
