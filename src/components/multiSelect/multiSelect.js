@@ -9,7 +9,7 @@
  * @typedef {import('@arpadroid/messages').InfoMessage} InfoMessage
  */
 import { ArpaElement, getArpaElementMatch } from '@arpadroid/ui';
-import { attrString, defineCustomElement } from '@arpadroid/tools';
+import { defineCustomElement } from '@arpadroid/tools';
 
 const html = String.raw;
 class MultiSelect extends ArpaElement {
@@ -25,7 +25,7 @@ class MultiSelect extends ArpaElement {
     getDefaultConfig() {
         return super.getDefaultConfig({
             className: 'listMultiSelect',
-            icon: 'check_box_outline_blank',
+            icon: 'select',
             actions: this.list?._config?.actions,
             tooltip: this.getText('txtNoItemsSelected'),
             title: this.getText('txtBatchOperations'),
@@ -71,15 +71,14 @@ class MultiSelect extends ArpaElement {
     // #region RENDERING
 
     $renderTemplate() {
-        const menuProps = this.getProperties('icon');
         const formId = this.list?.id + '-multiSelectForm';
         return html`<icon-menu
+            icon="{icon}"
             menu-position="bottom-right"
             class="listMultiSelect__nav"
             nav-class="listMultiSelect__combo"
             tooltip="{title}"
             tooltip-position="bottom-right"
-            ${attrString(menuProps)}
         >
             <arpa-zone name="nav">
                 <arpa-form

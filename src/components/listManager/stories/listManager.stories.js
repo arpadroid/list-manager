@@ -95,8 +95,7 @@ const ListManagerStory = {
                 <arpa-zone name="batchOperations">
                     <select-option value="delete" icon="delete">
                         Delete
-                        <delete-dialog>
-                            <arpa-zone name="header"> Delete items </arpa-zone>
+                        <delete-dialog title="Delete items">
                             <arpa-zone name="content"> Are you sure you want to delete the selected items? </arpa-zone>
                         </delete-dialog>
                     </select-option>

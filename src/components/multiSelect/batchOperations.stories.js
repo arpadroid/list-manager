@@ -25,7 +25,6 @@ const Default = {
         ...ListStory.args,
         id: 'batch-operations',
         controls: ['multiselect'],
-        itemsPerPage: 1,
         title: 'Batch Operations'
     },
     render: args => {
@@ -53,7 +52,6 @@ export const Test = {
     args: {
         ...Default.args,
         id: 'test-batch-operations',
-        itemsPerPage: 1
     },
     play: async ({ canvasElement, step, canvas }) => {
         await playSetup(canvasElement);
