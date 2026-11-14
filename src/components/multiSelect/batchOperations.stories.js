@@ -51,7 +51,7 @@ export const Test = {
     parameters: testParams,
     args: {
         ...Default.args,
-        id: 'test-batch-operations',
+        id: 'test-batch-operations'
     },
     play: async ({ canvasElement, step, canvas }) => {
         await playSetup(canvasElement);
@@ -93,23 +93,29 @@ export const Test = {
         });
 
         await step('Clicks on Select all and verifies the selected item count.', async () => {
+            await new Promise(resolve => setTimeout(resolve, 50));
+            const filtersMenu = canvas.getByRole('button', { name: /Batch Operations/i });
+
+            await userEvent.click(filtersMenu, { delay: 50 });
+
             const toggleAll = /** @type {Field} */ (formNode.getField('toggleAll'));
             const input = /** @type {HTMLInputElement} */ (toggleAll.input);
-            await userEvent.click(input);
+            await userEvent.click(input, { delay: 50 });
             await waitFor(() => {
-                expect(within(formNode).getByText('1 items selected')).toBeInTheDocument();
+                expect(within(formNode).getByText('50 items selected')).toBeInTheDocument();
             });
         });
 
         await step('Clicks on "Select an action" and verifies the dropdown menu.', async () => {
-            await userEvent.click(form.getByText('Select an action'));
+            await userEvent.click(form.getByText('Select an action'), { delay: 50 });
         });
 
         await step('Clicks on "Delete" and verifies the dialog.', async () => {
             const options = /** @type {HTMLElement} */ (
                 canvasElement.querySelector('.listMultiSelect__combo select-options')
             );
-            const button = /** @type {HTMLButtonElement} */ (options.querySelector('button'));
+            await new Promise(resolve => setTimeout(resolve, 0));
+            const button = /** @type {HTMLButtonElement} */ (options?.querySelector('button'));
             await userEvent.click(button, { delay: 50 });
             await waitFor(() => {
                 const dialog = /** @type {HTMLElement} */ (document.querySelector('delete-dialog'));
