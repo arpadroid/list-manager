@@ -89,11 +89,10 @@ export const Test = {
             await listItem.promise;
             const checkbox = await waitFor(() => listItem.querySelector('input[type="checkbox"]'));
             expect(checkbox).toBeInTheDocument();
-            checkbox && (await userEvent.click(checkbox));
+            checkbox && (await userEvent.click(checkbox, { delay: 50 }));
         });
 
         await step('Clicks on Select all and verifies the selected item count.', async () => {
-            await new Promise(resolve => setTimeout(resolve, 50));
             const filtersMenu = canvas.getByRole('button', { name: /Batch Operations/i });
 
             await userEvent.click(filtersMenu, { delay: 50 });

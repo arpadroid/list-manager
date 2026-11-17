@@ -158,12 +158,13 @@ class ListSort extends ArpaElement {
 
     async $initializeNodes() {
         await super.$initializeNodes();
+        await this.waitForArpaNodes();
         this._initializeNav();
         return true;
     }
 
     async _initializeNav() {
-        this.sortByMenu = /** @type {IconMenu | null} */ (this.nodes.sortByMenu);
+        this.sortByMenu = /** @type {IconMenu | null} */ (this.querySelector('.listSort__sortByMenu') || this.nodes.sortByMenu);
         await this.promise;
         await this.sortByMenu?.onRendered();
         /** @type {NavList | null} */
@@ -179,7 +180,7 @@ class ListSort extends ArpaElement {
             'use-router': '',
             'param-clear': this.list?.getParamName('page')
         });
-        this.sortNav.on('selected', this._onSortBySelected, this._unsubscribes);
+        this.sortNav?.on?.('selected', this._onSortBySelected, this._unsubscribes);
     }
 
     /**

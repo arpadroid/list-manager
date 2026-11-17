@@ -163,7 +163,7 @@ class ListViews extends ArpaElement {
         await this.waitForArpaNodes();
         this.iconMenu = /** @type {IconMenu | null} */ (this.nodes.iconMenu);
         this.iconMenu && (await this.iconMenu?.promise);
-        await this.iconMenu?.onRendered();
+        await this.iconMenu?.onRendered?.();
         this.navigation = /** @type {NavList | null} */ (this.iconMenu?.navigation);
         this.initializeView(this.list?.getView());
         return true;

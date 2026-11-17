@@ -16,8 +16,10 @@ class MultiSelect extends ArpaElement {
     // #region INITIALIZATION
 
     $preInitialize() {
-        this.i18nKey = 'list-manager.multiSelect';        
-        this.list = /** @type {ListManager | null} */ (getArpaElementMatch(this, el => el.classList.contains('arpaList')));
+        this.i18nKey = 'list-manager.multiSelect';
+        this.list = /** @type {ListManager | null} */ (
+            getArpaElementMatch(this, el => el.classList.contains('arpaList'))
+        );
         /** @type {ListResource | undefined} */
         this.resource = this.list?.listResource;
     }
@@ -120,8 +122,8 @@ class MultiSelect extends ArpaElement {
         this.menu = this.querySelector('.listMultiSelect__nav');
         await this.menu?.onRendered();
         /** @type {NavList | null} */
-        this.nav = this.menu?.navigation;
-        await this.nav?.onRendered();
+        this.nav = this.menu?.querySelector('nav-list');
+        await this.nav?.onRendered?.();
         this.form = /** @type {FormComponent | null} */ (this.nav?.firstElementChild);
         await this.form?.onRendered();
         this.messages = this.nav?.querySelector('arpa-messages');

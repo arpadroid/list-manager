@@ -134,7 +134,9 @@ class ListFilters extends ArpaElement {
     }
 
     async _initializeForm() {
-        this.form = /** @type {FormComponent | undefined} */ (this.comboNode?.nodes.form);
+        this.form = /** @type {FormComponent | undefined} */ (
+            this.comboNode?.querySelector('arpa-form') || this.comboNode?.nodes.form
+        );
         this.form?.onSubmit(this.onSubmit);
         await this.form?.promise;
         await this.form?.waitForArpaNodes();
