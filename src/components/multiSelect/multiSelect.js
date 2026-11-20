@@ -124,7 +124,7 @@ class MultiSelect extends ArpaElement {
         /** @type {NavList | null} */
         this.nav = this.menu?.querySelector('nav-list');
         await this.nav?.onRendered?.();
-        this.form = /** @type {FormComponent | null} */ (this.nav?.firstElementChild);
+        this.form = /** @type {FormComponent | null} */ (this.nav?.querySelector('arpa-form'));
         await this.form?.onRendered();
         this.messages = this.nav?.querySelector('arpa-messages');
         this._initializeActions();

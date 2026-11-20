@@ -85,7 +85,7 @@ const ListManagerStory = {
         return html`
             <list-manager ${attrString(args)}>
                 <arpa-zone name="messages">
-                    <info-message truncate-content="80">
+                    <info-message>
                         The list-manager component is an advanced list creation tool, which aims to simplify the process
                         of creating and managing advanced UI lists with search and filtering functionality. It features
                         highly customizable list items via templates, multiple view modes, and seamless integration with
@@ -107,13 +107,7 @@ const ListManagerStory = {
                 </arpa-zone>
                 <arpa-zone name="list-filters"> </arpa-zone>
 
-                <template
-                    template-type="list-item"
-                    template-mode="append"
-                    truncate-content="100"
-                    image="{portraitURL}"
-                    truncate-button
-                >
+                <template template-type="list-item" template-mode="append" truncate-lines="1" image="{portraitURL}">
                     <arpa-zone name="tags">
                         <tag-item icon="calendar_month">{date}</tag-item>
                         <tag-item icon="palette">{movement}</tag-item>
@@ -320,13 +314,7 @@ export const Minimal = {
     render: args => {
         return html`
             <list-manager ${attrString(args)}>
-                <template
-                    template-type="list-item"
-                    template-mode="append"
-                    truncate-content="100"
-                    image="{portraitURL}"
-                    truncate-button
-                >
+                <template template-type="list-item" template-mode="append" truncate-lines="2" image="{portraitURL}">
                     <arpa-zone name="tags">
                         <tag-item icon="calendar_month">{date}</tag-item>
                         <tag-item icon="palette">{movement}</tag-item>

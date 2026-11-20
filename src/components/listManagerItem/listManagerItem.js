@@ -81,14 +81,13 @@ class ListManagerItem extends ListItem {
         return this.hasContent('nav') || this.zonesByName?.has('nav') || this._config?.nav;
     }
 
-    async canRenderRhs() {
-        return Boolean((await super.canRenderRhs()) || this.hasContent('nav') || this.zonesByName?.has('nav'));
+    canRenderRhs() {
+        return Boolean(super.canRenderRhs() || this.hasContent('nav') || this.zonesByName?.has('nav'));
     }
 
     hasSelection() {
-        return (
-            (typeof this.list?.hasControl === 'function' && this.list?.hasControl('multiselect')) ??
-            this.listResource?.hasSelection()
+        return Boolean(
+            this.list?.hasControl('multiselect') || this.listResource?.hasSelection() || this.hasProp('hasSelection')
         );
     }
 
@@ -112,7 +111,7 @@ class ListManagerItem extends ListItem {
 
     $renderBlueprint() {
         return html`
-            ${ListItem.prototype.$renderTemplate.call(this)}
+            ${super.$renderBlueprint()}
             <arpa-node tag="icon-menu" name="nav" id="{id}-nav" can-render="hasNav()"></arpa-node>
         `;
     }

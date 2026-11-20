@@ -38,7 +38,6 @@ class ListManager extends List {
             hasMessages: false,
             hasMiniSearch: true,
             itemComponent: ListManagerItem,
-            blueprint: List.prototype.$renderTemplate.bind(this),
             itemTag: 'list-manager-item',
             paramNamespace: '',
             perPageParam: 'perPage',
@@ -54,9 +53,9 @@ class ListManager extends List {
         return mergeObjects(super.getDefaultConfig(), conf);
     }
 
-    $renderTemplate() {
+    $renderBlueprint() {
         return html`
-            {header}
+            ${super.$renderBlueprint()}
             <arpa-node
                 name="controls"
                 tag="${this.getProp('controlsComponent')}"
@@ -66,10 +65,12 @@ class ListManager extends List {
 
             <arpa-node name="info" tag="list-info" can-render="hasInfo"> </arpa-node>
 
-            <arpa-node name="messages" tag="arpa-messages" id="{id}-messages" can-render="hasMessages" defer="onRendered"></arpa-node>
-
-            {body} {footer}
+            <arpa-node name="messages" tag="arpa-messages" id="{id}-messages" can-render="hasMessages"></arpa-node>
         `;
+    }
+
+    $renderTemplate() {
+        return html`{header}{controls}{info}{messages}{body}{footer}`;
     }
 
     /**
@@ -180,7 +181,7 @@ class ListManager extends List {
     /**
      * Returns the control element given its name.
      * @param {string} control
-     * @returns {import('@arpadroid/ui').ArpaElementContentNodeType | undefined | null}
+     * @returns {HTMLElement | null | undefined}
      */
     getControl(control) {
         return this.controls?.getControl(control);
@@ -244,9 +245,9 @@ class ListManager extends List {
 
     async $initializeNodes() {
         await super.$initializeNodes();
-        this.controls = /** @type {ListControls | null} */ (this.nodes.controls);
+        this.controls = /** @type {ListControls} */ (this.nodes.controls);
         /** @type {Messages | null} */
-        this.messages = /** @type {Messages | null} */ (this.nodes.messages);
+        this.messages = /** @type {Messages} */ (this.nodes.messages);
         return true;
     }
 

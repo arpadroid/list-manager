@@ -68,10 +68,12 @@ class ListControls extends ArpaElement {
     /**
      * Returns the control element given its name.
      * @param {string} control
-     * @returns {import('@arpadroid/ui').ArpaElementContentNodeType | null}
+     * @returns {HTMLElement | null}
      */
     getControl(control) {
-        return this.nodes?.[control] || this.querySelector(`gallery-${camelToDashed(control)}`);
+        return /** @type {HTMLElement | null} */ (
+            this.nodes?.[control] || this.querySelector(`gallery-${camelToDashed(control)}`)
+        );
     }
 
     /**

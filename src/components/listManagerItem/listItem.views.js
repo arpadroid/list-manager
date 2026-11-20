@@ -9,12 +9,13 @@ export const ListView = {
     label: 'List',
     className: 'listItem--list',
     template: html`
-        <arpa-node name="main" {wrapperAttr()}>
+        <arpa-node {wrapperAttr()}>
             {icon}{image}
-            <div class="listItem__contentWrapper">{contentHeader}{content}{tags}</div>
+            <arpa-node name="contentWrapper">{contentHeader}{content}{tags}</arpa-node>
             {iconRight}
         </arpa-node>
-        <arpa-node name="rhs" defer="canRenderRhs">{checkboxContainer}{nav}</arpa-node>
+
+        <arpa-node name="rhs">{checkboxContainer}{nav}</arpa-node>
     `
 };
 
@@ -25,7 +26,7 @@ export const ListCompactView = {
     template: html`
         <arpa-node name="main" {wrapperAttr()}>
             {checkboxContainer}{icon}{image}
-            <div class="listItem__contentWrapper">{titleWrapper} {subtitle} {content}</div>
+            <div class="listItem__contentWrapper">{titleWrapper}{subtitle}{content}</div>
             {iconRight}
         </arpa-node>
         <arpa-node name="rhs">{tags}{nav}</arpa-node>
@@ -56,7 +57,7 @@ export const GridCompactView = {
     template: html`
         <arpa-node {wrapperAttr()}>
             {icon}
-            <div class="listItem__contentHeader">{titleWrapper}{subtitle}{image}{tags}{content}</div>
+            <div class="listItem__contentHeader">{titleWrapper}{subtitle}{image}{tags}</div>
             {iconRight}
         </arpa-node>
         <arpa-node name="rhs" defer="canRenderRhs">{checkboxContainer}{nav}</arpa-node>
