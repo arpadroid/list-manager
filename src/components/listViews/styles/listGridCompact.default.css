@@ -1,17 +1,22 @@
 .listView--grid-compact.listView--grid-compact {
-    --listView--gridItemSize: 9rem;
-    --listView--gridGap: 0.75rem;
-    --listItem--contentPadding: 0.25rem 0.5rem;
+    --listView-grid-item-size: 8rem;
+    --listView-grid-gap: 0.5rem;
 }
 
-.listItem--grid-compact.listItem--grid-compact {
+.listItem[view='grid-compact'] {
+    --listItem-padding: 0.5rem;
+    --listItem-content-padding: 0.125rem 0.5rem;
+
     .listItem__title {
-        padding: 0 0.25rem;
+        padding: 0;
         font-size: 1rem;
     }
 
-    > .listItem__main {
-        gap: 0.2rem;
-        padding: 0.5rem;
+    .listItem__titleIcon {
+        display: none;
+    }
+
+    .listItem__contentHeader {
+        gap: 0.25rem;
     }
 }

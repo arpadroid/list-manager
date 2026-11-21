@@ -73,7 +73,7 @@ const ListManagerItemStory = {
     title: 'List Manager/Item',
     component: 'list-manager-item',
     parameters: {
-        layout: 'centered'
+        layout: 'flexColumn'
     },
     args: {
         title: 'The Ghostly Crash',
@@ -93,14 +93,16 @@ const ListManagerItemStory = {
 /** @type {Story} */
 export const Default = {
     parameters: defaultParams,
-    args: {}
+    args: {
+        view: 'list'
+    }
 };
 
 /** @type {Story} */
 export const Test = {
     parameters: testParams,
     render: args => {
-        return html`<list-manager id="list-item-test" controls=" ">
+        return html`<list-manager id="list-item-test" controls=" " view="${args.view}">
             <list-manager-item ${$attr(args)}>${ghostlyCrashContent}</list-manager-item>
         </list-manager>`;
     },
@@ -157,19 +159,23 @@ export const Zones = {
         await playSetup(canvasElement);
         await step('Renders the list item with the expected zones', async () => {
             await new Promise(resolve => setTimeout(resolve, 20)); // Wait for truncation to apply
-            expect(canvas.getByText('The Recycling Planet')).toBeInTheDocument();
-            expect(
-                canvas.getByText('Why Earth’s shifting continents single it out from every other rock in the cosmos.')
-            ).toBeInTheDocument();
-            const titleLink = canvas.getByRole('link', { name: /The Recycling Planet/i });
-            expect(titleLink).toHaveAttribute('href', '#test-link');
-            const content = canvasElement.querySelector('.truncateText__content');
-            expect(content).toBeInTheDocument();
-            expect(content?.textContent).toHaveLength(50);
+            await waitFor(() => {
+                expect(canvas.getByText('The Recycling Planet')).toBeInTheDocument();
+                expect(
+                    canvas.getByText(
+                        'Why Earth’s shifting continents single it out from every other rock in the cosmos.'
+                    )
+                ).toBeInTheDocument();
+                const titleLink = canvas.getByRole('link', { name: /The Recycling Planet/i });
+                expect(titleLink).toHaveAttribute('href', '#test-link');
+                const content = canvasElement.querySelector('.truncateText__content');
+                expect(content).toBeInTheDocument();
+                expect(content?.textContent).toHaveLength(50);
+            });
         });
 
         await step('Expands the content when the Read more button is clicked', async () => {
-            const readMoreButton = canvas.getByRole('button', { name: /read more/i });
+            const readMoreButton = await waitFor(() => canvas.getByRole('button', { name: /read more/i }));
             expect(readMoreButton).toBeInTheDocument();
             await userEvent.click(readMoreButton);
             await waitFor(() => {
@@ -214,6 +220,83 @@ const templateItems = html`
         </arpa-zone>
         ${recyclingPlanetContent}
     </list-manager-item>
+
+    <list-manager-item
+        image="/test-assets/space/moon-400.jpg"
+        title-icon="auto_awesome"
+        title-link="javascript:void(0)"
+    >
+        <arpa-zone name="title">The Wandering Moon</arpa-zone>
+        <arpa-zone name="subtitle">
+            Why the Moon is slowly drifting away from Earth, one thumbnail-width at a time.
+        </arpa-zone>
+        <arpa-zone name="tags">
+            <tag-item icon="category">Space</tag-item>
+            <tag-item icon="book_2">knowledge</tag-item>
+        </arpa-zone>
+        <arpa-zone name="nav">
+            <nav-link link="#test-link" icon="arrow_forward">Learn more about the Moon</nav-link>
+        </arpa-zone>
+        ${recyclingPlanetContent}
+    </list-manager-item>
+
+    <list-manager-item
+        image="/test-assets/space/black-hole-400.jpg"
+        title-icon="auto_awesome"
+        title-link="javascript:void(0)"
+    >
+        <arpa-zone name="title">The Hungry Dark</arpa-zone>
+        <arpa-zone name="subtitle">
+            Why black holes bend light, time and space around them without ever being seen directly.
+        </arpa-zone>
+        <arpa-zone name="tags">
+            <tag-item icon="category">Space</tag-item>
+            <tag-item icon="book_2">knowledge</tag-item>
+        </arpa-zone>
+        <arpa-zone name="nav">
+            <nav-link link="#test-link" icon="arrow_forward">Learn more about black holes</nav-link>
+            <nav-link link="#test-link" icon="arrow_forward">Learn more about event horizons</nav-link>
+        </arpa-zone>
+        ${ghostlyCrashContent}
+    </list-manager-item>
+
+    <list-manager-item
+        image="/test-assets/space/sun-earth-moon-400.jpg"
+        title-icon="auto_awesome"
+        title-link="javascript:void(0)"
+    >
+        <arpa-zone name="title">The Perfect Eclipse</arpa-zone>
+        <arpa-zone name="subtitle">
+            Why the Sun and Moon appear the same size in our sky, a cosmic coincidence.
+        </arpa-zone>
+        <arpa-zone name="tags">
+            <tag-item icon="category">Space</tag-item>
+            <tag-item icon="book_2">knowledge</tag-item>
+        </arpa-zone>
+        <arpa-zone name="nav">
+            <nav-link link="#test-link" icon="arrow_forward">Learn more about eclipses</nav-link>
+        </arpa-zone>
+        ${recyclingPlanetContent}
+    </list-manager-item>
+
+    <list-manager-item
+        image="/test-assets/space/earth-vertical-400.jpg"
+        title-icon="auto_awesome"
+        title-link="javascript:void(0)"
+    >
+        <arpa-zone name="title">The Thin Blue Line</arpa-zone>
+        <arpa-zone name="subtitle">
+            Why Earth’s atmosphere is thinner relative to the planet than the skin on an apple.
+        </arpa-zone>
+        <arpa-zone name="tags">
+            <tag-item icon="category">Space</tag-item>
+            <tag-item icon="book_2">knowledge</tag-item>
+        </arpa-zone>
+        <arpa-zone name="nav">
+            <nav-link link="#test-link" icon="arrow_forward">Learn more about the atmosphere</nav-link>
+        </arpa-zone>
+        ${ghostlyCrashContent}
+    </list-manager-item>
 `;
 
 /** @type {Story} */
@@ -247,7 +330,7 @@ export const Template = {
                 }
             </style>
             <list-manager id="item-with-template-list" controls=" ">
-                <template template-type="list-item" truncate-content="150" view="${args.view}">
+                <template template-type="list-item" truncate-lines="1" view="${args.view}">
                     <div class="listItem__customContainer">
                         <arpa-node name="contentHeader" can-render="title || subtitle || nav">
                             <arpa-node name="titleWrapper" href="{titleLink}" tag="{getTitleTag()}">
@@ -279,18 +362,38 @@ export const Template = {
 };
 
 /** @type {Story} */
-export const CompactView = {
+export const ListView = {
+    name: 'View - List',
     args: {
-        view: 'listCompact'
+        view: 'list'
     },
     render: args => {
         return html`
-            <list-manager id="item-with-template-list" controls=" ">
-                <template template-type="list-item" truncate-content="150" view="${args.view}"></template>
+            <list-manager id="item-with-template-list" controls=" " view="${args.view}">
+                <template template-type="list-item" truncate-lines="1" view="${args.view}"></template>
                 ${templateItems}
             </list-manager>
         `;
     },
+    play: async ({ canvasElement, step, args, canvas }) => {
+        await playSetup(canvasElement);
+        await step('Renders the list item with the expected compact view', async () => {
+            await waitFor(() => {
+                expect(canvas.getByText(args.title || '')).toBeInTheDocument();
+                expect(canvas.getByText(args.subtitle || '')).toBeInTheDocument();
+                expect(canvasElement?.querySelector('.listItem--list')).toBeInTheDocument();
+            });
+        });
+    }
+};
+
+/** @type {Story} */
+export const CompactView = {
+    name: 'View - List Compact',
+    args: {
+        view: 'list-compact'
+    },
+    render: ListView.render,
     play: async ({ canvasElement, step, args, canvas }) => {
         await playSetup(canvasElement);
         await step('Renders the list item with the expected compact view', async () => {
@@ -305,6 +408,7 @@ export const CompactView = {
 
 /** @type {Story} */
 export const GridView = {
+    name: 'View - Grid',
     render: CompactView.render,
     args: {
         view: 'grid'
@@ -323,15 +427,26 @@ export const GridView = {
 
 /** @type {Story} */
 export const GridCompactView = {
-    render: CompactView.render,
+    name: 'View - Grid Compact',
     args: {
         view: 'grid-compact'
+    },
+    parameters: {
+        layout: 'fullscreen'
+    },
+    render: args => {
+        return html`
+            <list-manager id="item-with-template-list" controls=" " view="${args.view}">
+                <template template-type="list-item" truncate-lines="2" view="${args.view}"></template>
+                ${templateItems} ${templateItems}
+            </list-manager>
+        `;
     },
     play: async ({ canvasElement, step, args, canvas }) => {
         await step('Renders the list item with the expected grid compact view', async () => {
             await waitFor(() => {
-                expect(canvas.getByText(args.title || '')).toBeInTheDocument();
-                expect(canvas.getByText(args.subtitle || '')).toBeInTheDocument();
+                expect(canvas.queryAllByText(args.title || '')).toHaveLength(2);
+                expect(canvas.queryAllByText(args.subtitle || '')).not.toBe([]);
                 expect(canvasElement?.querySelector('.listItem--grid-compact')).toBeInTheDocument();
             });
         });

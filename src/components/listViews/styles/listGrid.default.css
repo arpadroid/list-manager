@@ -1,9 +1,8 @@
 :root {
-    --listView--gridItemSize: 14.5rem;
-    --listView--gridGap: 1rem;
-    --listItem--border-radius: 0.5rem;
-    --listItem--max-width: 400px;
-    --listItem--contentPadding: 0.5rem;
+    --listView-grid-item-size: 14.5rem;
+    --listView-grid-gap: 1rem;
+    --listItem-border-radius: 0.5rem;
+    --listItem-max-width: 22rem;
 }
 
 .listView--grid,
@@ -11,31 +10,34 @@
     > .arpaList__body {
         > .arpaList__bodyMain > .arpaList__items.arpaList__items {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(var(--listView--gridItemSize), 1fr));
-            gap: var(--listView--gridGap);
+            grid-template-columns: repeat(auto-fit, minmax(var(--listView-grid-item-size), 1fr));
+            gap: var(--listView-grid-gap);
             place-items: center center;
         }
     }
 
     arpa-image {
         --spinner-size: 3rem;
-        --spinner-thickness: 4px;
-        --preloader-outline-width: 4px;
+        --spinner-thickness: 0.25rem;
+        --preloader-outline-width: 0.25rem;
     }
 }
 
 .listItem--grid,
 .listItem--grid-compact {
+    --listItem-padding: 0.75rem;
+    --listItem-contentPadding: 0.5rem;
+
     position: relative;
     flex-direction: column;
     align-self: stretch;
     min-width: 0;
+    max-width: var(--listItem-max-width);
     padding: 0;
-    border-radius: var(--listItem--border-radius);
-    box-shadow: rgb(0 0 0 / 20%) 0 4px 12px;
+    border-radius: var(--listItem-border-radius);
+    box-shadow: rgb(0 0 0 / 20%) 0 0.25rem 0.75rem;
 
     &:only-child {
-        max-width: var(--listItem--max-width);
         aspect-ratio: 1 / 1;
     }
 
@@ -43,7 +45,6 @@
         flex-direction: column;
         gap: 0.25rem;
         width: 100%;
-        padding: 0.6rem;
 
         > .listItem__contentWrapper {
             justify-content: flex-start;
@@ -59,7 +60,6 @@
         gap: 1rem;
         align-items: flex-start;
         justify-content: flex-start;
-        padding: var(--listItem--contentPadding);
 
         .truncateText__readMoreButton {
             padding-top: 1rem;
@@ -68,7 +68,7 @@
     }
 
     .listItem__contentHeader {
-        flex: none;
+        flex: 1 1 auto;;
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
@@ -86,7 +86,7 @@
     .listItem__titleWrapper {
         display: flex;
         flex: 0 1 auto;
-        flex-direction: column;
+        flex-direction: row;
         max-width: 100%;
     }
 
@@ -104,18 +104,18 @@
 
     .listItem__titleText {
         width: 100%;
-        padding: 0 4px 8px;
+        padding: 0 0.25rem 0.5rem;
         color: var(--grey-800);
         text-align: left;
     }
 
     .listItem__subtitle.listItem__subtitle {
         display: flex;
-        gap: 8px;
+        gap: 0.5rem;
         align-items: center;
         justify-content: space-between;
         padding: 0;
-        margin-top: 2px;
+        margin-top: 0.125rem;
     }
 
     /**
@@ -123,19 +123,21 @@
      */
 
     .listItem__image {
-        --listItem-imgSize: var(--listView--gridItemSize);
+        --listItem-img-size: var(--listView-grid-item-size);
 
         top: 0;
         flex: 0 1 auto;
         width: 100%;
         min-width: 100%;
+        height: auto;
         min-height: 0;
         aspect-ratio: 1 / 1 !important;
         padding: 0;
         margin: 0;
+        margin-top: auto !important;
         overflow: hidden;
         background-color: var(--image-bg-color);
-        border-radius: var(--listItem--border-radius);
+        border-radius: var(--listItem-border-radius);
 
         picture {
             min-width: 100%;
@@ -178,10 +180,10 @@
      */
 
     .listItem__checkboxContainer {
-        height: 24px;
+        height: 1.5rem;
         background-color: var(--overlay);
-        border-radius: 4px;
-        box-shadow: rgb(99 99 99 / 10%) 0 2px 8px 0;
+        border-radius: 0.25rem;
+        box-shadow: rgb(99 99 99 / 10%) 0 0.125rem 0.5rem 0;
         opacity: 1;
         transition: opacity 0.2s ease-in-out;
     }
@@ -191,14 +193,14 @@
      */
 
     .iconButton {
-        --size: 24px;
+        --size: 1.5rem;
     }
 
     .listItem__nav {
         .iconButton__button {
             background-color: var(--overlay);
-            border-radius: 4px;
-            box-shadow: rgb(99 99 99 / 10%) 0 2px 8px 0;
+            border-radius: 0.25rem;
+            box-shadow: rgb(99 99 99 / 10%) 0 0.125rem 0.5rem 0;
             transition: opacity 0.2s ease-in-out;
         }
 
@@ -227,7 +229,7 @@
 
     &.listItem--selected {
         background-color: transparent;
-        border: 2px dashed var(--grey-200);
+        border: 0.125rem dashed var(--grey-200);
 
         .listItem__checkboxContainer {
             opacity: 1;

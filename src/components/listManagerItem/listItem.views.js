@@ -11,11 +11,22 @@ export const ListView = {
     template: html`
         <arpa-node {wrapperAttr()}>
             {icon}{image}
-            <arpa-node name="contentWrapper">{contentHeader}{content}{tags}</arpa-node>
+            <arpa-node name="contentWrapper">
+                <arpa-node name="contentHeader" can-render="title || subtitle">
+                    <div class="listItem__contentHeader__top">
+                        <arpa-node name="titleWrapper" href="{titleLink}" tag="{getTitleTag()}">
+                            {titleIcon} {title}
+                        </arpa-node>
+                        {checkboxContainer} {nav}
+                    </div>
+                    <arpa-node name="subtitle" tag="span"></arpa-node>
+                </arpa-node>
+                {content}{tags}
+            </arpa-node>
             {iconRight}
         </arpa-node>
 
-        <arpa-node name="rhs">{checkboxContainer}{nav}</arpa-node>
+        <arpa-node name="rhs"></arpa-node>
     `
 };
 
@@ -25,11 +36,16 @@ export const ListCompactView = {
     className: 'listItem--list-compact',
     template: html`
         <arpa-node name="main" {wrapperAttr()}>
-            {checkboxContainer}{icon}{image}
-            <div class="listItem__contentWrapper">{titleWrapper}{subtitle}{content}</div>
+            {icon}{image}
+            <div class="listItem__contentWrapper">
+                <arpa-node name="titleWrapper" href="{titleLink}" tag="{getTitleTag()}">
+                    {titleIcon} {title}
+                </arpa-node>
+                {subtitle}{content}
+            </div>
             {iconRight}
         </arpa-node>
-        <arpa-node name="rhs">{tags}{nav}</arpa-node>
+        <arpa-node name="rhs">{tags}{checkboxContainer}{nav}</arpa-node>
     `
 };
 
@@ -41,26 +57,40 @@ export const GridView = {
         <arpa-node {wrapperAttr()}>
             {icon}
             <div class="listItem__contentWrapper">
-                <div class="listItem__contentHeader">{titleWrapper}{subtitle}{image}{tags}</div>
-                {content}
+                <div class="listItem__contentHeader">
+                    <arpa-node name="titleWrapper" href="{titleLink}" tag="{getTitleTag()}">
+                        {titleIcon} {title}
+                    </arpa-node>
+                    <arpa-node name="subtitle" tag="div" max-lines="1"></arpa-node>
+                    {image}{tags}{content}
+                </div>
             </div>
             {iconRight}
         </arpa-node>
-        <arpa-node name="rhs" defer="canRenderRhs">{checkboxContainer}{nav}</arpa-node>
+        <arpa-node name="rhs" defer="canRenderRhs">{nav}{checkboxContainer}</arpa-node>
     `
 };
 
 export const GridCompactView = {
     id: 'grid-compact',
     label: 'Grid Compact',
-    className: 'listItem--grid-compact',
+    className: 'listItem--grid',
     template: html`
         <arpa-node {wrapperAttr()}>
             {icon}
-            <div class="listItem__contentHeader">{titleWrapper}{subtitle}{image}{tags}</div>
+            <div class="listItem__contentWrapper">
+                <div class="listItem__contentHeader">
+                    <arpa-node name="titleWrapper" href="{titleLink}" tag="{getTitleTag()}">
+                        {titleIcon} {title}
+                    </arpa-node>
+                    {image}{tags}
+
+                    <arpa-node name="content" can-render="false" is-content></arpa-node>
+                </div>
+            </div>
             {iconRight}
         </arpa-node>
-        <arpa-node name="rhs" defer="canRenderRhs">{checkboxContainer}{nav}</arpa-node>
+        <arpa-node name="rhs" defer="canRenderRhs">{nav}{checkboxContainer}</arpa-node>
     `
 };
 

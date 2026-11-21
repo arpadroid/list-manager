@@ -7,7 +7,7 @@
  */
 
 import { List } from '@arpadroid/lists';
-import { defineCustomElement } from '@arpadroid/tools';
+import { defineCustomElement, camelToDashed } from '@arpadroid/tools';
 import { getArpaElementWithTag } from '@arpadroid/ui';
 import ListControls from '../listControls/listControls.js';
 import { ucFirst, mergeObjects, editURL } from '@arpadroid/tools';
@@ -28,6 +28,11 @@ class ListManager extends List {
      * @returns {ListManagerConfigType}
      */
     getDefaultConfig() {
+        const defaultView = this.getProp('view');
+        if (defaultView) {
+            this.classList.add('listView--' + camelToDashed(defaultView));
+        }
+        const defaults = super.getDefaultConfig();
         /** @type {ListManagerConfigType} */
         const conf = {
             className: 'arpaList',
@@ -50,7 +55,7 @@ class ListManager extends List {
             tagName: 'list-manager',
             nodesConfig: super.getNodesConfig()
         };
-        return mergeObjects(super.getDefaultConfig(), conf);
+        return mergeObjects(defaults, conf);
     }
 
     $renderBlueprint() {
@@ -280,7 +285,6 @@ class ListManager extends List {
      */
     async setView(view) {
         await this.promise;
-
         this.resetScroll();
         const viewClasses = this.getViews().map(view => 'listView--' + view);
         this.classList.remove(...viewClasses);

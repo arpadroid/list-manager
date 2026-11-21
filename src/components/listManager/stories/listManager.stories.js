@@ -107,7 +107,7 @@ const ListManagerStory = {
                 </arpa-zone>
                 <arpa-zone name="list-filters"> </arpa-zone>
 
-                <template template-type="list-item" template-mode="append" truncate-lines="1" image="{portraitURL}">
+                <template template-type="list-item" template-mode="append" truncate-lines="3" image="{portraitURL}">
                     <arpa-zone name="tags">
                         <tag-item icon="calendar_month">{date}</tag-item>
                         <tag-item icon="palette">{movement}</tag-item>
@@ -127,6 +127,7 @@ const ListManagerStory = {
 export const Default = {
     parameters: defaultParams,
     args: {
+        itemsPerPage: 10,
         id: 'list-manager'
     }
 };
