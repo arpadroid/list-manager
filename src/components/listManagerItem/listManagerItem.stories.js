@@ -307,12 +307,9 @@ export const Template = {
     render: args => {
         return html`
             <style>
-                .listItem__customContainer {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.5rem;
+                .arpaList {
+                    --list-layout-gap: 2rem;
                 }
-
                 .listItem__customContentWrapper {
                     display: flex;
                     flex-direction: column;
@@ -320,23 +317,45 @@ export const Template = {
                     gap: 1rem;
                 }
 
+                .listItem__contentHeader {
+                    flex-direction: row;
+                    flex-wrap: nowrap;
+                }
+
                 .listItem__customContent.listItem__customContent {
                     display: flex;
                     gap: 1rem;
+                    padding: 1rem 0;
 
-                    arpa-image {
-                        min-width: 200px;
+                    arpa-image.listItem__image.listItem__image {
+                        min-width: 150px;
+                        max-width: 250px;
+                        width: 30%;
+                        flex: none;
+                        margin-left: 2rem;
                     }
+                }
+
+                .listItem__titleWrapper {
+                    display: flex;
+                    flex: 1 1 auto;
+                }
+
+                .listItem__titles {
+                    display: flex;
+                    flex-direction: column;
+                    flex: 1 1 auto;
                 }
             </style>
             <list-manager id="item-with-template-list" controls=" ">
-                <template template-type="list-item" truncate-lines="1" view="${args.view}">
+                <template template-type="list-item" truncate-lines="3" view="${args.view}">
                     <div class="listItem__customContainer">
                         <arpa-node name="contentHeader" can-render="title || subtitle || nav">
                             <arpa-node name="titleWrapper" href="{titleLink}" tag="{getTitleTag()}">
-                                {titleIcon} {title} {nav}
+                                {titleIcon}
+                                <arpa-node name="titles">{title} {subtitle}</arpa-node>
                             </arpa-node>
-                            {subtitle}
+                            {nav}
                         </arpa-node>
                         <div class="listItem__customContent">
                             {image}

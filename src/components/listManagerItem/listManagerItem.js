@@ -193,7 +193,7 @@ class ListManagerItem extends ListItem {
      * An item can have a view filter that changes the view of the list: grid, list, compact etc...
      */
     _initializeView() {
-        const val = String(this.viewsFilter?.getValue() || 'list');
+        const val = String(this.viewsFilter?.getValue() || this.getProp('view') || 'list');
         /** @type {string} */
         this.setProp('view', val);
         // Reused nodes are unsubscribed when removed, so resubscribe and catch up on missed view changes.

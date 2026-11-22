@@ -75,7 +75,7 @@ class ListViews extends ArpaElement {
 
     _initializeViewFilter() {
         this.viewFilter = this.listResource?.getViewFilter({
-            defaultValue: this.list?.getProp('view')
+            defaultValue: this.list?.getProp('view') ?? LIST_VIEW_LIST
         });
     }
 
@@ -174,11 +174,11 @@ class ListViews extends ArpaElement {
      * @param {string} view
      */
     async setView(view) {
-        const viewExists = this.viewExists(view);
-        if (!viewExists) {
-            view = String(this?.viewFilter?.getDefaultValue() || '');
+        if (!this.viewExists(view)) {
+            view = String(this.viewFilter?.getDefaultValue() || '');
         }
-        this?.viewFilter?.setValue(view);
+        if (!view) return;
+        this.viewFilter?.setValue(view);
         this.applyView(view);
     }
 
@@ -188,11 +188,7 @@ class ListViews extends ArpaElement {
      * @returns {boolean}
      */
     viewExists(view) {
-        const hasNode = Boolean(this.navigation?.querySelector(`[data-value="${view}"]`));
-        return (
-            hasNode ||
-            Boolean(this._config?.links?.find((/** @type {ListViewConfigType} */ link) => link.value === view))
-        );
+        return this.getOptions().some(option => option.value === view);
     }
 
     /**
@@ -200,6 +196,7 @@ class ListViews extends ArpaElement {
      * @param {string} view
      */
     async applyView(view) {
+        if (!view) return;
         this.list?.setView(view);
         await this.list?.promise;
         const prevSelected = this.navigation?.querySelectorAll('[aria-current]');
@@ -213,7 +210,11 @@ class ListViews extends ArpaElement {
      * @param {string} [view]
      */
     initializeView(view = String(this.viewFilter?.getValue() || '')) {
-        this.setView(view);
+        if (!this.viewExists(view)) {
+            view = String(this.viewFilter?.getDefaultValue() || '');
+        }
+        // Initialization must not write to the filter, otherwise the persisted view gets overwritten.
+        view && this.applyView(view);
     }
 
     // #endregion

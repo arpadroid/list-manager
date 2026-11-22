@@ -28,10 +28,6 @@ class ListManager extends List {
      * @returns {ListManagerConfigType}
      */
     getDefaultConfig() {
-        const defaultView = this.getProp('view');
-        if (defaultView) {
-            this.classList.add('listView--' + camelToDashed(defaultView));
-        }
         const defaults = super.getDefaultConfig();
         /** @type {ListManagerConfigType} */
         const conf = {
@@ -56,6 +52,14 @@ class ListManager extends List {
             nodesConfig: super.getNodesConfig()
         };
         return mergeObjects(defaults, conf);
+    }
+
+    $initialize() {
+        super.$initialize();
+        const filterValue = this.getViewFilter()?.getValue();
+        if (filterValue && typeof filterValue === 'string') {
+            this.setView(filterValue);
+        }
     }
 
     $renderBlueprint() {
@@ -286,18 +290,28 @@ class ListManager extends List {
     async setView(view) {
         await this.promise;
         this.resetScroll();
-        const viewClasses = this.getViews().map(view => 'listView--' + view);
-        this.classList.remove(...viewClasses);
-        this.classList.add('listView--' + view);
-        view === 'grid-compact' && this.classList.add('listView--grid');
+        this.initializeViewAttributes(view);
         this.getViewFilter()?.setValue(view);
         const itemNodes = /** @type {ListManagerItem[]} */ (this.getItemNodes() || []);
         itemNodes.forEach(item => item?.setView?.(view));
     }
 
+    /**
+     * Initializes view classes and attributes.
+     * @param {string} view
+     */
+    initializeViewAttributes(view) {
+        if (!view || typeof view !== 'string') return;
+        const viewClasses = this.getViews().map(view => 'listView--' + view);
+        this.classList.remove(...viewClasses);
+        this.classList.add('listView--' + view);
+        view === 'grid-compact' && this.classList.add('listView--grid');
+        this.setAttribute('view', view);
+    }
+
     getViewFilter() {
         return this.listResource?.getViewFilter({
-            defaultValue: this.getProp('view')
+            defaultValue: this.getProp('view') ?? 'list'
         });
     }
 

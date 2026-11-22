@@ -61,8 +61,9 @@ export const GridView = {
                     <arpa-node name="titleWrapper" href="{titleLink}" tag="{getTitleTag()}">
                         {titleIcon} {title}
                     </arpa-node>
+                    {image}
                     <arpa-node name="subtitle" tag="div" max-lines="1"></arpa-node>
-                    {image}{tags}{content}
+                    {content} {tags}
                 </div>
             </div>
             {iconRight}
@@ -83,9 +84,7 @@ export const GridCompactView = {
                     <arpa-node name="titleWrapper" href="{titleLink}" tag="{getTitleTag()}">
                         {titleIcon} {title}
                     </arpa-node>
-                    {image}{tags}
-
-                    <arpa-node name="content" can-render="false" is-content></arpa-node>
+                    {image}{tags}{content}
                 </div>
             </div>
             {iconRight}

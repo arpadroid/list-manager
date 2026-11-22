@@ -1,9 +1,9 @@
-.listView--grid-compact.listView--grid-compact {
+.arpaList.arpaList[view='grid-compact'] {
     --listView-grid-item-size: 8rem;
     --listView-grid-gap: 0.5rem;
 }
 
-.listItem[view='grid-compact'] {
+.listItem.listItem[view='grid-compact'] {
     --listItem-padding: 0.5rem;
     --listItem-content-padding: 0.125rem 0.5rem;
 
