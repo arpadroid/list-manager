@@ -1,18 +1,42 @@
 .listInfo {
     position: relative;
     display: flex;
-    flex-direction: row;
+    flex-flow: row wrap;
+    gap: var(--list-control-gap);
     align-items: center;
+    padding: 0 var(--list-control-gap);
+    container: list-info-container / inline-size;
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
     text-align: left;
     text-transform: none;
 
-    .listInfo__buttons {
-        display: flex;
-        gap: var(--list-control-gap);
-        align-items: center;
-        margin-left: auto;
+    @container list-info-container (max-width: 400px) {
+        .listInfo__text--short {
+            font-weight: 800;
+        }
     }
+
+    @container list-info-container (max-width: 450px) {
+        .listInfo__text--short {
+            display: flex;
+        }
+
+        .listInfo__text--verbose {
+            display: none;
+        }
+    }
+}
+
+.listInfo__text--short {
+    display: none;
+    font-weight: 600;
+}
+
+.listInfo__buttons {
+    display: flex;
+    gap: var(--list-control-gap);
+    align-items: center;
+    margin-left: auto;
 }

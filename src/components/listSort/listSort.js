@@ -164,7 +164,9 @@ class ListSort extends ArpaElement {
     }
 
     async _initializeNav() {
-        this.sortByMenu = /** @type {IconMenu | null} */ (this.querySelector('.listSort__sortByMenu') || this.nodes.sortByMenu);
+        this.sortByMenu = /** @type {IconMenu | null} */ (
+            this.querySelector('.listSort__sortByMenu') || this.nodes.sortByMenu
+        );
         await this.promise;
         await this.sortByMenu?.onRendered();
         /** @type {NavList | null} */

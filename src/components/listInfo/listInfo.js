@@ -22,6 +22,7 @@ class ListInfo extends ArpaElement {
             className: 'listInfo',
             hasPrevNext: true,
             hasRefresh: true,
+            hasClearFilters: true,
             fastRender: true
         };
         return mergeObjects(super.getDefaultConfig(), conf);
@@ -47,6 +48,10 @@ class ListInfo extends ArpaElement {
 
     getQuery() {
         return String(this.searchFilter?.getValue() || '');
+    }
+
+    canClearFilters() {
+        return Boolean(this.getProp('has-clear-filters') && this.listResource?.canClearFilters());
     }
 
     hasSearchResults() {
@@ -88,19 +93,26 @@ class ListInfo extends ArpaElement {
                 <i18n-replace name="resultCount"><strong>${resultTotal}</strong></i18n-replace>
                 <i18n-replace name="result"><strong>{getQuery()}</strong></i18n-replace>
             </arpa-node>
-
-            <arpa-node
-                name="allResultsText"
-                tag="i18n-text"
-                key="${this.i18nKey}.txtAllResults"
-                class="listInfo__text"
-                can-render="canRenderAllResultsText()"
-            >
-                <i18n-replace name="resultCount"><strong>${resultTotal}</strong></i18n-replace>
-                <i18n-replace name="pageCount"><strong>${firstItem} - ${lastItem}</strong></i18n-replace>
+            <arpa-node name="allResultsText" tag="span" class="text" can-render="canRenderAllResultsText()">
+                <span class="listInfo__text--short">${firstItem} - ${lastItem} / ${resultTotal}</span>
+                <i18n-text key="${this.i18nKey}.txtAllResults" class="listInfo__text--verbose">
+                    <i18n-replace name="resultCount"><strong>${resultTotal}</strong></i18n-replace>
+                    <i18n-replace name="pageCount"><strong>${firstItem} - ${lastItem}</strong></i18n-replace>
+                </i18n-text>
             </arpa-node>
 
             <div class="listInfo__buttons">
+                <arpa-node
+                    name="clearFiltersButton"
+                    tag="icon-button"
+                    class="listInfo__clearFilters"
+                    icon="block"
+                    can-render="canClearFilters()"
+                    tooltip="${this.i18nText('txtClearFilters')}"
+                    tooltip-position="bottom-right"
+                    on-click="{handleClearFilters}"
+                ></arpa-node>
+
                 <arpa-node
                     name="refreshButton"
                     tag="icon-button"
@@ -142,6 +154,10 @@ class ListInfo extends ArpaElement {
     handleNextPage = () => this.listResource?.nextPage();
 
     handleRefresh = () => this.listResource?.refresh();
+
+    handleClearFilters = () => {
+        this.listResource?.clearFilters(true);
+    };
 }
 
 defineCustomElement('list-info', ListInfo);

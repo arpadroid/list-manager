@@ -46,7 +46,7 @@ export const Test = {
         const setup = await playSetup(canvasElement);
         const { listNode } = setup;
 
-        const listInfoClass = '.listInfo__text';
+        const listInfoClass = '.listInfo__text--verbose';
         await step('Renders the list info', async () => {
             await waitFor(() => {
                 const prevBtn = canvas.getByLabelText(/Previous page/i);
@@ -81,7 +81,7 @@ export const Test = {
             await userEvent.type(input, 'Some search term');
             await userEvent.keyboard('{Enter}');
             await waitFor(() => {
-                const listInfo = canvasElement.querySelector(listInfoClass);
+                const listInfo = canvasElement.querySelector('.listInfo__text');
                 expect(listInfo).toHaveTextContent('No results found for Some search term');
             });
         });
@@ -94,7 +94,7 @@ export const Test = {
             await userEvent.type(input, 'Leon');
             await userEvent.keyboard('{Enter}');
             await waitFor(() => {
-                const listInfo = canvasElement.querySelector(listInfoClass);
+                const listInfo = canvasElement.querySelector('.listInfo__text');
                 expect(listInfo).toHaveTextContent('Found 1 search results for Leon');
             });
             expect(canvas.queryByText(/Previous page/i)).not.toBeInTheDocument();

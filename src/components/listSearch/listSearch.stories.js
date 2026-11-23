@@ -35,7 +35,6 @@ export const Test = {
     parameters: testParams,
     args: {
         id: 'test-search',
-        title: 'List Search Test',
         searchPlaceholder: 'List Search Test',
         itemsPerPage: 5
     },

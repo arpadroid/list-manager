@@ -61,14 +61,16 @@ export const GridView = {
                     <arpa-node name="titleWrapper" href="{titleLink}" tag="{getTitleTag()}">
                         {titleIcon} {title}
                     </arpa-node>
-                    {image}
-                    <arpa-node name="subtitle" tag="div" max-lines="1"></arpa-node>
-                    {content} {tags}
+                    {image} {tags}
+                    <arpa-node name="subtitle" tag="truncate-text" max-lines="3"></arpa-node>
+                    <arpa-node name="content" max-lines="2" tag="truncate-text" is-content></arpa-node>
                 </div>
             </div>
             {iconRight}
         </arpa-node>
-        <arpa-node name="rhs" defer="canRenderRhs">{nav}{checkboxContainer}</arpa-node>
+        <arpa-zone name="image">
+            <arpa-node name="controlsOverlay">{nav}{checkboxContainer}</arpa-node>
+        </arpa-zone>
     `
 };
 
@@ -89,7 +91,9 @@ export const GridCompactView = {
             </div>
             {iconRight}
         </arpa-node>
-        <arpa-node name="rhs" defer="canRenderRhs">{nav}{checkboxContainer}</arpa-node>
+        <arpa-zone name="image">
+            <arpa-node name="controlsOverlay">{nav}{checkboxContainer}</arpa-node>
+        </arpa-zone>
     `
 };
 

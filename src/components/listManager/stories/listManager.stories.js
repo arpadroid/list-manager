@@ -167,8 +167,8 @@ export const Test = {
     play: async ({ canvasElement, canvas, step }) => {
         const DELAY = 30;
         const { listNode } = await playSetup(canvasElement);
-        await listNode?.setView('list');
         await listNode?.onRendered();
+        await listNode?.setView('list');
         await step('Refreshes the list and goes to the next page.', async () => {
             const refreshButton = await waitFor(() => canvas.getByRole('button', { name: /refresh list/i }));
             await userEvent.click(refreshButton);

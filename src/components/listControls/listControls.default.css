@@ -3,14 +3,24 @@
     top: 0;
     z-index: 4;
     display: flex;
+    flex-wrap: wrap;
     gap: var(--list-control-gap);
     align-items: center;
+    justify-content: flex-end;
+    width: 100%;
     max-width: 100%;
-    min-height: 4.5rem;
-    padding: 0.5rem 0;
+    padding: 0.5rem var(--list-control-gap);
+    padding-left: 0;
+    container: list-info-search / inline-size;
     background-color: var(--overlay);
     box-shadow: 0 0.25rem 0.375rem -0.125rem rgb(0 0 0 / 10%);
     transition: opacity 0.4s ease-out;
+
+    @container list-info-search (max-width: 400px) {
+        list-search {
+            flex: 1 1 100%;
+        }
+    }
 
     &:not(gallery-controls) > *:first-child {
         margin-left: auto;
@@ -18,14 +28,6 @@
 
     .comboBox.comboBox {
         background-color: var(--color-background);
-    }
-
-    list-views {
-        margin-left: auto;
-    }
-
-    > list-filters {
-        margin-left: auto;
     }
 
     &:empty {

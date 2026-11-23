@@ -308,8 +308,9 @@ export const Template = {
         return html`
             <style>
                 .arpaList {
-                    --list-layout-gap: 2rem;
+                    --list-items-gap: 2rem;
                 }
+
                 .listItem__customContentWrapper {
                     display: flex;
                     flex-direction: column;
@@ -332,7 +333,6 @@ export const Template = {
                         max-width: 250px;
                         width: 30%;
                         flex: none;
-                        margin-left: 2rem;
                     }
                 }
 
@@ -353,10 +353,11 @@ export const Template = {
                         <arpa-node name="contentHeader" can-render="title || subtitle || nav">
                             <arpa-node name="titleWrapper" href="{titleLink}" tag="{getTitleTag()}">
                                 {titleIcon}
-                                <arpa-node name="titles">{title} {subtitle}</arpa-node>
+                                <arpa-node name="titles">{title} </arpa-node>
                             </arpa-node>
                             {nav}
                         </arpa-node>
+                        <arpa-node name="subtitle" tag="truncate-text" max-lines="2"></arpa-node>
                         <div class="listItem__customContent">
                             {image}
                             <div class="listItem__customContentWrapper">{content}{tags}</div>
@@ -389,7 +390,7 @@ export const ListView = {
     render: args => {
         return html`
             <list-manager id="item-with-template-list" controls=" " view="${args.view}">
-                <template template-type="list-item" truncate-lines="1" view="${args.view}"></template>
+                <template template-type="list-item" truncate-lines="3" view="${args.view}"></template>
                 ${templateItems}
             </list-manager>
         `;

@@ -4,8 +4,13 @@
 }
 
 .listItem.listItem[view='grid-compact'] {
+    --listItem-max-width: 15rem;
     --listItem-padding: 0.5rem;
     --listItem-content-padding: 0.125rem 0.5rem;
+
+    outline: 1px solid var(--grey-300);
+    border-radius: 0.5rem;
+    box-shadow: var(--grey-500) 0.25rem 0.25rem 0.5rem;
 
     .listItem__title {
         padding: 0;
@@ -18,5 +23,17 @@
 
     .listItem__contentHeader {
         gap: 0.25rem;
+    }
+
+    .listItem__content {
+        display: none;
+    }
+
+    .listItem__image__controlsOverlay {
+        align-items: flex-end;
+        justify-content: space-between;
+        width: auto;
+        height: 1.5rem;
+        padding: 0;
     }
 }

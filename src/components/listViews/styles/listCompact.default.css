@@ -1,5 +1,5 @@
 .arpaList[view='list-compact'] {
-    --list-items-gap: 0;
+    --list-items-gap: 0.125rem;
 
     list-manager-item.listItem {
         padding-left: 0.25rem;
@@ -82,6 +82,7 @@
         flex: 1 1 auto;
         align-items: flex-end;
         justify-content: flex-end;
+        padding: 0.5rem 0;
         margin-left: 1rem;
     }
 

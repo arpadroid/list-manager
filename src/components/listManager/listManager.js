@@ -7,7 +7,7 @@
  */
 
 import { List } from '@arpadroid/lists';
-import { defineCustomElement, camelToDashed } from '@arpadroid/tools';
+import { defineCustomElement } from '@arpadroid/tools';
 import { getArpaElementWithTag } from '@arpadroid/ui';
 import ListControls from '../listControls/listControls.js';
 import { ucFirst, mergeObjects, editURL } from '@arpadroid/tools';
@@ -123,7 +123,7 @@ class ListManager extends List {
         const { hasControls } = this._config;
         if (typeof hasControls === 'boolean') return hasControls;
         if (this.getControls().length < 1) return false;
-        return this.hasZone('controls') || !this.hasHeaderControls();
+        return !this.hasHeaderControls();
     }
 
     /**
@@ -137,7 +137,8 @@ class ListManager extends List {
     }
 
     hasHeaderControls() {
-        return this.getControls()?.length === 1;
+        const controls = this.getControls();
+        return controls?.length === 1 && controls[0] !== 'search';
     }
 
     // #endregion
