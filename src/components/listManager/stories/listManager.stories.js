@@ -215,7 +215,7 @@ export const Test = {
         );
 
         await step('Selects per page and renders new items with zone content', async () => {
-            const filtersBtn = await waitFor(() => canvas.getByRole('button', { name: /filters/i }));
+            const filtersBtn = await waitFor(() => canvas.getByRole('button', { name: 'Filters' }));
             await userEvent.click(filtersBtn, { delay: DELAY });
             const perPageBtn = await waitFor(() => canvas.getByLabelText('Per page'));
             const perPageField = /** @type {SelectCombo} */ (perPageBtn.closest('select-combo'));
@@ -238,7 +238,7 @@ export const Test = {
         });
 
         await step('Selects 25 and verifies items', async () => {
-            const filtersBtn = /** @type {HTMLElement} */ (canvas.getByRole('button', { name: /filters/i }));
+            const filtersBtn = /** @type {HTMLElement} */ (canvas.getByRole('button', { name: 'Filters' }));
             expect(filtersBtn).toBeInTheDocument();
             await userEvent.click(filtersBtn, { delay: DELAY });
             const menu = /** @type {IconMenu} */ (filtersBtn.closest('icon-menu'));
@@ -282,10 +282,8 @@ export const Test = {
             });
             const navNode = /** @type {HTMLElement} */ (listItem.querySelector('.listItem__nav button'));
             await userEvent.click(navNode, { delay: 100 });
-            await waitFor(() => {
-                expect(document.querySelector('.inputCombo--active')).toBeInTheDocument();
-            });
-            const navList = document.querySelector('.inputCombo--active');
+
+            const navList = canvasElement.querySelector('[popover]:popover-open');
             expect(navList).toBeInTheDocument();
             expect(navList?.children).toHaveLength(2);
         });
