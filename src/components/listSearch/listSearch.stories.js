@@ -14,6 +14,9 @@ import { playSetup, renderSimple } from '../listManager/stories/listManager.stor
 const Default = {
     ...ListStory,
     title: 'List Manager/Controls/Search',
+    parameters: {
+        layout: 'flexColumn'
+    },
     args: {
         ...ListStory.args,
         controls: ['search'],

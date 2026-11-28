@@ -167,8 +167,8 @@ export const Test = {
     play: async ({ canvasElement, canvas, step }) => {
         const DELAY = 30;
         const { listNode } = await playSetup(canvasElement);
-        await listNode?.onRendered();
         await listNode?.setView('list');
+        await listNode?.onRendered();
         await step('Refreshes the list and goes to the next page.', async () => {
             const refreshButton = await waitFor(() => canvas.getByRole('button', { name: /refresh list/i }));
             await userEvent.click(refreshButton);
@@ -221,8 +221,7 @@ export const Test = {
             const perPageField = /** @type {SelectCombo} */ (perPageBtn.closest('select-combo'));
             await perPageField?.promise;
             await userEvent.click(perPageBtn, { delay: DELAY });
-            await waitFor(() => expect(perPageField?.optionsNode).toBeInTheDocument());
-            const perPageOption = perPageField.optionsNode?.querySelector('select-option[value="5"] button');
+            const perPageOption = perPageField.querySelector('select-option[value="5"] button');
             expect(perPageOption).toBeInTheDocument();
             await userEvent.click(/** @type {HTMLElement} */ (perPageOption), { delay: DELAY });
             await waitFor(() => {
@@ -232,7 +231,7 @@ export const Test = {
                 expect(items).toHaveLength(5);
                 items?.forEach(item => {
                     expect(item.querySelector('tag-list')?.children).toHaveLength(2);
-                    expect(item.querySelector('.listItem__main .listItem__checkboxContainer')).toBeInTheDocument();
+                    expect(item.querySelector('.listItem__checkboxContainer')).toBeInTheDocument();
                 });
             });
         });

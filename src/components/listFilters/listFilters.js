@@ -1,6 +1,5 @@
 /**
  * @typedef {import('@arpadroid/resources').ListResource} ListResource
- * @typedef {import('@arpadroid/resources').ListFilter} ListFilter
  * @typedef {import('@arpadroid/forms').FormComponent} FormComponent
  * @typedef {import('@arpadroid/forms').Field} Field
  * @typedef {import('@arpadroid/forms').SelectCombo} SelectCombo
@@ -22,7 +21,6 @@ class ListFilters extends ArpaElement {
     _config = this._config;
 
     getDefaultConfig() {
-        this.bind('onSubmit');
         /** @type {ListFiltersConfigType} */
         const conf = {
             className: 'listFilters',
@@ -39,14 +37,10 @@ class ListFilters extends ArpaElement {
         this.list = /** @type {ListManager | null} */ (
             getArpaElementMatch(this, el => el.classList.contains('arpaList') || el.classList.contains('gallery'))
         );
-        /** @type {Router} */
         this.router = this.list?.getRouter();
-        /** @type {ListResource} */
         this.listResource = this.list?.listResource;
         this.listResource?.on('payload', () => this._hasRendered && this.update());
-        /** @type {ListFilter} */
         this.pageFilter = this.listResource?.pageFilter;
-        /** @type {ListFilter} */
         this.perPageFilter = this.listResource?.perPageFilter;
         return true;
     }
@@ -79,12 +73,13 @@ class ListFilters extends ArpaElement {
             <arpa-zone name="nav">
                 <div class="listFilters__content">
                     <arpa-node
-                        name="form"
                         tag="arpa-form"
+                        name="form"
                         variant="compact"
                         id="${this.list?.getProp('id')}-filters-form"
                         has-submit="false"
                         class="listFilters__form"
+                        $on-submit="{onSubmit}"
                     >
                         <group-field
                             class="listFilters__pagination"
@@ -93,7 +88,13 @@ class ListFilters extends ArpaElement {
                             label="Pagination"
                             open
                         >
-                            <select-combo id="perPage" label="Per page" value="{getSelectedPerPage()}" variant="small">
+                            <select-combo
+                                id="perPage"
+                                label="Per page"
+                                value="{getSelectedPerPage()}"
+                                variant="small"
+                                $on-change="{onPerPageChange}"
+                            >
                                 ${$map(
                                     this.getPerPageOptions(),
                                     value => html`<select-option label="${value}" value="${value}"></select-option>`
@@ -116,36 +117,27 @@ class ListFilters extends ArpaElement {
 
     async $initializeNodes() {
         await super.$initializeNodes();
-        await this.waitForArpaNodes(this.arpaNodes, { waitForDeferred: true });
-        await this._initializeIconMenu();
-        this._initializeForm();
-        return true;
-    }
-
-    async _initializeIconMenu() {
-        /** @type {IconMenu | null} */
-        this.menuNode = this.querySelector('icon-menu');
-        await this.menuNode?.waitForArpaNodes();
+        this.menuNode = /** @type {IconMenu} */ (this.querySelector('icon-menu'));
         await this.menuNode?.onRendered();
         /** @type {NavList | null} */
         this.comboNode = this.menuNode?.navigation;
         this.comboNode?.setAttribute('zone', 'list-filters');
-        return true;
-    }
-
-    async _initializeForm() {
         this.form = /** @type {FormComponent | undefined} */ (
             this.comboNode?.querySelector('arpa-form') || this.comboNode?.nodes.form
         );
-        this.form?.onSubmit(this.onSubmit);
-        await this.form?.promise;
-        await this.form?.waitForArpaNodes();
-        await new Promise(resolve => setTimeout(resolve, 100));
         this.pageField = /** @type {NumberField} */ (this.form?.getField('page'));
-        this.perPageField = /** @type {SelectCombo} */ (this.form?.getField('perPage'));
-        this.perPageField?.on('change', (value, field, event) => this.form?.submitForm(event));
+        return true;
     }
 
+    /**
+     * Handles per page change.
+     * @param {string} value
+     * @param {SelectCombo} field
+     * @param {Event} event
+     */
+    onPerPageChange(value, field, event) {
+        this.form?.submitForm(event);
+    }
     /**
      * Updates the list filters.
      * @param {ListResource} [listResource]
@@ -155,6 +147,8 @@ class ListFilters extends ArpaElement {
         this.pageField?.setValue(listResource?.getPage());
         this.pageField?.setMax(listResource?.getTotalPages() || 1);
         const perPage = listResource?.getPerPage();
+        this.perPageField = /** @type {SelectCombo} */ (this.form?.getField('perPage'));
+
         perPage && this.perPageField?.setValue(perPage?.toString());
     }
 

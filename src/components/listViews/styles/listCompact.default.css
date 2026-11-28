@@ -16,17 +16,17 @@
 
     width: 100%;
 
-    .listItem__main {
+    > .listItem__main {
         padding: 0;
-    }
 
-    .listItem__contentWrapper {
-        gap: 0;
-        align-self: center;
-    }
+        > .listItem__contentWrapper {
+            gap: 0;
+            align-self: center;
 
-    .listItem__content {
-        display: none;
+            > .listItem__content {
+                display: none;
+            }
+        }
     }
 
     .listItem__subtitle {

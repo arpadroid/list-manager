@@ -21,6 +21,9 @@ const html = String.raw;
 const Default = {
     ...ListStory,
     title: 'List Manager/Controls/Batch Operations',
+    parameters: {
+        layout: 'flexColumn'
+    },
     args: {
         ...ListStory.args,
         id: 'batch-operations',

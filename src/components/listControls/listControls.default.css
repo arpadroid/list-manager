@@ -1,3 +1,9 @@
+list-controls {
+    .comboBox {
+        position-try-fallbacks: unset;
+    }
+}
+
 .listControls {
     position: sticky;
     top: 0;
